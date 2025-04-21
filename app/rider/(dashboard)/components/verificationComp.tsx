@@ -30,7 +30,7 @@ export const VerificationPage = () => {
               </p>
               <p className=" text-[18px] text-center lg:text-left  font-normal leading-[25px] tracking-[-6%] text-[#8A8A8C] ">
                 Hang tight! We’re still reviewing your documents. Once approved,
-                you’ll be all set to start earning with Apago.
+                you’ll be all set to start earning with Kaya.
               </p>
             </div>
           </div>
