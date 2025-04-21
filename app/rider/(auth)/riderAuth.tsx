@@ -10,7 +10,7 @@ import Image from "next/image";
 import React, { PropsWithChildren } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
-  ApagoBlueOne,
+  Logo_main,
   RiderOnboardingImageOne,
   RiderOnboardingImageTwo,
 } from "@/assets";
@@ -29,7 +29,7 @@ export default function AuthForm({
           !showCarousel && "col-span-2"
         )}>
         <Image
-          src={ApagoBlueOne}
+          src={Logo_main}
           alt={"logo"}
           className="relative top-0 w-32"
         />
