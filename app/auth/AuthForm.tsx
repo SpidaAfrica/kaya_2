@@ -10,7 +10,7 @@ import "swiper/css/scrollbar";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import "swiper/css/navigation";
-import { ApagoBlueOne, OnboardingImageOne, OnboardingImageTwo } from "@/assets";
+import { Logo_main, OnboardingImageOne, OnboardingImageTwo } from "@/assets";
 import { cn } from "@/lib/utils";
 
 export default function AuthForm({
@@ -25,7 +25,7 @@ export default function AuthForm({
           !showCarousel && "col-span-2"
         )}>
         <Image
-          src={ApagoBlueOne}
+          src={Logo_main}
           alt={"logo"}
           className="relative top-0 w-32"
         />
