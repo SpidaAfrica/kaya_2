@@ -55,7 +55,7 @@ export default function SignInPage() {
       <div className="mx-auto w-[336px] px-4 md:w-[400px] flex flex-col items-center justify-center h-full">
         <div className="flex flex-col items-center justify-center gap-2.5">
           <h3 className="text-[#111827] text-2xl md:text-[32px] font-bold tracking-[-0.06em] leading-tight md:leading-[38.08px] text-center">
-            Join the Apago community
+            Join the Kaya community
           </h3>
           <p className="text-[#333232] text-balance text-center text-sm md:text-[16px] font-normal tracking-[-0.06em] leading-[24px] px-2">
             A verification code will be sent to your number to confirm and
