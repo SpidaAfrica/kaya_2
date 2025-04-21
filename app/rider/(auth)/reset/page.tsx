@@ -243,7 +243,7 @@ export default function Reset() {
               </span>
               <p className="text-[#333232] text-sm md:text-base text-center max-w-[391px]">
                 You can now log in with your new credentials. Thank you for
-                choosing Apago!
+                choosing Kaya!
               </p>
             </div>
 
