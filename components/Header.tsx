@@ -181,7 +181,7 @@ export const Header = ({
             <SidebarTrigger className=" ml-3 lg:hidden text-primary w-8 h-8" />
           </div>
         </div>
-        <div className="hidden lg:flex items-center justify-between gap-2 flex-[1] w-[80%] mx-auto">
+        <div className="hidden lg:flex items-center gap-2">
           {userData?.email ? (
             <Button
               onClick={() => {
