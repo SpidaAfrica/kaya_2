@@ -208,7 +208,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
     if (id) setRiderId(id);
   }, []);
   
-  const onSubmit = async (data) => {
+  const onSubmit = async (data: any) => {
     const formData = new FormData();
     formData.append("rider_id", riderId || "");
     formData.append("vehicleType", data.vehicleType);
