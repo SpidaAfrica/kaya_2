@@ -201,7 +201,7 @@ export const PersonalInfo: React.FC<StepProps> = ({ setActiveStep }) => {
 export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
   const { handleSubmit, control } = useForm();
   const [riderId, setRiderId] = useState("");
-  const [licenceFile, setLicenseFile] = useState<File | null>(null);
+  const [licenseFile, setLicenseFile] = useState<File | null>(null);
 
   useEffect(() => {
     const id = sessionStorage.getItem("rider_id");
@@ -213,7 +213,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
     formData.append("rider_id", riderId || "");
     formData.append("vehicleType", data.vehicleType);
     formData.append("plateNumber", data.plateNumber);
-    formData.append("license", data.licenseFile); // licenseFile should be a File object
+    if (licenseFile) formData.append("license", licenseFile); // licenseFile should be a File object
   
     try {
       const response = await axios.post("https://jbuit.org/api/rider/vehicle-info.php", formData, {
@@ -223,6 +223,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
       });
   
       console.log("Response:", response.data);
+      setActiveStep(3);
     } catch (error) {
       console.error("Upload failed:", error);
     }
