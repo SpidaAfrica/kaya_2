@@ -100,7 +100,7 @@ export const Header = ({
                 )}
               </NavLink>
               <NavLink className="" href={`${
-                userType === "passenger" ? "/rider/signin" : "/passenger/signin"
+                userType === "passenger" ? "/rider/signin" : "/auth/signin"
               }`}>
                 {({ isActive }) => (
                   <div className={cn("px-6 py-3 hover:bg-brand-7/40 rounded-md transition-all duration-200", isActive && "text-primary")}>
