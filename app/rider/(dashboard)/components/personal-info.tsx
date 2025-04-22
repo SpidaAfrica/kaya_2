@@ -200,15 +200,34 @@ export const PersonalInfo: React.FC<StepProps> = ({ setActiveStep }) => {
 
 export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
   const { handleSubmit, control } = useForm();
+  const [riderId, setRiderId] = useState("");
+  const [licenceFile, setLicenseFile] = useState<File | null>(null);
 
-  const onSubmit = async (data: any) => {
+  useEffect(() => {
+    const id = sessionStorage.getItem("rider_id");
+    if (id) setRiderId(id);
+  }, []);
+  
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    formData.append("rider_id", riderId || "");
+    formData.append("vehicleType", data.vehicleType);
+    formData.append("plateNumber", data.plateNumber);
+    formData.append("license", data.licenseFile); // licenseFile should be a File object
+  
     try {
-      await axios.post("/api/onboarding/vehicle-info", data);
-      setActiveStep(3);
-    } catch (err) {
-      console.error("Vehicle Info Error:", err);
+      const response = await axios.post("https://jbuit.org/api/rider/vehicle-info.php", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Upload failed:", error);
     }
   };
+
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex mx-auto lg:w-[558px] w-full flex-col">
