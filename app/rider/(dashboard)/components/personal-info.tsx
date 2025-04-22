@@ -242,7 +242,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
             htmlFor="license-upload"
             className="text-[14px] w-fit px-[10px] shadow-md py-[6px] border border-[#E2E4E9] rounded-[8px] font-medium leading-5 tracking-[2%] text-[#525866] cursor-pointer"
           >
-            {ninFile ? licenseFile.name : "upload"}
+            {licenseFile ? licenseFile.name : "upload"}
           </label>
           <input 
             type="file" 
