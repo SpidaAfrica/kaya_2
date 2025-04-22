@@ -234,7 +234,26 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="flex mx-auto lg:w-[558px] w-full flex-col">
       <StepHeader step={2} />
       <StepTitle title="Tell Us About Your Ride! 🛵" />
-      <UploadBlock label="Upload Image of your Driver's license" inputId="license-upload" />
+      <div className="flex gap-5 mt-5 mb-6">
+        <Image src={empty} width={64} height={64} alt="upload-icon" />
+        <div className="flex flex-col gap-3">
+          <p className="text-[16px] font-medium leading-6 tracking-[-6%] text-[#1E2023]">Upload Image of your Driver's license</p>
+          <label
+            htmlFor="license-upload"
+            className="text-[14px] w-fit px-[10px] shadow-md py-[6px] border border-[#E2E4E9] rounded-[8px] font-medium leading-5 tracking-[2%] text-[#525866] cursor-pointer"
+          >
+            {ninFile ? licenseFile.name : "upload"}
+          </label>
+          <input 
+            type="file" 
+            id="license-upload" 
+            className="hidden" 
+            accept="image/*,application/pdf"
+            onChange={(e) => {
+              if (e.target.files?.[0]) setLicenseFile(e.target.files[0]);
+            }}/>
+        </div>
+      </div>
 
       <FormSelect name="vehicleType" control={control} icon={<Image src={bike} alt="bike" width={20} height={20} />} label="Your Vehicle Type" options={["Motorcycle", "Car", "Van"]} />
       <FormInput name="plateNumber" control={control} icon={<Keyboard className="size-5 text-gray-500" />} label="Vehicle Plate Number" placeholder="Enter your vehicle plate number" />
