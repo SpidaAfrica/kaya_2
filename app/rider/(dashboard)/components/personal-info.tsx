@@ -177,7 +177,6 @@ export const PersonalInfo: React.FC<StepProps> = ({ setActiveStep }) => {
           </label>
           <input
             id="nin-upload"
-            name="nin_certificate"
             type="file"
             className="hidden"
             accept="image/*,application/pdf"
