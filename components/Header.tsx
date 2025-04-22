@@ -182,10 +182,24 @@ export const Header = ({
           </div>
         </div>
         <div className="hidden lg:flex items-center justify-between gap-2 flex-[1] w-[80%] mx-auto">
-          <Button className="px-6 !py-[0.15rem]">Register</Button>
-          <Button className="px-6 !py-[0.15rem] bg-background outline outline-2 outline-primary text-primary">
-            Sign In
-          </Button>
+          {userData?.email ? (
+            <Button
+              onClick={() => {
+                sessionStorage.clear();
+                window.location.reload();
+              }}
+              className="px-6 !py-[0.15rem] bg-destructive text-white"
+            >
+              Sign Out
+            </Button>
+          ) : (
+            <>
+              <Button className="px-6 !py-[0.15rem]">Register</Button>
+              <Button className="px-6 !py-[0.15rem] bg-background outline outline-2 outline-primary text-primary">
+                Sign In
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
