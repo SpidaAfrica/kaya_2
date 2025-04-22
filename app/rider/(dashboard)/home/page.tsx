@@ -35,7 +35,7 @@ const Page = () => {
           setActiveStep(1);
         },
       },
-      status: "completed",
+      status: "pending",
     },
     {
       title: "Document Verification",
