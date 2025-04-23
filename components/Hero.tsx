@@ -24,7 +24,7 @@ function MapIcon() {
   );
 }
 
-const fetchTomTomSuggestions = async (query) => {
+const fetchTomTomSuggestions = async (query: any) => {
   if (!query) return [];
   const res = await fetch(
     `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}.json?key=${TTT_API_KEY}&limit=5`
