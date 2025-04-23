@@ -179,7 +179,7 @@ const RecentOrdersSection: React.FC<{
       ))
     ) : (
       <div className="flex flex-col items-center justify-center py-12">
-        <Image src={NoRecentOrdersYet} alt="No orders" className="w-48 mb-4" />
+        {/*<Image src={NoRecentOrdersYet} alt="No orders" className="w-48 mb-4" />*/}
         <p className="text-gray-500 text-sm">You don’t have any orders yet.</p>
       </div>
     )}
