@@ -179,7 +179,6 @@ export const PersonalInfo: React.FC<StepProps> = ({ setActiveStep }) => {
             id="nin-upload"
             type="file"
             className="hidden"
-            accept="*/*"
             onChange={(e) => {
               if (e.target.files?.[0]) setNinFile(e.target.files[0]);
             }}
@@ -248,7 +247,6 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
             type="file" 
             id="license-upload" 
             className="hidden" 
-            accept="*/*"
             onChange={(e) => {
               if (e.target.files?.[0]) setLicenseFile(e.target.files[0]);
               console.log("License file:", licenseFile);
