@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { DeliveryDetails } from "./Overlays/DeliveryDetails";
 import AddStopsModal from "./Overlays/AddStopsModal";
 
-const TTT_API_KEY = process.env.NEXT_PUBLIC_TOMTOM_API_KEY;
+const TTT_API_KEY = "ie4Bbk6muzUdyb5YhAC7rvOOjKeQIUyC";
 
 function MapIcon() {
   return (
