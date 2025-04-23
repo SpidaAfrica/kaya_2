@@ -209,23 +209,23 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
   }, []);
   
   const onSubmit = async (data: any) => {
-    const formData = new FormData();
-    formData.append("rider_id", riderId || "");
-    formData.append("vehicleType", data.vehicleType);
-    formData.append("plateNumber", data.plateNumber);
-    if (licenseFile) formData.append("license", licenseFile); // licenseFile should be a File object
-  
     try {
-      const response = await axios.post("https://jbuit.org/api/rider/vehicle-info.php", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const formData = new FormData();
+      formData.append("rider_id", riderId || "");
+      formData.append("vehicleType", data.vehicleType);
+      formData.append("plateNumber", data.plateNumber);
+      if (licenseFile) formData.append("license-upload", licenseFile); // licenseFile should be a File object
+
+      const response = await fetch("https://jbuit.org/api/rider/vehicle-info.php", {
+        method: "POST",
+        body: formData,
       });
-  
-      console.log("Response:", response.data);
+
+      if (!response.ok) throw new Error("Failed to submit personal info");
+
       setActiveStep(3);
-    } catch (error) {
-      console.error("Upload failed:", error);
+    } catch (err) {
+      console.error("Personal Info Error:", err);
     }
   };
 
