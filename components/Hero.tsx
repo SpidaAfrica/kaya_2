@@ -24,7 +24,7 @@ function MapIcon() {
   );
 }
 
-const fetchTomTomSuggestions = async (query: any) => {
+const fetchTomTomSuggestions = async (query: string): Promise<any[]> => {
   if (!query) return [];
   const res = await fetch(
     `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}.json?key=${TTT_API_KEY}&limit=5`
@@ -67,7 +67,10 @@ export const Hero = () => {
     return () => clearTimeout(timeout);
   }, [dropoffQuery]);
 
-  const handleSelect = (location, type) => {
+const handleSelect = (
+  location: { position: { lat: number; lon: number }; address: { freeformAddress: string } },
+  type: "pickup" | "dropoff"
+) => {
     const { lat, lon } = location.position;
     const address = location.address.freeformAddress;
     if (type === "pickup") {
