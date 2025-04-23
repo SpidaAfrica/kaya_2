@@ -179,7 +179,7 @@ export const PersonalInfo: React.FC<StepProps> = ({ setActiveStep }) => {
             id="nin-upload"
             type="file"
             className="hidden"
-            accept="image/*,application/pdf"
+            accept="*/*"
             onChange={(e) => {
               if (e.target.files?.[0]) setNinFile(e.target.files[0]);
             }}
@@ -248,7 +248,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
             type="file" 
             id="license-upload" 
             className="hidden" 
-            accept="image/*,application/pdf"
+            accept="*/*"
             onChange={(e) => {
               if (e.target.files?.[0]) setLicenseFile(e.target.files[0]);
               console.log("License file:", licenseFile);
@@ -267,13 +267,31 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
 
 export const GuarantorInfo: React.FC<StepProps> = ({ setActiveStep }) => {
   const { handleSubmit, control } = useForm();
+  const [riderId, setRiderId] = useState("");
 
+  useEffect(() => {
+    const id = sessionStorage.getItem("rider_id");
+    if (id) setRiderId(id);
+  }, []);
+  
   const onSubmit = async (data: any) => {
     try {
-      await axios.post("/api/onboarding/guarantor-info", data);
+      const formData = new FormData();
+      formData.append("rider_id", riderId || "");
+      formData.append("guarantorName", data.guarantorName);
+      formData.append("guarantorPhone", data.guarantorPhone);
+      formData.append("guarantorAddress", data.guarantorAddress);
+
+      const response = await fetch("https://jbuit.org/api/rider/guarantor-info.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to submit personal info");
+
       setActiveStep(4);
     } catch (err) {
-      console.error("Guarantor Info Error:", err);
+      console.error("Personal Info Error:", err);
     }
   };
 
