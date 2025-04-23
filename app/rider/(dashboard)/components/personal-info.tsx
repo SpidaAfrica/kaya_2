@@ -251,6 +251,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
             accept="image/*,application/pdf"
             onChange={(e) => {
               if (e.target.files?.[0]) setLicenseFile(e.target.files[0]);
+              console.log("License file:", licenseFile);
             }}/>
         </div>
       </div>
