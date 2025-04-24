@@ -16,6 +16,7 @@ import DynamicOverlay from "./DynamicOverlay";
 import { SuggestPrice } from "./SuggestPrice";
 import { OrderDetails } from "./OrderDetails";
 import Link from "next/link";
+import {MapWithRoute} from "./MapWithRoute";
 
 type Package = {
   id?: string;
@@ -115,7 +116,7 @@ export function DeliveryDetails({
     <DynamicOverlay onOpenChange={onOpenChange} open={open} trigger={children}>
       <DetailsLayout hide={() => actions?.close?.()} title={type === "delivery" ? "Delivery Details" : "Order Details"}>
         <div className="w-full relative">
-          <Image src={MiniMap} alt="mini-map" className="w-full" />
+          <MapWithRoute from={fromLocation} to={toLocation} />
           <ViewMapInFullMode userType="passenger" />
         </div>
 
