@@ -136,7 +136,7 @@ export function DeliveryDetails({
 
           <DetailRow label="Current Location" value={fromLocation} />
           <DetailRow label="Destination" value={toLocation} />
-          <DetailRow label="Number of stops" value={`${stopCount}`} />
+          <DetailRow label="Number of stops" value={dynamicStops.length} />
           <DetailRow label="Payment Method" value={paymentMethod} />
 
           {type === "order" && (
