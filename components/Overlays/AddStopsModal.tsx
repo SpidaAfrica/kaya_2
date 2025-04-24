@@ -38,8 +38,8 @@ export default function AddStopsModal({
   useEffect(() => {
     try {
       if (typeof window !== "undefined" && open) {
-        setFromLocation(sessionStorage.getItem("fromLocation") || "");
-        setToLocation(sessionStorage.getItem("toLocation") || "");
+        setFromLocation(sessionStorage.getItem("fromLocation"));
+        setToLocation(sessionStorage.getItem("toLocation"));
 
         const stored = sessionStorage.getItem(STORAGE_KEY);
         const parsed = stored ? JSON.parse(stored) : [];
