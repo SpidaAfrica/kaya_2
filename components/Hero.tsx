@@ -67,7 +67,7 @@ export const Hero = () => {
     return () => clearTimeout(timeout);
   }, [dropoffQuery]);
 
-  const handleSelect = (location: any, type) => {
+  const handleSelect = (location: any, type: any) => {
     const { lat, lon } = location.position;
     const address = location.address.freeformAddress;
     if (type === "pickup") {
