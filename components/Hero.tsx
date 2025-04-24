@@ -24,7 +24,7 @@ function MapIcon() {
   );
 }
 
-const fetchTomTomSuggestions = async (query: string): Promise<any[]> => {
+const fetchTomTomSuggestions = async (query: any) => {
   if (!query) return [];
   const res = await fetch(
     `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}.json?key=${TTT_API_KEY}&limit=5`
@@ -43,9 +43,8 @@ export const Hero = () => {
   const [pickupCoords, setPickupCoords] = useState(null);
   const [dropoffCoords, setDropoffCoords] = useState(null);
 
-  const [pickupSuggestions, setPickupSuggestions] = useState<any[]>([]);
-  const [dropoffSuggestions, setDropoffSuggestions] = useState<any[]>([]);
-
+  const [pickupSuggestions, setPickupSuggestions] = useState([]);
+  const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
 
   useEffect(() => {
     sessionStorage.setItem("pickupCoords", JSON.stringify(pickupCoords));
@@ -68,19 +67,19 @@ export const Hero = () => {
     return () => clearTimeout(timeout);
   }, [dropoffQuery]);
 
-const handleSelect = (location: any, type: string) => {
-  const { lat, lon } = location.position;
-  const address = location.address.freeformAddress;
-  if (type === "pickup") {
-    setPickupQuery(address);
-    setPickupCoords({ lat, lon });
-    setPickupSuggestions([]);
-  } else {
-    setDropoffQuery(address);
-    setDropoffCoords({ lat, lon });
-    setDropoffSuggestions([]);
-  }
-};
+  const handleSelect = (location: any, type) => {
+    const { lat, lon } = location.position;
+    const address = location.address.freeformAddress;
+    if (type === "pickup") {
+      setPickupQuery(address);
+      setPickupCoords({ lat, lon });
+      setPickupSuggestions([]);
+    } else {
+      setDropoffQuery(address);
+      setDropoffCoords({ lat, lon });
+      setDropoffSuggestions([]);
+    }
+  };
 
   return (
     <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-4 overflow-clip_ md:h-80">
@@ -203,6 +202,7 @@ const handleSelect = (location: any, type: string) => {
     </div>
   );
 };
+
 
 
 {/*import React, { useState } from "react";
