@@ -49,10 +49,17 @@ export const Hero = () => {
   const [pickupSuggestions, setPickupSuggestions] = useState<LocationResult[]>([]);
   const [dropoffSuggestions, setDropoffSuggestions] = useState<LocationResult[]>([]);
 
+  const [fromLocation, setFromLocation] = useState<string>("");
+  const [toLocation, setToLocation] = useState<string>("");
+
+
   useEffect(() => {
     sessionStorage.setItem("pickupCoords", JSON.stringify(pickupCoords));
     sessionStorage.setItem("dropoffCoords", JSON.stringify(dropoffCoords));
-  }, [pickupCoords, dropoffCoords]);
+    sessionStorage.setItem("fromLocation", fromLocation);
+    sessionStorage.setItem("toLocation", toLocation);
+  }, [pickupCoords, dropoffCoords, fromLocation, toLocation]);
+
 
   useEffect(() => {
     const timeout = setTimeout(async () => {
@@ -73,17 +80,20 @@ export const Hero = () => {
   const handleSelect = (location: LocationResult, type: "pickup" | "dropoff") => {
     const { lat, lon } = location.position;
     const address = location.address.freeformAddress;
-
+  
     if (type === "pickup") {
       setPickupQuery(address);
       setPickupCoords({ lat, lon });
       setPickupSuggestions([]);
+      setFromLocation(address); // ✅ Store string
     } else {
       setDropoffQuery(address);
       setDropoffCoords({ lat, lon });
       setDropoffSuggestions([]);
+      setToLocation(address); // ✅ Store string
     }
   };
+
 
   return (
     <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-4 overflow-clip_ md:h-80">
