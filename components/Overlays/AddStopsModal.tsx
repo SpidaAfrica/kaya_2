@@ -70,8 +70,6 @@ export default function AddStopsModal({
 
   const handleSave = () => {
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("fromLocation", fromLocation);
-      sessionStorage.setItem("toLocation", toLocation);
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(dynamicStops));
     }
     actions?.close?.();
