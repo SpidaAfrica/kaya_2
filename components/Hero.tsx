@@ -43,8 +43,9 @@ export const Hero = () => {
   const [pickupCoords, setPickupCoords] = useState(null);
   const [dropoffCoords, setDropoffCoords] = useState(null);
 
-  const [pickupSuggestions, setPickupSuggestions] = useState([]);
-  const [dropoffSuggestions, setDropoffSuggestions] = useState([]);
+  const [pickupSuggestions, setPickupSuggestions] = useState<any[]>([]);
+  const [dropoffSuggestions, setDropoffSuggestions] = useState<any[]>([]);
+
 
   useEffect(() => {
     sessionStorage.setItem("pickupCoords", JSON.stringify(pickupCoords));
@@ -67,22 +68,19 @@ export const Hero = () => {
     return () => clearTimeout(timeout);
   }, [dropoffQuery]);
 
-const handleSelect = (
-  location: { position: { lat: number; lon: number }; address: { freeformAddress: string } },
-  type: "pickup" | "dropoff"
-) => {
-    const { lat, lon } = location.position;
-    const address = location.address.freeformAddress;
-    if (type === "pickup") {
-      setPickupQuery(address);
-      setPickupCoords({ lat, lon });
-      setPickupSuggestions([]);
-    } else {
-      setDropoffQuery(address);
-      setDropoffCoords({ lat, lon });
-      setDropoffSuggestions([]);
-    }
-  };
+const handleSelect = (location: any, type: string) => {
+  const { lat, lon } = location.position;
+  const address = location.address.freeformAddress;
+  if (type === "pickup") {
+    setPickupQuery(address);
+    setPickupCoords({ lat, lon });
+    setPickupSuggestions([]);
+  } else {
+    setDropoffQuery(address);
+    setDropoffCoords({ lat, lon });
+    setDropoffSuggestions([]);
+  }
+};
 
   return (
     <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-4 overflow-clip_ md:h-80">
