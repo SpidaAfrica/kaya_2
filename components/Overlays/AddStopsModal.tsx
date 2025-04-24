@@ -98,17 +98,28 @@ export default function AddStopsModal({
       <DetailsLayout hide={() => actions?.close?.()} title="Add Stops">
         <div className="py-12">
           <div className="flex flex-col gap-4">
-            {allStops.map((stop, index) => (
-              <StopItem
-                key={index}
-                identifier={stop.identifier}
-                location={stop.location}
-                isNew={stop.new}
-                isEditable={stop.new}
-                onChange={(val) => updateStopLocation(index, val)}
-                onDelete={() => removeStop(index)}
-              />
-            ))}
+            {allStops.map((stop, index) => {
+              const isDynamic = stop.new;
+              const dynamicIndex = index - 1; // Because first is fromLocation
+            
+              return (
+                <StopItem
+                  key={index}
+                  identifier={stop.identifier}
+                  location={stop.location}
+                  isNew={stop.new}
+                  isEditable={isDynamic}
+                  onChange={
+                    isDynamic
+                      ? (val) => updateStopLocation(dynamicIndex, val)
+                      : undefined
+                  }
+                  onDelete={
+                    isDynamic ? () => removeStop(dynamicIndex) : undefined
+                  }
+                />
+              );
+            })}
           </div>
 
           <Button
@@ -199,7 +210,7 @@ function EditableStopField({
       <FormInput
         className="w-full"
         outerClassName="w-full"
-        defaultValue={location ?? ""}
+        value={location ?? ""}
         onChange={(e) => onChange?.(e.target.value)}
       />
       <button onClick={onDelete}>❌</button>
