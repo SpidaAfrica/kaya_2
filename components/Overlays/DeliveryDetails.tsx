@@ -49,7 +49,7 @@ export function DeliveryDetails({
   type = "delivery",
 }: {
   actions?: Actions;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
   withMoreActions?: boolean;
