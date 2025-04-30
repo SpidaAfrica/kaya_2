@@ -18,10 +18,12 @@ export function OrderDetails({
   children,
   onOpenChange,
   open,
+  onDataChanged,
 }: PropsWithChildren<{
   onOpenChange?(open: boolean): void;
   open?: boolean;
   actions?: Actions;
+  onDataChanged?: () => void;
 }>) {
   const [isClient, setIsClient] = useState(false);
 
@@ -108,7 +110,12 @@ export function OrderDetails({
 
           <div className="pt-6 md:pt-3">
             <DynamicTrigger>
-              <Button onClick={() => actions?.switchPage?.("DELIVERY_DETAILS")}>
+              <Button
+                  onClick={() => {
+                    onDataChanged?.(); // Refresh delivery data in parent
+                    actions?.switchPage?.("DELIVERY_DETAILS");
+                  }}
+                >
                 Save Details
               </Button>
             </DynamicTrigger>
