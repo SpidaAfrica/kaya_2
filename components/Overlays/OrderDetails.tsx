@@ -23,6 +23,8 @@ export function OrderDetails({
   open?: boolean;
   actions?: Actions;
 }>) {
+  const [isClient, setIsClient] = useState(false);
+
   const [senderPhone, setSenderPhone] = useState("");
   const [recipientPhone, setRecipientPhone] = useState("");
   const [packageCategory, setPackageCategory] = useState("");
@@ -36,15 +38,17 @@ export function OrderDetails({
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (senderPhone && recipientPhone && packageCategory) {
-        sessionStorage.setItem("senderPhone", `+234${senderPhone}`);
-        sessionStorage.setItem("recipientPhone", `+234${recipientPhone}`);
-        sessionStorage.setItem("packageCategory", packageCategory);
-        sessionStorage.setItem("packageDescription", packageDescription);
-      }
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && senderPhone && recipientPhone && packageCategory) {
+      sessionStorage.setItem("senderPhone", `+234${senderPhone}`);
+      sessionStorage.setItem("recipientPhone", `+234${recipientPhone}`);
+      sessionStorage.setItem("packageCategory", packageCategory);
+      sessionStorage.setItem("packageDescription", packageDescription);
     }
-  }, [senderPhone, recipientPhone, packageCategory, packageDescription]);
+  }, [isClient, senderPhone, recipientPhone, packageCategory, packageDescription]);
 
   return (
     <DynamicOverlay onOpenChange={onOpenChange} open={open} trigger={children}>
@@ -56,14 +60,12 @@ export function OrderDetails({
             value={senderPhone}
             onChange={handleChange}
           />
-
           <PhoneInput
             label="Recipient's Phone Number"
             name="recipientPhone"
             value={recipientPhone}
             onChange={handleChange}
           />
-
           <div className="grid gap-2">
             <Label htmlFor="packageCategory">Package Category</Label>
             <CustomSelect
@@ -98,7 +100,9 @@ export function OrderDetails({
             />
             <div className="flex items-center gap-2 text-gray-400 font-normal text-sm">
               <InfoIcon className="fill-gray-400 stroke-background" />
-              <span>please make sure your package complies with our guidelines</span>
+              <span>
+                please make sure your package complies with our guidelines
+              </span>
             </div>
           </div>
 
@@ -116,8 +120,6 @@ export function OrderDetails({
     </DynamicOverlay>
   );
 }
-
-// --- Extracted Components for Clarity ---
 
 const PhoneInput = ({
   label,

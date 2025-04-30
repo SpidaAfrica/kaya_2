@@ -47,8 +47,12 @@ export function SuggestPrice({
     actions?.switchPage?.("DELIVERY_DETAILS");
   };
 
+  const handleTriggerOpen = () => {
+    onOpenChange?.(true); // Trigger modal open when button is clicked
+  };
+
   return (
-    <DynamicOverlay onOpenChange={onOpenChange} open={open} trigger={children}>
+    <DynamicOverlay onOpenChange={onOpenChange} open={open} trigger={<div onClick={handleTriggerOpen}>{children}</div>}>
       <DetailsLayout title="Suggest a Price" hide={() => actions?.close?.()}>
         <div className="flex items-center px-3 py-4 gap-6 rounded-md bg-orange-tint/[7%] justify-between">
           <div className="rounded-full h-fit p-3 bg-orange-tint/5">

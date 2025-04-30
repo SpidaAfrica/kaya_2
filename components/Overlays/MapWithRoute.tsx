@@ -1,75 +1,69 @@
-import { useEffect, useRef } from "react";
-import maplibregl from "maplibre-gl";
-import "maplibre-gl/dist/maplibre-gl.css";
+'use client';
 
-const tomtomApiKey = "ie4Bbk6muzUdyb5YhAC7rvOOjKeQIUyC"; // still used for geocoding
+import { useEffect, useRef, useState } from "react";
 
-export default function MapWithRoute({ from, to }) {
-  const mapRef = useRef(null);
-  const mapElement = useRef(null);
+const GOOGLE_MAPS_API_KEY = "AIzaSyDeiTX6cfrRVrGA1wJnZh_ro957siC6A1c"; // Replace with your Google Maps API key
+
+type MapWithRouteProps = {
+  from?: string;
+  to?: string;
+};
+
+export default function MapWithRoute({ from, to }: MapWithRouteProps) {
+  const mapElement = useRef<HTMLDivElement | null>(null);
+  const [estimatedTime, setEstimatedTime] = useState<string | null>(null);
 
   useEffect(() => {
     const initializeMap = async () => {
-      if (!from || !to) return;
+      if (!from || !to || !mapElement.current) return;
 
-      // Convert addresses to coordinates using TomTom's geocode API
-      const getCoords = async (query) => {
-        const res = await fetch(
-          `https://api.tomtom.com/search/2/geocode/${encodeURIComponent(query)}.json?key=${tomtomApiKey}`
-        );
-        const data = await res.json();
-        return data.results[0]?.position;
-      };
-
-      const [fromCoords, toCoords] = await Promise.all([getCoords(from), getCoords(to)]);
-
-      if (!fromCoords || !toCoords) return;
-
-      const map = new maplibregl.Map({
-        container: mapElement.current,
-        style: "https://demotiles.maplibre.org/style.json", // Public free MapLibre style
-        center: [fromCoords.lon, fromCoords.lat],
+      const map = new google.maps.Map(mapElement.current, {
         zoom: 12,
+        center: { lat: 0, lng: 0 }, // Will be set properly below
       });
 
-      mapRef.current = map;
+      const directionsService = new google.maps.DirectionsService();
+      const directionsRenderer = new google.maps.DirectionsRenderer({ map });
 
-      // Add markers
-      new maplibregl.Marker().setLngLat([fromCoords.lon, fromCoords.lat]).addTo(map);
-      new maplibregl.Marker().setLngLat([toCoords.lon, toCoords.lat]).addTo(map);
-
-      map.on("load", () => {
-        // Add route line
-        map.addSource("route", {
-          type: "geojson",
-          data: {
-            type: "Feature",
-            geometry: {
-              type: "LineString",
-              coordinates: [
-                [fromCoords.lon, fromCoords.lat],
-                [toCoords.lon, toCoords.lat],
-              ],
-            },
-          },
-        });
-
-        map.addLayer({
-          id: "route",
-          type: "line",
-          source: "route",
-          paint: {
-            "line-color": "#4A90E2",
-            "line-width": 4,
-          },
-        });
+      const result = await directionsService.route({
+        origin: from,
+        destination: to,
+        travelMode: google.maps.TravelMode.DRIVING,
       });
 
-      return () => map.remove();
+      if (result.routes.length > 0) {
+        directionsRenderer.setDirections(result);
+
+        const leg = result.routes[0].legs[0];
+        setEstimatedTime(leg.duration?.text || null);
+
+        // Center the map on the route
+        map.setCenter(leg.start_location);
+      }
     };
 
-    initializeMap();
+    if (typeof window !== "undefined" && (window as any).google?.maps) {
+      initializeMap();
+    } else {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places`;
+      script.async = true;
+      script.onload = initializeMap;
+      document.head.appendChild(script);
+    }
   }, [from, to]);
 
-  return <div ref={mapElement} className="w-full h-60 rounded-lg overflow-hidden" />;
+  return (
+    <div className="w-full">
+      {estimatedTime && (
+        <p className="text-center font-medium mb-2">
+          Estimated Arrival Time: {estimatedTime}
+        </p>
+      )}
+      <div
+        ref={mapElement}
+        className="w-full h-[50vh] rounded-lg overflow-hidden"
+      />
+    </div>
+  );
 }

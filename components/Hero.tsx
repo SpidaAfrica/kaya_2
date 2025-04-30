@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { Banner } from "@/assets";
 import Image from "next/image";
@@ -5,12 +6,13 @@ import { Button } from "./ui/button";
 import { DeliveryDetails } from "./Overlays/DeliveryDetails";
 import AddStopsModal from "./Overlays/AddStopsModal";
 
-const TTT_API_KEY = "ie4Bbk6muzUdyb5YhAC7rvOOjKeQIUyC";
+declare global {
+  interface Window {
+    google: any;
+  }
+}
 
-type LocationResult = {
-  position: { lat: number; lon: number };
-  address: { freeformAddress: string };
-};
+const GOOGLE_API_KEY = "AIzaSyDeiTX6cfrRVrGA1wJnZh_ro957siC6A1c"; // ⚡ Insert your key here!
 
 const MapIcon = () => (
   <svg
@@ -27,13 +29,18 @@ const MapIcon = () => (
   </svg>
 );
 
-const fetchSuggestions = async (query: string): Promise<LocationResult[]> => {
-  if (!query) return [];
-  const res = await fetch(
-    `https://api.tomtom.com/search/2/search/${encodeURIComponent(query)}.json?key=${TTT_API_KEY}&limit=5`
-  );
-  const data = await res.json();
-  return data.results || [];
+type Suggestion = {
+  place_id: string;
+  description: string;
+};
+
+const loadGoogleMapsScript = () => {
+  if (window.google) return;
+
+  const script = document.createElement("script");
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
+  script.async = true;
+  document.body.appendChild(script);
 };
 
 export const Hero = () => {
@@ -43,15 +50,18 @@ export const Hero = () => {
   const [pickupQuery, setPickupQuery] = useState("");
   const [dropoffQuery, setDropoffQuery] = useState("");
 
-  const [pickupCoords, setPickupCoords] = useState<{ lat: number; lon: number } | null>(null);
-  const [dropoffCoords, setDropoffCoords] = useState<{ lat: number; lon: number } | null>(null);
+  const [pickupSuggestions, setPickupSuggestions] = useState<Suggestion[]>([]);
+  const [dropoffSuggestions, setDropoffSuggestions] = useState<Suggestion[]>([]);
 
-  const [pickupSuggestions, setPickupSuggestions] = useState<LocationResult[]>([]);
-  const [dropoffSuggestions, setDropoffSuggestions] = useState<LocationResult[]>([]);
+  const [pickupCoords, setPickupCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [dropoffCoords, setDropoffCoords] = useState<{ lat: number; lng: number } | null>(null);
 
   const [fromLocation, setFromLocation] = useState<string>("");
   const [toLocation, setToLocation] = useState<string>("");
 
+  useEffect(() => {
+    loadGoogleMapsScript();
+  }, []);
 
   useEffect(() => {
     sessionStorage.setItem("pickupCoords", JSON.stringify(pickupCoords));
@@ -60,43 +70,76 @@ export const Hero = () => {
     sessionStorage.setItem("toLocation", toLocation);
   }, [pickupCoords, dropoffCoords, fromLocation, toLocation]);
 
+  const searchGooglePlaces = async (input: string, setSuggestions: (results: Suggestion[]) => void) => {
+    if (!window.google || !input) return;
+
+    const service = new window.google.maps.places.AutocompleteService();
+    service.getPlacePredictions({ input }, (predictions: any[], status: string) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+        setSuggestions(predictions.map(prediction => ({
+          place_id: prediction.place_id,
+          description: prediction.description,
+        })));
+      } else {
+        setSuggestions([]);
+      }
+    });
+  };
+
+  const geocodePlaceId = async (placeId: string): Promise<{ lat: number; lng: number; description: string }> => {
+    return new Promise((resolve, reject) => {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ placeId }, (results: any[], status: string) => {
+        if (status === "OK" && results[0]) {
+          const location = results[0].geometry.location;
+          resolve({
+            lat: location.lat(),
+            lng: location.lng(),
+            description: results[0].formatted_address,
+          });
+        } else {
+          reject(new Error("Failed to geocode place"));
+        }
+      });
+    });
+  };
 
   useEffect(() => {
-    const timeout = setTimeout(async () => {
-      const results = await fetchSuggestions(pickupQuery);
-      setPickupSuggestions(results);
+    const timeout = setTimeout(() => {
+      searchGooglePlaces(pickupQuery, setPickupSuggestions);
     }, 300);
     return () => clearTimeout(timeout);
   }, [pickupQuery]);
 
   useEffect(() => {
-    const timeout = setTimeout(async () => {
-      const results = await fetchSuggestions(dropoffQuery);
-      setDropoffSuggestions(results);
+    const timeout = setTimeout(() => {
+      searchGooglePlaces(dropoffQuery, setDropoffSuggestions);
     }, 300);
     return () => clearTimeout(timeout);
   }, [dropoffQuery]);
 
-  const handleSelect = (location: LocationResult, type: "pickup" | "dropoff") => {
-    const { lat, lon } = location.position;
-    const address = location.address.freeformAddress;
-  
-    if (type === "pickup") {
-      setPickupQuery(address);
-      setPickupCoords({ lat, lon });
-      setPickupSuggestions([]);
-      setFromLocation(address); // ✅ Store string
-    } else {
-      setDropoffQuery(address);
-      setDropoffCoords({ lat, lon });
-      setDropoffSuggestions([]);
-      setToLocation(address); // ✅ Store string
+  const handleSelect = async (suggestion: Suggestion, type: "pickup" | "dropoff") => {
+    try {
+      const result = await geocodePlaceId(suggestion.place_id);
+
+      if (type === "pickup") {
+        setPickupQuery(result.description);
+        setPickupCoords({ lat: result.lat, lng: result.lng });
+        setPickupSuggestions([]);
+        setFromLocation(result.description);
+      } else {
+        setDropoffQuery(result.description);
+        setDropoffCoords({ lat: result.lat, lng: result.lng });
+        setDropoffSuggestions([]);
+        setToLocation(result.description);
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
-
   return (
-    <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-4 overflow-clip_ md:h-80">
+    <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-4 overflow-hidden md:h-80">
       <Image
         src={Banner}
         alt="banner"
@@ -134,14 +177,14 @@ export const Hero = () => {
                 query: pickupQuery,
                 suggestions: pickupSuggestions,
                 setQuery: setPickupQuery,
-                handleSelect: (loc: LocationResult) => handleSelect(loc, "pickup"),
+                handleSelect: (s: Suggestion) => handleSelect(s, "pickup"),
               },
               {
                 label: "Enter a dropoff location",
                 query: dropoffQuery,
                 suggestions: dropoffSuggestions,
                 setQuery: setDropoffQuery,
-                handleSelect: (loc: LocationResult) => handleSelect(loc, "dropoff"),
+                handleSelect: (s: Suggestion) => handleSelect(s, "dropoff"),
               },
             ].map((field, idx) => (
               <div className="flex-1 relative" key={idx}>
@@ -164,7 +207,7 @@ export const Hero = () => {
                         onClick={() => field.handleSelect(s)}
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                       >
-                        {s.address.freeformAddress}
+                        {s.description}
                       </li>
                     ))}
                   </ul>
@@ -199,6 +242,7 @@ export const Hero = () => {
     </div>
   );
 };
+
 
 
 {/*import React, { useState, useEffect } from "react";
