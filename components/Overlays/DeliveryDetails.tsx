@@ -58,7 +58,7 @@ export function DeliveryDetails({
   const [packageData, setPackageData] = useState<Package | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  {/*  useEffect(() => {
     if (typeof window === "undefined") return;
 
     const safeGet = (key: string, fallback = "") => {
@@ -111,6 +111,61 @@ export function DeliveryDetails({
     
     loadData();
   }, []);
+  */}
+  const loadPackageData = () => {
+    const safeGet = (key: string, fallback = "") => {
+      const value = sessionStorage.getItem(key);
+      return value !== null && value.trim() !== "" ? value : fallback;
+    };
+  
+    const safeParse = (key: string, fallback: any) => {
+      try {
+        return JSON.parse(sessionStorage.getItem(key) || JSON.stringify(fallback));
+      } catch {
+        return fallback;
+      }
+    };
+  
+    const pickupCoordsRaw = safeParse("pickupCoords", null);
+    const dropoffCoordsRaw = safeParse("dropoffCoords", null);
+  
+    const pickupCoords = pickupCoordsRaw && typeof pickupCoordsRaw === "object" ? pickupCoordsRaw : { lat: 0, lon: 0 };
+    const dropoffCoords = dropoffCoordsRaw && typeof dropoffCoordsRaw === "object" ? dropoffCoordsRaw : { lat: 0, lon: 0 };
+  
+    const stops = safeParse("dynamicStops", []);
+  
+    const data: Package = {
+      from_location: safeGet("fromLocation"),
+      to_location: safeGet("toLocation"),
+      pickup_lat: typeof pickupCoords.lat === "number" ? pickupCoords.lat : 0,
+      pickup_lon: typeof pickupCoords.lon === "number" ? pickupCoords.lon : 0,
+      dropoff_lat: typeof dropoffCoords.lat === "number" ? dropoffCoords.lat : 0,
+      dropoff_lon: typeof dropoffCoords.lon === "number" ? dropoffCoords.lon : 0,
+      dynamic_stops: stops,
+      payment_method: safeGet("paymentMethod", "online-payment"),
+      user_id: safeGet("userId"),
+      package_category: safeGet("packageCategory"),
+      package_description: safeGet("packageDescription"),
+      price: safeGet("price"),
+      sender_phone: safeGet("senderPhone"),
+      recipient_phone: safeGet("recipientPhone"),
+    };
+  
+    if (!data.from_location && !data.to_location) {
+      console.warn("Essential data missing. User needs to fill form manually.");
+      setPackageData(null);
+    } else {
+      setPackageData(data);
+    }
+  
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    loadPackageData();
+  }, []);
+
 
   const handleSubmit = async () => {
     if (!packageData) {
@@ -184,7 +239,7 @@ export function DeliveryDetails({
 
         {/* Always show the action buttons */}
         <div className="mt-4 space-y-3">
-          <OrderDetails actions={actions} onOpenChange={onOpenChange} open={open}>
+          <OrderDetails actions={actions} onOpenChange={onOpenChange} open={open} onDataChanged={loadPackageData}>
             <button className="flex items-center gap-2 text-primary">
               <Image src={Stars} alt="stars" />
               <p>Enter Order Details</p>
@@ -192,7 +247,7 @@ export function DeliveryDetails({
             </button>
           </OrderDetails>
 
-          <SuggestPrice actions={actions} onOpenChange={onOpenChange} open={open}>
+          <SuggestPrice actions={actions} onOpenChange={onOpenChange} open={open} onDataChanged={loadPackageData}>
             <button className="flex w-full px-3 py-4 gap-2 rounded-md bg-orange-tint/[7%] justify-between">
               <div className="rounded-full p-3 bg-orange-tint/5">
                 <Image src={MoneyIcon} alt="fare" />
