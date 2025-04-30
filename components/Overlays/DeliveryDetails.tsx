@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import { Actions, DetailsLayout, ViewMapInFullMode } from "@/app/shared";
 import { MoneyIcon, Stars } from "@/assets";
