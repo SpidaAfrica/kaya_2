@@ -200,10 +200,12 @@ export function DeliveryDetails({
               <div className="flex-1 space-y-2">
                 <div className="flex items-center gap-4">
                   <p className="font-semibold">Suggest Price</p>
+                  {/*
                   <span className="font-semibold flex bg-background text-xs text-gray-400 border-gray-400 border pr-2 rounded-full">
                     <Dot /> #25000
                     Standard
                   </span>
+                  */}
                 </div>
                 <p className="text-foreground/60 text-left">Tap to suggest a new fare</p>
               </div>
@@ -212,7 +214,9 @@ export function DeliveryDetails({
           </SuggestPrice>
 
           <PaymentMethodSelector paymentMethod={packageData?.payment_method || "online-payment"} setPaymentMethod={updatePaymentMethod} />
+          {/*
           <AutoAcceptRiderSwitch />
+          */}
           <ConfirmDeliveryButton onClick={handleSubmit} />
         </div>
       </DetailsLayout>
