@@ -26,12 +26,16 @@ import Link from "next/link";
 import NoOrders from "@/assets/no-orders.svg";
 import { ChevronLeft, Package } from "lucide-react";
 
-interface Package {
-  id: string;
+
+
+type Package = {
+  id: number;
+  created_at: string;
+  to_location: string;
+  delivery_id: string;
+  price: string;
   status: string;
-  ride_rating: string;
-  package_category: string;
-}
+};
 
 interface ApiResponse {
   data?: Package[];
@@ -78,6 +82,7 @@ export default function MyOrdersPage() {
           package_category: packageType,
           date_filter: dateFilter,
           page: page.toString(),
+          user_id:userId,
         });
 
         const res = await fetch(`https://jbuit.org/api/filter-packages.php?${params}`);
@@ -201,12 +206,12 @@ export default function MyOrdersPage() {
             <Fragment key={pack.id}>
               <DeliveryDetails>
                 <OrderCard data={{
-                  id: 0,
-                  created_at: "",
-                  to_location: "",
-                  delivery_id: "",
-                  price: "",
-                  status: ""
+                  id: pack.id,
+                  created_at: pack.created_at,
+                  to_location: pack.to_location,
+                  delivery_id: pack.delivery_id,
+                  price: pack.price,
+                  status: pack.status
                 }} />
               </DeliveryDetails>
             </Fragment>

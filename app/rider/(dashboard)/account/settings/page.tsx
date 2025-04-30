@@ -8,18 +8,84 @@ import { User } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
 import { Mail } from "lucide-react";
-import React, { SyntheticEvent, useCallback, useState } from "react";
+import React, { SyntheticEvent, useCallback, useState, useEffect } from "react";
 
 const ProfileSettings: React.FC = () => {
-  const [name, setName] = useState("Taiwo");
-  const [phoneNumber, setPhoneNumber] = useState("+234-1555-000-0000");
-  const [email, setEmail] = useState("taiwo@gmail.com");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [riderId, setRiderId] = useState("");
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [phoneNumber, setPhoneNumber] = React.useState<string>("");
 
-  const handleSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-    // Handle form submission
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, ""); // allow only digits
+    setPhoneNumber(rawValue.replace(/^0/, "")); // remove leading zero
   };
+
+  useEffect(() => {
+    const id = sessionStorage.getItem("rider_id");
+    if (id) {
+      setRiderId(id);
+    }
+  }, []);
+
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+  
+    const formData = new FormData();
+    formData.append("rider_id", riderId);
+    formData.append("name", name);
+    formData.append("phone", `+234${phoneNumber}`);
+    formData.append("email", email);
+  
+    const imageFile = (document.getElementById("image") as HTMLInputElement)?.files?.[0];
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+    console.log(formData)
+  
+    try {
+      const res = await fetch("https://jbuit.org/api/rider/update-profile-setting.php", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const data = await res.json();
+      if (data.status === "success") {
+        sessionStorage.setItem("email", email);
+        sessionStorage.setItem("fullName", name);
+        if (data.imageUrl) {
+          sessionStorage.setItem("imageUrl", data.imageUrl);
+        }
+        setOpenModal(true);
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      alert("Profile update failed");
+    }
+  };
+
+  useEffect(() => {  
+    fetch(`https://jbuit.org/api/rider/get-rider-profile.php?rider_id=${riderId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          setName(data.profile.name);
+          setPhoneNumber(data.profile.phone);
+          setEmail(data.profile.email);
+          if (data.profile.profile_image) {
+            setPreviewImage(data.profile.profile_image);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load profile", err);
+      });
+  }, []);
+  
 
   const handleOpenModal = useCallback((state: boolean) => {
     setOpenModal(state);
@@ -28,10 +94,14 @@ const ProfileSettings: React.FC = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="py-8 px-6 space-y-6 md:max-w-96 mx-auto my-8">
+      className="py-8 px-6 space-y-6 md:max-w-96 mx-auto my-8" >
       <div className="flex items-start gap-3 border-b border-b-foreground/20 py-6">
-        <div className="w-16 h-16 rounded-full bg-gray-200 shrink-0">
-          <User />
+        <div className="w-16 h-16 rounded-full bg-gray-200 shrink-0 overflow-hidden">
+          {previewImage ? (
+            <img src={previewImage} alt="Preview" className="w-full h-full object-cover" />
+          ) : (
+            <User />
+          )}
         </div>
         <div>
           <div className="flex flex-col items-start gap-2">
@@ -48,9 +118,18 @@ const ProfileSettings: React.FC = () => {
                 id="image"
                 accept="image/*"
                 hidden
-                multiple={true}
-                onInput={(e) => {
-                  console.log(e);
+                multiple={false}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                      if (typeof reader.result === "string") {
+                        setPreviewImage(reader.result);
+                      }
+                    };
+                    reader.readAsDataURL(file);
+                  }
                 }}
               />
             </>
@@ -68,7 +147,7 @@ const ProfileSettings: React.FC = () => {
           leading={<User />}
           id="name"
           type="name"
-          placeholder="080 **** ****"
+          placeholder="full name"
           onChange={(e) => setName(e.target.value)}
           value={name}
         />
@@ -84,13 +163,13 @@ const ProfileSettings: React.FC = () => {
           }
           leading={
             <div className="w-16 overflow-visible border-r pr-2">
-              <CountryPicker />
+              +234
             </div>
           }
           id="phoneNumber"
           type="phone"
           placeholder="080 **** ****"
-          onChange={(e) => setPhoneNumber(e.target.value)}
+          onChange={handleChange}
           value={phoneNumber}
         />
       </div>
@@ -106,7 +185,7 @@ const ProfileSettings: React.FC = () => {
           leading={<Mail />}
           id="email"
           type="email"
-          placeholder="080 **** ****"
+          placeholder="yourmail@email.com"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
         />

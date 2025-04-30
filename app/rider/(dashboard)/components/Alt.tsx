@@ -7,10 +7,14 @@ export const AltInput = ({
   label,
   placeholder,
   icon,
+  value,
+  onChange
 }: {
   label: string;
   placeholder: string;
   icon?: React.ReactNode;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <fieldset className="flex mb-5 flex-col">
@@ -30,6 +34,8 @@ export const AltInput = ({
           className="border absolute left-0 w-full h-full right-0 top-0 bottom-0 border-[#E2E4E9] rounded-[4px] px-10 "
           type="text"
           placeholder={placeholder}
+          value={value}
+          onChange={onChange}
         />
       </div>
     </fieldset>

@@ -24,22 +24,6 @@ export default function EarningsPage() {
               NGN {(50000).toLocaleString()}
             </p>
           </div>
-          <div className="h-60 lg:h-72 w-full lg:w-96 bg-background shadow rounded-sm p-5 flex flex-col justify-between text-primary">
-            <small className="outline w-fit outline-1 outline-primary px-2 py-1 rounded-full ">
-              total earnings
-            </small>
-            <p className=" text-4xl font-semibold">
-              NGN {(50000).toLocaleString()}
-            </p>
-          </div>
-          <div className="h-60 lg:h-72 w-full lg:w-96 bg-background shadow rounded-sm p-5 flex flex-col justify-between text-primary">
-            <small className="outline w-fit outline-1 outline-primary px-2 py-1 rounded-full ">
-              total earnings
-            </small>
-            <p className=" text-4xl font-semibold">
-              NGN {(50000).toLocaleString()}
-            </p>
-          </div>
         </div>
       </div>
     </div>

@@ -78,12 +78,41 @@ const PersonalInfo = ({
 }: {
   setActiveStep: (step: number | null) => void;
 }) => {
+  const [bvn, setBvn] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+
+  const handleSubmit = async () => {
+    const rider_id = sessionStorage.getItem("rider_id");
+    if (!rider_id) return alert("Rider not found");
+
+    const formData = new FormData();
+    formData.append("rider_id", rider_id);
+    formData.append("bvn", bvn);
+    formData.append("bank_name", bankName);
+    formData.append("account_number", accountNumber);
+
+    const res = await fetch("https://jbuit.org/api/rider/bank-details.php", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Saved successfully");
+      setActiveStep(2); // Or next step
+    } else {
+      alert(data.message);
+    }
+  };
   return (
     <div className=" flex mx-auto lg:w-[558px] w-[90%] flex-col ">
       <AltInput
         icon={<Keyboard className="size-5" color="#868C98" />}
         label="Bank Verification Number (BVN) "
-        placeholder="Taiwo@gmail.com"
+        placeholder="BVN"
+        value={bvn}
+        onChange={(e) => setBvn(e.target.value)}
       />
       <AltInput
         icon={
@@ -102,12 +131,16 @@ const PersonalInfo = ({
           </>
         }
         label="Bank Name"
-        placeholder="Taiwo@gmail.com"
+        placeholder="Bank Name"
+        value={bankName}
+        onChange={(e) => setBankName(e.target.value)}
       />
       <AltInput
         icon={<User className="size-5" color="#868C98" />}
         label="Account Number"
-        placeholder="Taiwo@gmail.com"
+        placeholder="Account Number"
+        value={accountNumber}
+        onChange={(e) => setAccountNumber(e.target.value)}
       />
       <div className="w-full flex -mt-2 mb-4">
         <div className="flex rounded-md items-center gap-2 bg-[hsla(25,90%,96%,1)] py-1 px-2 ml-auto">
@@ -122,10 +155,10 @@ const PersonalInfo = ({
               fill="#F27B2C"
             />
           </svg>
-          <small className="text-[#F27B2C]">Aaron Ramon</small>
+          {/*<small className="text-[#F27B2C]">Aaron Ramon</small>*/}
         </div>
       </div>
-      <Button onClick={() => setActiveStep(2)}>Save and Continue</Button>
+      <Button onClick={handleSubmit}>Save and Continue</Button>
       <Button
         variant={"outline"}
         onClick={() => setActiveStep(null)}

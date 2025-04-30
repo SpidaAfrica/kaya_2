@@ -11,12 +11,45 @@ import Pagination from "@/components/Pagination";
 export const VerificationPage = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isVerifying, setIsVerifying] = useState(true);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+
   useEffect(() => {
-    setTimeout(() => {
-      setIsVerifying(false);
-    }, 3000);
+    const riderId = sessionStorage.getItem('rider_id'); // 👈 get from sessionStorage
+
+    if (!riderId) {
+      console.error("No rider ID found in sessionStorage.");
+      return;
+    }
+
+    setIsVerifying(true);
+
+    fetch("https://jbuit.org/api/rider/verify-rider.php", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ rider_id: riderId }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Network error");
+        return res.json();
+      })
+      .then((data) => {
+        if (data.success && data.isVerified) {
+          setIsVerified(true);
+        } else {
+          console.error("Verification failed", data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error verifying rider:", error);
+      })
+      .finally(() => {
+        setIsVerifying(false);
+      });
   }, []);
+
   return (
     <div className=" lg:px-[43px] px-[20px] ">
       <HeaderCard />
@@ -42,7 +75,7 @@ export const VerificationPage = () => {
             currentPage={page}
             totalPages={totalPages}
             onPageChange={(newPage) => setPage(newPage)}
-/>
+          />
 
         </>
       )}

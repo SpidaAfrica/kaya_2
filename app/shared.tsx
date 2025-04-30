@@ -21,6 +21,7 @@ import { NotificationsEmpty, PackageImg } from "@/assets";
 import NavLink from "@/components/Navlink";
 import Link from "next/link";
 import type { PageParam } from "@/app/passenger/home/(layout-1)/page";
+import { useGooglePlacesAutocomplete } from "./useGooglePlacesAutocomplete";
 
 export const SAVED_LOCATION_PAGES = {
   DELIVERY_DETAILS: DeliveryDetails,
@@ -129,57 +130,78 @@ export function RadioGroup() {
   );
 }
 
-export const NewLocationDropDown = ({
-  children,
-}: React.PropsWithChildren) => {
-  const [locations, setLocations] = useState<{ address: string; city: string }[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+type NewLocationDropDownProps = React.PropsWithChildren<{
+  onSelectLocation?: (address: string, lat: number, lng: number) => void;
+}>;
 
-  useEffect(() => {
-    fetch("https://jbuit.org/api/get-locations.php")
-      .then(res => res.json())
-      .then(data => setLocations(data));
-  }, []);
+export const NewLocationDropDown = ({ children, onSelectLocation }: NewLocationDropDownProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const { suggestions, loading, searchPlaces, geocodeByPlaceId } = useGooglePlacesAutocomplete();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    searchPlaces(value);
+  };
+
+  const handleSelect = (placeId: string, description: string) => {
+    geocodeByPlaceId(placeId)
+      .then(({ lat, lng }) => {
+        if (onSelectLocation) {
+          onSelectLocation(description, lat, lng);
+        }
+        setSearchTerm(""); // clear input if you want
+      })
+      .catch((err) => console.error(err));
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+
       <DropdownMenuContent
         align="start"
         onClick={(e) => e.stopPropagation()}
         className={cn(
           "lg:w-[478px] w-[324px] shadow-[0px_16px_40px_-8px_rgba(88,92,95,0.16)] h-[311px] border-[#E2E4E9] border z-30 bg-background rounded-[16px] p-5 mt-2"
-        )}>
+        )}
+      >
         <div className="p-3 bg-[#F6F8FA] border border-[#EFF3F5] rounded-[4px] text-[#8A8A8C]">
           <input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={handleInputChange}
             placeholder="Enter a new address"
             className="w-full placeholder:text-[14px] placeholder:leading-[16px] placeholder:tracking-[-6%] placeholder:text-[#8A8A8C] bg-transparent outline-none"
           />
         </div>
+
         <div className="mt-3 bg-white relative w-full">
           <span className="text-[14px] leading-[16px] tracking-[-6%] text-[#1E2023]">
             Choose Location on Map
           </span>
 
-          <div className="flex mt-3 flex-col gap-3">
-            {locations
-              .filter((loc) =>
-                loc.address.toLowerCase().includes(searchTerm.toLowerCase())
-              )
-              .map((loc, index) => (
+          <div className="flex mt-3 flex-col gap-3 overflow-y-auto max-h-[180px]">
+            {loading && <p className="text-sm text-gray-500">Loading suggestions...</p>}
+
+            {!loading && suggestions.length === 0 && searchTerm.length > 0 && (
+              <p className="text-sm text-gray-400">No matching locations found.</p>
+            )}
+
+            {!loading &&
+              suggestions.map((sugg) => (
                 <div
-                  key={index}
-                  className="flex py-2.5 gap-[14px] items-center border-b last:border-b-0 cursor-pointer hover:bg-gray-100">
+                  key={sugg.place_id}
+                  onClick={() => handleSelect(sugg.place_id, sugg.description)}
+                  className="flex py-2.5 gap-[14px] items-center border-b last:border-b-0 cursor-pointer hover:bg-gray-100"
+                >
                   <Clock12 size={20} color="#FF9500" className="rotate-45" />
                   <div>
                     <p className="text-[#1E2023] font-medium text-[14px] leading-[16px] tracking-[-6%]">
-                      {loc.address}
+                      {sugg.structured_formatting?.main_text || sugg.description}
                     </p>
                     <p className="text-[12px] leading-[14px] tracking-[-6%] text-[#8A8A8C]">
-                      {loc.city}
+                      {sugg.structured_formatting?.secondary_text || ""}
                     </p>
                   </div>
                 </div>
@@ -190,7 +212,6 @@ export const NewLocationDropDown = ({
     </DropdownMenu>
   );
 };
-
 
 export function NoNotifications() {
   return (
@@ -387,6 +408,60 @@ export function OrderCard({ data }: Prop) {
   );
 }
 
+type RideProp = {
+  data: {
+    id: number;
+    created_at: string;
+    to_location: string;
+    delivery_id: string;
+    price: string;
+    status: string;
+  }
+}
+
+export function RideOrderCard({ data }: RideProp) {
+  return (
+    <button className="flex w-full gap-2 md:gap-4 py-4 px-1">
+      <div className="w-14 h-12 shrink-0 bg-white flex items-center justify-center">
+        <Image src={PackageImg} alt="package" />
+      </div>
+      <div className="flex flex-col w-full gap-2">
+        <div className="flex flex-col_ md:items-center md:flex-row justify-between w-full">
+          <p className="text-lg font-medium max-w-48 truncate whitespace-nowrap">
+            {data.to_location}
+          </p>
+          <p className="text-xs text-green-400 flex gap-1 items-center rounded-md bg-green-100 px-2 py-1 w-fit">
+            <svg
+              width="13"
+              height="12"
+              viewBox="0 0 13 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M6.5 12C3.1862 12 0.5 9.3138 0.5 6C0.5 2.6862 3.1862 0 6.5 0C9.8138 0 12.5 2.6862 12.5 6C12.5 9.3138 9.8138 12 6.5 12ZM5.9018 8.4L10.1438 4.1574L9.2954 3.309L5.9018 6.7032L4.2044 5.0058L3.356 5.8542L5.9018 8.4Z"
+                fill="#38C793"
+              />
+            </svg>
+
+            {data.status}
+          </p>
+        </div>
+        <div className="flex items-center justify-between">
+          <p className="text-start text-foreground text-xl font-medium">
+            {data.price}
+          </p>
+          <p className="text-base font-medium">Order ID: #{data.id}</p>
+        </div>
+        <div className="flex flex-col md:items-center md:flex-row justify-between">
+          <p className="text-foreground/60 text-xs text-start">{data.created_at}</p>
+        </div>
+      </div>
+      <ChevronRight className="hidden md:block" />
+    </button>
+  );
+}
+
+
 interface Delivery {
   id: number;
   created_at: string;
@@ -451,18 +526,30 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
 
 export function ViewMapInFullMode({
   userType,
+  fromLocation,
+  toLocation,
 }: {
   userType: "rider" | "passenger";
+  fromLocation?: string;
+  toLocation?: string;
 }) {
+  if (!fromLocation || !toLocation) return null;
+
+  const encodedFrom = encodeURIComponent(fromLocation);
+  const encodedTo = encodeURIComponent(toLocation);
+  const href = `/${userType}/big-map?from=${encodedFrom}&to=${encodedTo}`;
+
   return (
     <Button asChild className="bg-black w-fit absolute bottom-4 right-4">
-      <Link href={`/${userType}/big-map`}>
+      <Link href={href}>
         <svg
           width="12"
           height="12"
           viewBox="0 0 12 12"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg"
+          className="mr-2"
+        >
           <path
             d="M1.1877e-07 1.8L4.2 0L7.8 1.8L11.5818 0.1794C11.6275 0.15983 11.6772 0.151901 11.7267 0.156325C11.7762 0.160749 11.8238 0.177388 11.8652 0.204747C11.9067 0.232106 11.9407 0.26933 11.9642 0.313079C11.9878 0.356827 12 0.40573 12 0.4554V10.2L7.8 12L4.2 10.2L0.4182 11.8206C0.372548 11.8402 0.322752 11.8481 0.273279 11.8437C0.223807 11.8393 0.176208 11.8226 0.134752 11.7953C0.093297 11.7679 0.0592835 11.7307 0.0357642 11.6869C0.0122449 11.6432 -4.40738e-05 11.5943 1.1877e-07 11.5446V1.8ZM7.8 10.6584V3.1056L7.761 3.1224L4.2 1.3416V8.8944L4.239 8.8776L7.8 10.6584Z"
             fill="white"

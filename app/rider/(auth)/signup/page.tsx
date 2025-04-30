@@ -8,19 +8,45 @@ import { DropDown, Nigeria } from "@/components/svgs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 export default function SignInPage() {
-  const [phoneNumber, setPhoneNumber] = React.useState<string>("");
   const router = useRouter();
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(phoneNumber);
-    router.push("verify");
-  };
+  const [phoneNumber, setPhoneNumber] = React.useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    if (name === "phoneNumber") {
-      setPhoneNumber(value);
+    const rawValue = e.target.value.replace(/\D/g, ""); // allow only digits
+    setPhoneNumber(rawValue.replace(/^0/, "")); // remove leading zero
+  };
+
+  React.useEffect(() => {
+    if (phoneNumber) {
+      sessionStorage.setItem("phoneNumber", `+234${phoneNumber}`);
+    }
+  }, [phoneNumber]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("https://jbuit.org/api/send-phone-otp.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: `+234${phoneNumber}`,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Something went wrong!");
+      }
+
+      console.log("OTP sent successfully:", data);
+      router.push("/auth/verify");
+    } catch (error: any) {
+      console.error("OTP send error:", error.message);
+      alert(error.message);
     }
   };
 
@@ -51,7 +77,6 @@ export default function SignInPage() {
                 <p className="text-[#0A0D14] text-[16px] font-normal tracking-[-0.06em] leading-[24px]">
                   +234
                 </p>
-                <DropDown className="text-[#525866]" />
               </div>
               <input
                 type="number"

@@ -32,6 +32,11 @@ import DayDate from "@/components/DayDate";
 import { MainContent } from "@/app/layouts/app-layout";
 import TransactionTile from "./TransactionTile";
 import { CardChip, WalletBanner } from "@/assets";
+import Script from "next/script";
+
+
+
+
 
 interface Transaction {
   id: number;
@@ -56,10 +61,71 @@ export default function WalletPage() {
   const [loading, setLoading] = useState(true);
 
   const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
+  const email = typeof window !== "undefined" ? sessionStorage.getItem("email") : null;
 
   const openDialog = useCallback(() => setShowPaymentMethods(true), []);
   const toggleDialog = useCallback((state: boolean) => setShowPaymentMethods(state), []);
 
+  const [balance, setBalance] = useState<number>(0);
+  const [showModal, setShowModal] = useState(false);
+  const [amount, setAmount] = useState("");
+
+  useEffect(() => {
+    fetch(`https://jbuit.org/api/get-wallet.php?user_id=${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) setBalance(Number(data.balance));
+      })
+  }, [userId]);
+
+  const handlePay = () => {
+    if (!userId) {
+      alert("User ID is required");
+      return;
+    }
+  
+    const paystack = (window as any).PaystackPop;
+    if (!paystack) {
+      alert("Paystack is not available yet. Please try again.");
+      return;
+    }
+  
+    const handler = paystack.setup({
+      key: "pk_test_8dbc024aefd873d13976ab80aa449c8aa6134e1d",
+      amount: Number(amount) * 100,
+      email: email,
+      callback: function (response: any) {
+        fetch("https://jbuit.org/api/update-wallet.php", {
+          method: "POST",
+          body: new URLSearchParams({
+            user_id: userId || "",
+            amount: amount,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Wallet updated!");
+              setShowModal(false);
+              setBalance((prev) => prev + Number(amount));
+              setAmount("");
+            } else {
+              alert(data.message || "Error updating wallet.");
+            }
+          })
+          .catch(() => {
+            alert("Failed to update wallet on the server.");
+          });
+      },
+      onClose: function () {
+        alert("Payment cancelled.");
+      },
+    });
+  
+    handler.openIframe();
+  };
+  
+  
   useEffect(() => {
     const fetchTransactions = async () => {
       const query = new URLSearchParams({
@@ -88,54 +154,75 @@ export default function WalletPage() {
 
     if (userId) fetchTransactions();
   }, [typeFilter, statusFilter, search, page, userId]);
+ 
+
+
+  
 
   return (
     <MainContent>
       <div className="md:w-[90%] mx-auto space-y-5">
-        <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
-          <Image
-            src={WalletBanner}
-            alt="banner"
-            className="z-10 absolute w-full h-full object-cover"
-          />
-          <div className="relative flex flex-col justify-between z-20 w-[90%] py-5 h-full mx-auto">
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-3">
-                  <p className="text-lg">Wallet Balance</p>
-                  <button onClick={() => setHideBalance((prev) => !prev)}>
-                    {hideBalance ? <EyeClosed /> : <Eye />}
-                  </button>
-                </div>
-                <p className="font-semibold text-6xl">
-                  {hideBalance ? "****" : "N0.00"}
-                </p>
+      <>
+      <Script
+        src="https://js.paystack.co/v1/inline.js"
+        strategy="beforeInteractive"
+      />
+      <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
+        <Image src={WalletBanner} alt="banner" className="absolute z-10 w-full h-full object-cover" />
+        <div className="relative z-20 w-[90%] mx-auto py-5 h-full flex flex-col justify-between">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-3">
+                <p className="text-lg">Wallet Balance</p>
+                <button onClick={() => setHideBalance(!hideBalance)}>
+                  {hideBalance ? <EyeClosed /> : <Eye />}
+                </button>
               </div>
-              <Image src={CardChip} alt="card-chip" />
+              <p className="font-semibold text-6xl">
+                {hideBalance ? "****" : `₦${balance?.toFixed(2)}`}
+              </p>
             </div>
-            <div className="w-fit ml-auto">
-              <Button
-                variant="ghost"
-                className="w-fit min-w-60 bg-background text-foreground"
-              >
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 11 11"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
-                    fill="#1E2023"
-                  />
-                </svg>
-                <p>Deposit Funds</p>
-              </Button>
+            <Image src={CardChip} alt="card-chip" />
+          </div>
+          <div className="w-fit ml-auto">
+            <Button
+              variant="ghost"
+              className="w-fit min-w-60 bg-background text-foreground"
+              onClick={() => setShowModal(true)}
+            >
+              <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
+                  fill="#1E2023"
+                />
+              </svg>
+              <p>Deposit Funds</p>
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
+            <h2 className="text-xl font-semibold mb-4">Deposit Funds</h2>
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="Enter amount"
+              className="border w-full p-2 rounded mb-4"
+            />
+            <div className="flex justify-end gap-3">
+              <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+              <Button onClick={handlePay}>Proceed</Button>
             </div>
           </div>
         </div>
-
+      )}
+    </>
+{/*
         <div className="w-[90%] mx-auto">
           <button
             onClick={openDialog}
@@ -145,7 +232,7 @@ export default function WalletPage() {
             <p>Add new Payment method</p>
           </button>
         </div>
-
+*/}
         <div className="w-[90%] mx-auto space-y-3">
           <div className="flex items-center justify-between">
             <p className="font-semibold text-xl">Recent Transactions</p>

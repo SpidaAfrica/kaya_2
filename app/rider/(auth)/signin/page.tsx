@@ -111,6 +111,7 @@ export default function SignInPage() {
         </form>
 
         <div className="flex flex-col gap-6 w-full mt-8">
+          {/*
           <div className="relative border-t border-[#E2E4E9]">
             <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white px-4 text-[#868C98] text-sm">
               OR
@@ -126,7 +127,7 @@ export default function SignInPage() {
               </button>
             ))}
           </div>
-
+          */}
           <p className="text-center text-[#333232] font-semibold text-sm md:text-base">
             Don&apos;t have an account?{" "}
             <Link href="/rider/signup">

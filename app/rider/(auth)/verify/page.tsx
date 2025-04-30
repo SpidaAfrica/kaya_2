@@ -6,12 +6,18 @@ import Image from "next/image";
 import AuthForm from "../riderAuth";
 import { useRouter } from "next/navigation";
 
-type VerifyStep = "otp" | "success";
+type VerifyStep = "otp" | "success" | "error";
 
 export default function VerifyPage() {
-  const [currentStep] = React.useState<VerifyStep>("otp");
+  const [currentStep, setCurrentStep] = React.useState<VerifyStep>("otp");
   const [otp, setOtp] = React.useState<string[]>(["", "", "", ""]);
   const router = useRouter();
+  const [phoneNumber, setPhoneNumber] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const storedNumber = sessionStorage.getItem("phoneNumber");
+    setPhoneNumber(storedNumber);
+  }, []);
 
   const handleChange = (index: number, value: string) => {
     if (value.length > 1) return;
@@ -28,13 +34,37 @@ export default function VerifyPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const otpValue = otp.join("");
-    console.log(otpValue);
-    // Here you would validate OTP
-    // setCurrentStep("success");
-    router.push("/rider/profile-setup");
+
+    // Call your backend to verify OTP
+    try {
+      const response = await fetch("https://jbuit.org/api/verify-otp.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber: phoneNumber,
+          otp: otpValue,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // On success, show the success screen
+        setCurrentStep("success");
+      } else {
+        // On failure, show the error screen
+        setCurrentStep("error");
+      }
+    } catch (error) {
+      console.error("Error verifying OTP:", error);
+      setCurrentStep("error");
+    }
   };
 
   const renderStep = () => {

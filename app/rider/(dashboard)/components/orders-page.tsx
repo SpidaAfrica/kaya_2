@@ -26,170 +26,207 @@ import boxopen from "../../../../assets/box-open.png";
 import { useParams, useRouter } from "next/navigation";
 import { ConfirmPickupModal } from "./modals/confirm-pickup";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import MapWithRoute from "@/components/Overlays/MapWithRoute";
+
+type Order = {
+  id?: number;
+  from_location?: string;
+  to_location?: string;
+  order_id?: string;
+  order_created?: string;
+  order_fare?: string;
+  pickup_time?: string;
+  dropoff_time?: string;
+  status?: string;
+};
 
 export const OrdersPage = () => {
-  const [customerNotified, setCustomerNotified] = useState(false);
-  const params = useParams();
-  const router = useRouter();
-  const orders = true;
+  const [orders, setOrders] = useState<Order[]>([]);
   const [activeTab, setActiveTab] = useState("available");
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [activeOrder, setActiveOrder] = useState<ActiveOrderType | null>(null);
+  const [customerNotified, setCustomerNotified] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const params = useParams();
+  const router = useRouter();
+
   useEffect(() => {
-    // Set the active tab based on the URL parameter
     if (params.tab) {
       setActiveTab(params.tab as string);
     }
   }, [params.tab]);
 
+  useEffect(() => {
+    getOrdersNearby();
+  }, []);
+
+  const getOrdersNearby = async () => {
+    if (typeof window === "undefined") return; // Prevent code from running on server
+  
+    const storedCoordinates = sessionStorage.getItem("riderCoordinates");
+  
+    if (!storedCoordinates) {
+      console.error("No coordinates found in sessionStorage.");
+      return;
+    }
+  
+    const { lat, lng } = JSON.parse(storedCoordinates);
+  
+    if (!lat || !lng) {
+      console.error("Invalid coordinates in sessionStorage.");
+      return;
+    }
+  
+    setLoading(true);
+  
+    try {
+      const res = await fetch(`https://jbuit.org/api/rider/get-nearby-orders.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lat,
+          lng,
+          distance: 200, // km
+        }),
+      });
+  
+      const data = await res.json();
+      setOrders(data.orders || []);
+    } catch (error) {
+      console.error("Failed fetching orders:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   const handleTabChange = (tab: string) => {
-    // Update the URL with the new tab
     router.push(`/rider/home?tab=${tab}`);
-    // Update the active tab state
     setActiveTab(tab);
   };
 
-  const [activeOrder, setActiveOrder] = useState<{
-    id: number;
-    pickup_location: string;
-    dropoff_location: string;
-    order_id: string;
-    order_created: string;
-    order_fare: string;
-    pickup_time: string;
-    dropoff_time: string;
-    status: string;
-  } | null>(null);
-
-  const [mockOrders, setMockOrders] = useState([
-    {
-      id: 1,
-      pickup_location: "Location street",
-      dropoff_location: "Location street",
-      order_id: "ID23456",
-      order_created: "20mins ago",
-      order_fare: "NGN30,000",
-      pickup_time: "17mins",
-      dropoff_time: "17mins",
-      status: "Awaiting Action",
-    },
-
-    {
-      id: 2,
-      pickup_location: "Location street",
-      dropoff_location: "Location street",
-      order_id: "ID23456",
-      order_created: "20mins ago",
-      order_fare: "NGN30,000",
-      pickup_time: "17mins",
-      dropoff_time: "17mins",
-      status: "Awaiting Action",
-    },
-    {
-      id: 3,
-      pickup_location: "Location street",
-      dropoff_location: "Location street",
-      order_id: "ID23456",
-      order_created: "20mins ago",
-      order_fare: "NGN30,000",
-      pickup_time: "17mins",
-      dropoff_time: "17mins",
-      status: "Awaiting Action",
-    },
-  ]);
-
-  // return <EmptyOrderState />;
-
   return (
     <div className="pb-[153px] mt-[115px]">
-      {/* <HeaderCard /> */}
-      <div className="flex w-full border-b border-[#E2E4E9] space-x-6 _px-[14px] justify-between">
+      {/* Tabs */}
+      <div className="flex w-full border-b border-[#E2E4E9] space-x-6 px-[14px] justify-between">
         <div className="flex gap-2">
           <button
             onClick={() => handleTabChange("available")}
-            className={` px-4 py-2 font-medium text-[16px] leading-[20px] tracking-[-6%] ${
+            className={`px-4 py-2 font-medium text-[16px] ${
               activeTab === "available"
-                ? " border-b border-[#00ABFD] text-[#1E2023] font-medium leading-5 tracking-[-6%]"
-                : "text-[#475467] "
-            }`}>
+                ? "border-b-2 border-[#00ABFD] text-[#1E2023]"
+                : "text-[#475467]"
+            }`}
+          >
             Available Orders
           </button>
           <button
-            onClick={() => handleTabChange("completed")}
-            className={`px-4 py-2 font-medium text-[16px] leading-[20px] tracking-[-6%]   ${
-              activeTab === "completed"
-                ? " border-b border-[#00ABFD] text-[#1E2023] font-medium leading-5 tracking-[-6%]"
-                : "text-[#475467] font-medium text-[16p"
-            }`}>
+            onClick={() => handleTabChange("ongoing")}
+            className={`px-4 py-2 font-medium text-[16px] ${
+              activeTab === "ongoing"
+                ? "border-b-2 border-[#00ABFD] text-[#1E2023]"
+                : "text-[#475467]"
+            }`}
+          >
             Ongoing Orders
           </button>
         </div>
-        <button className="flex items-center gap-2 text-primary">
-          <RefreshCcw />
-          Refresh
+
+        <button className="flex items-center gap-2 text-primary" onClick={getOrdersNearby}>
+          <RefreshCcw /> {loading ? "Refreshing..." : "Refresh"}
         </button>
       </div>
 
-      {!orders ? (
+      {orders.length === 0 ? (
         <EmptyOrderState />
       ) : (
         <div className="flex mt-[51px] flex-col gap-4">
-          {mockOrders.map((order, index) => (
-            <SingleOrderCard
-              setActiveOrder={setActiveOrder}
-              setDetailsModalOpen={setDetailsModalOpen}
-              key={index}
-              case2={activeTab}
-              order={order}
-            />
-          ))}
+          {orders
+            .filter((order) => {
+              if (activeTab === "available") {
+                return order.status === "pending";
+              } else if (activeTab === "ongoing") {
+                return order.status == "ongoing";
+              }
+              return false;
+            })
+            .map((order) => (
+              <SingleOrderCard
+                key={order.id}
+                order={order}
+                case2={activeTab}
+                setActiveOrder={setActiveOrder}
+                setDetailsModalOpen={setDetailsModalOpen}
+                refreshOrders={getOrdersNearby} // Add refresh after action
+              />
+            ))}
         </div>
+
       )}
 
       <OrderDetailsModal
-        setCustomerNotified={setCustomerNotified}
-        customerNotified={customerNotified}
+        isOpen={detailsModalOpen}
+        setDetailsModalOpen={setDetailsModalOpen}
         activeOrder={activeOrder}
         setActiveOrder={setActiveOrder}
-        setDetailsModalOpen={setDetailsModalOpen}
-        isOpen={detailsModalOpen}
+        customerNotified={customerNotified}
+        setCustomerNotified={setCustomerNotified}
       />
     </div>
   );
 };
+
+interface SingleOrderCardProps {
+  case2: string;
+  setDetailsModalOpen: (value: boolean) => void;
+  order: Order;
+  setActiveOrder: Dispatch<SetStateAction<Order | null>>;
+  refreshOrders: () => void; // ADD THIS
+}
 
 export const SingleOrderCard = ({
   case2,
   setDetailsModalOpen,
   order,
   setActiveOrder,
-}: {
-  case2: string;
-  setDetailsModalOpen: (value: boolean) => void;
-  order: {
-    id: number;
-    pickup_location: string;
-    dropoff_location: string;
-    order_id: string;
-    order_created: string;
-    order_fare: string;
-    pickup_time: string;
-    dropoff_time: string;
-    status: string;
+  refreshOrders,
+}: SingleOrderCardProps) => {
+
+  if (typeof window === "undefined") return; // Prevent code from running on server
+  
+  const riderId = sessionStorage.getItem("rider_id");
+
+  if (!riderId) {
+    console.error("No coordinates found in sessionStorage.");
+    return;
+  }
+
+  
+  const handleAction = async (status: "ongoing" | "cancelled") => {
+    try {
+      const res = await fetch(`https://jbuit.org/api/rider/update-order-status.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order_id: order.id,
+          rider_id: riderId,
+          status,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert(`Order ${status.toLowerCase()} successfully!`);
+        refreshOrders(); // reload orders after action
+      } else {
+        alert("Something went wrong, please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating order:", error);
+      alert("Failed to update order.");
+    }
   };
-  setActiveOrder: Dispatch<
-    SetStateAction<{
-      id: number;
-      pickup_location: string;
-      dropoff_location: string;
-      order_id: string;
-      order_created: string;
-      order_fare: string;
-      pickup_time: string;
-      dropoff_time: string;
-      status: string;
-    } | null>
-  >;
-}) => {
   return (
     <div className="flex lg:flex-row w-full flex-col items-start py-[15px] border-b border-[#F1F1F1] justify-between">
       {/* first section */}
@@ -200,69 +237,83 @@ export const SingleOrderCard = ({
           </div>
           <div className="flex flex-col gap-5 justify-between w-full">
             <div className="flex flex-col gap-1">
-              <p className="text-[16px] leading-5 tracking-[-6%] text-[#475467] font-medium">
+              <p className="text-[16px] leading-5 text-[#475467] font-medium">
                 Pickup Location
               </p>
-              <p className="text-[20px] leading-[22px] tracking-[-6%] text-[#1E2023] font-medium">
-                {order.pickup_location}
+              <p className="text-[20px] leading-[22px] text-[#1E2023] font-medium">
+                {order.from_location || "Not available"}
               </p>
             </div>
             <div className="flex flex-col gap-1">
-              <p className="text-[16px] leading-5 tracking-[-6%] text-[#475467] font-medium">
+              <p className="text-[16px] leading-5 text-[#475467] font-medium">
                 Drop Off Location
               </p>
-              <p className="text-[20px] leading-[22px] tracking-[-6%] text-[#1E2023] font-medium">
-                {order.dropoff_location}
+              <p className="text-[20px] leading-[22px] text-[#1E2023] font-medium">
+                {order.to_location || "Not available"}
               </p>
             </div>
 
-            <p className="text-[14px] gap-2.5 flex items-center leading-[15px] tracking-[-6%] text-[#8A8A8C] font-normal">
-              <span className="text-[14px] leading-5 tracking-[-6%] text-[#8A8A8C] font-normal">
-                Order Created {order.order_created}
+            <p className="text-[14px] flex gap-2.5 items-center text-[#8A8A8C] font-normal">
+              <span>
+                Order Created {order.order_created || "N/A"}
               </span>
-              <span>ID{order.order_id}</span>
+              <span>ID {order.id ?? "N/A"}</span>
             </p>
           </div>
         </div>
         <div className="flex flex-col items-end">
-          <p className="text-[22px] leading-[2]">{order.order_fare}</p>
+          <p className="text-[22px] leading-[2]">
+            {order.order_fare ? `₦${order.order_fare}` : "₦0"}
+          </p>
 
           <div className="flex mt-[15px] mb-[18px] items-center gap-2.5">
-            <div className="rounded-[6px] w-[75px] h-[24px] gap-[6px] flex justify-center items-center bg-[#EFFAF6]">
+            <div className="rounded-[6px] w-[75px] h-[24px] flex justify-center items-center bg-[#EFFAF6] gap-1">
               <Clock color="#38C793" size={12} />
-              <span className="text-[14px] leading-[16px] tracking-[-6%] text-[#38C793] font-medium">
-                {order.pickup_time}
+              <span className="text-[14px] leading-[16px] text-[#38C793] font-medium">
+                {order.pickup_time || "--:--"}
               </span>
             </div>
-            <div className="rounded-[6px] w-[75px] h-[24px] gap-[6px] flex justify-center items-center bg-[#EFECFF]">
+            <div className="rounded-[6px] w-[75px] h-[24px] flex justify-center items-center bg-[#EFECFF] gap-1">
               <Clock color="#2B1664" size={12} />
-              <span className="text-[14px] leading-[16px] tracking-[-6%] text-[#2B1664] font-medium">
-                {order.dropoff_time}
+              <span className="text-[14px] leading-[16px] text-[#2B1664] font-medium">
+                {order.dropoff_time || "--:--"}
               </span>
             </div>
           </div>
 
           <p className="flex gap-[14px] items-center">
             <Info size={20} fill="#475467" color="white" />
-            <span className="text-[16px] leading-[18px] tracking-[-6%] text-[#475467]">
+            <span className="text-[16px] leading-[18px] text-[#475467]">
               Document
             </span>
           </p>
+          {/*
           <button className="flex mt-5 items-center gap-3">
             <Plus size={20} color="#00ABFD" />
-            <span className="text-[16px] leading-[18px] tracking-[-6%] text-[#00ABFD]">
+            <span className="text-[16px] leading-[18px] text-[#00ABFD]">
               Send new Offer
             </span>
           </button>
+          */}
         </div>
       </div>
 
       {/* second section */}
-      <div className="flex w-full lg:w-[231px] flex-row-reverse mt-6 lg:mt-auto lg:flex-col gap-5">
+            <div className="flex w-full lg:w-[231px] flex-row-reverse mt-6 lg:mt-auto lg:flex-col gap-5">
         {case2 === "available" ? (
           <>
-            <Button className="bg-[#00ABFD] h-[51px] text-white">Accept</Button>
-            <Button className="bg-[#fff] text-[#00ABFD]">Reject</Button>
+            <Button
+              className="bg-[#00ABFD] h-[51px] text-white"
+              onClick={() => handleAction("ongoing")}
+            >
+              Accept
+            </Button>
+            <Button
+              className="bg-[#fff] text-[#00ABFD]"
+              onClick={() => handleAction("cancelled")}
+            >
+              Reject
+            </Button>
           </>
         ) : (
           <div className="flex flex-col gap-4 items-start">
@@ -271,16 +322,18 @@ export const SingleOrderCard = ({
                 setActiveOrder(order);
                 setDetailsModalOpen(true);
               }}
-              className=" w-fit cursor-pointer flex items-center gap-1 text-[#00ABFD]">
+              className="w-fit cursor-pointer flex items-center gap-1 text-[#00ABFD]"
+            >
               See Details <ChevronRight size={20} color="#00ABFD" />
             </div>
-            {order.status === "Awaiting Action" && <AwaitingActionTag />}
+            {order.status === "ongoing" && <AwaitingActionTag />}
           </div>
         )}
       </div>
     </div>
   );
 };
+
 
 export const EmptyOrderState = () => {
   return (
@@ -301,6 +354,21 @@ export const EmptyOrderState = () => {
   );
 };
 
+type ActiveOrderType = {
+  id?: number;
+  from_location?: string;
+  to_location?: string;
+  order_created?: string;
+  order_fare?: string;
+  pickup_time?: string;
+  dropoff_time?: string;
+  status?: string;
+  distance?:number;
+  user_name?:string;
+  user_image?:string;
+  user_phone?: string;
+};
+
 export const OrderDetailsModal = ({
   setCustomerNotified,
   customerNotified,
@@ -310,33 +378,11 @@ export const OrderDetailsModal = ({
   setActiveOrder,
 }: {
   setCustomerNotified: (value: boolean) => void;
-  activeOrder: {
-    id: number;
-    pickup_location: string;
-    dropoff_location: string;
-    order_id: string;
-    order_created: string;
-    order_fare: string;
-    pickup_time: string;
-    dropoff_time: string;
-    status: string;
-  } | null;
-  setActiveOrder: Dispatch<
-    SetStateAction<{
-      id: number;
-      pickup_location: string;
-      dropoff_location: string;
-      order_id: string;
-      order_created: string;
-      order_fare: string;
-      pickup_time: string;
-      dropoff_time: string;
-      status: string;
-    } | null>
-  >;
   customerNotified: boolean;
+  activeOrder: ActiveOrderType | null;
   isOpen: boolean;
   setDetailsModalOpen: (value: boolean) => void;
+  setActiveOrder: Dispatch<SetStateAction<ActiveOrderType | null>>;
 }) => {
   useEffect(() => {
     if (isOpen) {
@@ -349,8 +395,46 @@ export const OrderDetailsModal = ({
   }, [isOpen]);
 
   const [confirmPickupModalOpen, setConfirmPickupModalOpen] = useState(false);
+  const [phoneModalOpen, setPhoneModalOpen] = useState(false);
+  {/*
+  if (typeof window === "undefined") return; // Prevent code from running on server
+  
+  const riderId = sessionStorage.getItem("rider_id");
+
+  if (!riderId) {
+    console.error("No coordinates found in sessionStorage.");
+    return;
+  }
+    */}
+
+
   const router = useRouter();
   // console.log(activeOrder);
+  const handleConfirmPickup = async (packageId?: number) => {
+    try {
+      const response = await fetch('https://jbuit.org/api/rider/confirm-pickup.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ package_id: packageId }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        alert("Pickup confirmed successfully!");
+        // Optionally update your local state here (e.g., refresh orders list)
+      } else {
+        alert("Failed to confirm pickup: " + data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong!");
+    }
+  };
+  
+  
 
   return (
     <div
@@ -377,12 +461,17 @@ export const OrderDetailsModal = ({
           </div>
 
           <div className="px-[15px] py-3">
-            <Image
+           {/* <Image
               src={map}
               alt="map"
               width={370}
               height={280}
               className=" w-full"
+            />
+            */}
+            <MapWithRoute
+              from={activeOrder?.from_location}
+              to={activeOrder?.to_location}
             />
           </div>
 
@@ -393,24 +482,40 @@ export const OrderDetailsModal = ({
             <div className="flex mb-[60px] border-b-[0.84px] border-[#F1F1F1 pb-2 items-center justify-between">
               <div className="flex items-center gap-3">
                 <Image
-                  src={user}
+                  src={activeOrder?.user_image || user}
                   alt="user"
                   width={47}
                   height={47}
                   className="rounded-full"
                 />
                 <span className="text-[20px] font-medium text-[#1E2023]">
-                  Temi Couture
+                {activeOrder?.user_name || "Customer Name"}
                 </span>
               </div>
               <div className=" flex items-center gap-5">
-                <Phone size={25} color="#1D2939" />
-                <MessageSquareMore size={25} color="#1D2939" />
+              <Phone 
+                size={25} 
+                color="#1D2939" 
+                className="cursor-pointer" 
+                onClick={() => setPhoneModalOpen(true)} 
+              />
+
+              <MessageSquareMore 
+                size={25} 
+                color="#1D2939" 
+                className="cursor-pointer" 
+                onClick={() => {
+                  if (activeOrder?.id) {
+                    router.push(`/rider/chat/${activeOrder.id}`);
+                  }
+                }}
+              />
+
               </div>
             </div>
             <div className="w-full flex items-center  justify-end">
               {" "}
-              {activeOrder?.status === "Awaiting Action" && (
+              {activeOrder?.status == "ongoing" && (
                 <AwaitingActionTag className="ml-auto" />
               )}
               {activeOrder?.status === "Confirm Pick Up" && (
@@ -424,7 +529,7 @@ export const OrderDetailsModal = ({
                   Order ID:
                 </span>
                 <span className="text-[14px] font-medium text-right leading-[20px] tracking-[-6%] text-[#0A0D14] ">
-                  ID23456
+                {activeOrder?.id || "Order ID"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
@@ -432,7 +537,7 @@ export const OrderDetailsModal = ({
                   Order Fare:
                 </span>
                 <span className="text-[14px] font-medium text-right leading-[20px] tracking-[-6%] text-[#0A0D14] ">
-                  NGN 30,000
+                NGN {activeOrder?.order_fare?.toLocaleString() || "0"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
@@ -440,7 +545,7 @@ export const OrderDetailsModal = ({
                   Pickup Location:
                 </span>
                 <span className="text-[14px] font-medium text-right leading-[20px] tracking-[-6%] text-[#0A0D14] ">
-                  Hebert Macauley Road
+                {activeOrder?.from_location || "Pickup location"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
@@ -448,7 +553,7 @@ export const OrderDetailsModal = ({
                   Drop Off Location:
                 </span>
                 <span className="text-[14px] font-medium text-right leading-[20px] tracking-[-6%] text-[#0A0D14] ">
-                  Nnamdi Azikwe Road, Ikeja, Lagos
+                {activeOrder?.to_location || "Dropoff location"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
@@ -467,6 +572,7 @@ export const OrderDetailsModal = ({
                   Document
                 </span>
               </p>
+              {/*
               <p className="flex items-center justify-between">
                 <span className="text-[14px] leading-5  tracking-[-6%] text-[#525866]">
                   EST Time of Arrival
@@ -478,6 +584,7 @@ export const OrderDetailsModal = ({
                   </span>
                 </div>
               </p>
+              */}
               <p className="flex items-center justify-between">
                 <span className="text-[14px] leading-5  tracking-[-6%] text-[#525866]">
                   EST Distance
@@ -485,40 +592,45 @@ export const OrderDetailsModal = ({
                 <div className="rounded-[6px] w-[75px] h-[24px] gap-[6px] flex justify-center items-center bg-[#EFECFF]">
                   <Clock color="#2B1664" size={12} />
                   <span className="text-[14px] leading-[16px] tracking-[-6%] text-[#2B1664] font-medium">
-                    14.5km
+                  {activeOrder?.distance ? activeOrder.distance.toFixed(0) : "N/A"} km
                   </span>
                 </div>
               </p>
             </div>
             <Button
-              onClick={() => {
-                if (customerNotified) {
-                  setConfirmPickupModalOpen(true);
-                } else {
-                  setActiveOrder((prev: any) => ({
-                    ...prev,
-                    status: "Confirm Pick Up",
-                  }));
-                  setTimeout(() => {
-                    setCustomerNotified(true);
-                  }, 1000);
+            onClick={() => {
+              if (customerNotified) {
+                setConfirmPickupModalOpen(true);
+                if (activeOrder?.id !== undefined) {
+                  handleConfirmPickup(activeOrder.id);
                 }
-              }}
-              disabled={
-                activeOrder?.status === "Confirm Pick Up" && !customerNotified
+              } else {
+                setActiveOrder((prev: any) => ({
+                  ...prev,
+                  status: "Confirm Pick Up",
+                }));
+                setTimeout(() => {
+                  setCustomerNotified(true);
+                }, 1000);
               }
-              className={clsx(
-                "bg-[#00ABFD] text-white",
-                activeOrder?.status === "Confirm Pick Up" &&
-                  !customerNotified &&
-                  "bg-opacity-30"
-              )}>
-              {activeOrder?.status === "Confirm Pick Up"
-                ? "Confirm Pick Up"
-                : activeOrder?.status === "Awaiting Action"
-                ? "Head to Pick up"
-                : "Confirm Pick Up"}
-            </Button>
+            }}
+            disabled={
+              activeOrder?.status === "Confirm Pick Up" && !customerNotified
+            }
+            className={clsx(
+              "bg-[#00ABFD] text-white",
+              activeOrder?.status === "Confirm Pick Up" &&
+                !customerNotified &&
+                "bg-opacity-30"
+            )}
+          >
+            {activeOrder?.status === "Confirm Pick Up"
+              ? "Confirm Pick Up"
+              : activeOrder?.status == "ongoing"
+              ? "Head to Pick up"
+              : "Confirm Pick Up"}
+          </Button>
+
             <Button
               onClick={() => {
                 setDetailsModalOpen(false);
@@ -541,6 +653,36 @@ export const OrderDetailsModal = ({
         }}
         cancelFn={() => {}}
       />
+      {phoneModalOpen && (
+      <div 
+        onClick={() => setPhoneModalOpen(false)}
+        className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center"
+      >
+        <div 
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white rounded-2xl p-6 w-[90%] max-w-md text-center space-y-6"
+        >
+          <h2 className="text-2xl font-bold text-[#1E2023]">Customer Phone Number</h2>
+          <p className="text-lg text-gray-700">{activeOrder?.user_phone || "Phone number not available"}</p>
+          
+          <div className="flex flex-col gap-3">
+            <a 
+              href={`tel:${activeOrder?.user_phone}`} 
+              className="bg-[#00ABFD] hover:bg-[#0090d6] text-white font-semibold py-3 rounded-lg transition"
+            >
+              Call Now
+            </a>
+            <button 
+              onClick={() => setPhoneModalOpen(false)}
+              className="border border-[#00ABFD] text-[#00ABFD] hover:bg-[#00ABFD] hover:text-white font-semibold py-3 rounded-lg transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
     </div>
   );
 };
