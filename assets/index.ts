@@ -4,7 +4,7 @@ export { default as OnboardingImageOne } from "./onboarding-one.svg";
 export { default as OnboardingImageTwo } from "./onboarding-two.svg";
 export { default as RiderOnboardingImageOne } from "./rider-onboarding-one.svg";
 export { default as RiderOnboardingImageTwo } from "./rider-onboarding-two.svg";
-export { default as IconLogo } from "./icon-logo.svg";
+export { default as IconLogo } from "./Logo_light.svg";
 export { default as CustomLock } from "./custom-lock.svg";
 export { default as CustomMail } from "./custom-mail.svg";
 export { default as Banner } from "./banner.svg";
