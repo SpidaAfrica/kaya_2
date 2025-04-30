@@ -17,6 +17,7 @@ interface SuggestPriceProps {
   actions?: Actions;
   onOpenChange?(open: boolean): void;
   open?: boolean;
+  onDataChanged?: () => void;
 }
 
 export function SuggestPrice({
@@ -24,6 +25,7 @@ export function SuggestPrice({
   children,
   onOpenChange,
   open,
+  onDataChanged,
 }: PropsWithChildren<SuggestPriceProps>) {
   const [paymentMethod, setPaymentMethod] = useState("online-payment");
 
@@ -45,6 +47,7 @@ export function SuggestPrice({
 
   const handleSavePrice = () => {
     actions?.switchPage?.("DELIVERY_DETAILS");
+    onDataChanged?.();
   };
 
   const handleTriggerOpen = () => {
