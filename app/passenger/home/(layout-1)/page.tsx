@@ -138,9 +138,7 @@ const Locations: React.FC = () => {
           View Saved Locations
         </Link>
         <div className="flex gap-2 items-center text-sm text-primary">
-            <button className="flex items-center gap-2 text-primary" onClick={fetchDeliveries}>
-              <RefreshCcw /> {loading ? "Refreshing..." : "Refresh"}
-            </button>
+          <RefreshCcw /> {loading ? "Refreshing..." : "Refresh"}
         </div>
       </div>
 
