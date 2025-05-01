@@ -87,7 +87,7 @@ export const OrdersPage = () => {
         body: JSON.stringify({
           lat,
           lng,
-          distance: 5000, // km
+          distance: 200, // km
         }),
       });
   
