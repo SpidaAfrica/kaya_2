@@ -52,6 +52,7 @@ export default function SignInPage() {
       // ✅ Store in sessionStorage only on client
       if (typeof window !== "undefined") {
         sessionStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("jwt_token", data.token); // Store JWT token
         const user = data.user || {};
 
         sessionStorage.setItem("userId", user.id || "");
