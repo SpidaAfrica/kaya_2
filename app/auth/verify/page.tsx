@@ -66,6 +66,37 @@ export default function VerifyPage() {
     }
   };
 
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleResendOTP = async () => {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("http://jbuit.org/api/resend-otp.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setMessage("OTP has been resent successfully!");
+      } else {
+        setMessage(result.message || "An error occurred, please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      setMessage("Failed to send OTP, please check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case "otp":
@@ -114,11 +145,13 @@ export default function VerifyPage() {
                 <p className="text-[#111827] text-sm">
                   Experiencing issues receiving the code
                 </p>
-                <button
+                <button 
                   type="button"
-                  className="text-[#0A0D14] leading-[20px] text-[16px] tracking-[-0.04em] underline font-medium">
-                  Resend Code
+                  className="text-[#0A0D14] leading-[20px] text-[16px] tracking-[-0.04em] underline font-medium"
+                  onClick={handleResendOTP} disabled={loading}>
+                  {loading ? "Sending..." : "Resend OTP"}
                 </button>
+                {message && <p>{message}</p>}
               </div>
             </form>
           </>
