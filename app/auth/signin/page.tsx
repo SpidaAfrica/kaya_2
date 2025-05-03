@@ -32,7 +32,7 @@ export default function SignInPage() {
     setError("");
 
     try {
-      const res = await fetch("https://your-backend.com/api/login.php", {
+      const res = await fetch("https://jbuit.org/api/login.php", {
         method: "POST",
         credentials: "include", // 👈 very important
         headers: {
