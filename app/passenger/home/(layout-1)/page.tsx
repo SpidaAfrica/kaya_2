@@ -7,7 +7,7 @@ import Link from "next/link";
 import { OrderCard_1, SAVED_LOCATION_PAGES } from "@/app/shared";
 import { AfroGirl } from "@/assets";
 import NoRecentOrdersYet from "@/assets/no-recent-orders.svg";
-import { DeliveryDetails } from "@/components/Overlays/DeliveryDetails";
+import { DeliveryDetails_1 } from "@/components/Overlays/DeliveryDetails_1";
 import {
   RefreshCcw
 } from "lucide-react";
@@ -96,6 +96,14 @@ const Locations: React.FC = () => {
     setShowDeliveryDetails(false);
   }, []);
 
+  const [selectedDelivery, setSelectedDelivery] = useState<Delivery | null>(null);
+
+  const handleCardClick = (delivery: Delivery) => {
+    setSelectedDelivery(delivery);
+    setShowDeliveryDetails(true);
+  };
+
+
   useEffect(() => {
     const fetchDeliveries = async () => {
       const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
@@ -148,6 +156,7 @@ const Locations: React.FC = () => {
         deliveries={deliveries}
         showDeliveryDetails={showDeliveryDetails}
         setShowDeliveryDetails={setShowDeliveryDetails}
+        onCardClick={handleCardClick}
         switchPage={switchPage}
         close={close}
       />
@@ -163,7 +172,8 @@ const RecentOrdersSection: React.FC<{
   setShowDeliveryDetails: React.Dispatch<React.SetStateAction<boolean>>;
   switchPage: (page: PageParams) => void;
   close: () => void;
-}> = ({ loading, fetchError, deliveries, showDeliveryDetails, setShowDeliveryDetails, switchPage, close }) => (
+   onCardClick: (delivery: Delivery) => void;
+}> = ({ loading, fetchError, deliveries, showDeliveryDetails, setShowDeliveryDetails, switchPage, close, onCardClick }) => (
   <div className="w-[95%] mx-auto py-4 px-3 mt-2 bg-[#F3F3F3] rounded-xl">
     <h2 className="font-semibold text-lg text-[rgb(var(--foreground-rgb),1)]">Recent Orders</h2>
     {loading ? (
@@ -172,12 +182,14 @@ const RecentOrdersSection: React.FC<{
       <p className="text-red-500">{fetchError}</p>
     ) : deliveries.length > 0 ? (
       deliveries.map((delivery, index) => (
+      <div key={index} onClick={() => onCardClick(delivery)} className="cursor-pointer">
         <OrderCard_1
           key={index}
           delivery={delivery}
           setShowDeliveryDetails={setShowDeliveryDetails}
           switchPage={switchPage}
         />
+      </div>
       ))
     ) : (
       <div className="flex flex-col items-center justify-center py-12">
@@ -185,7 +197,9 @@ const RecentOrdersSection: React.FC<{
         <p className="text-gray-500 text-sm">You don’t have any orders yet.</p>
       </div>
     )}
-    {showDeliveryDetails && <DeliveryDetails />}
+   {showDeliveryDetails && selectedDelivery && (
+  <DeliveryDetails_1 delivery={selectedDelivery} onClose={close} />
+  )}
   </div>
 );
 
