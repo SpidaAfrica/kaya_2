@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: "Kaya",
   description:
     "Reliable service at a negotiable price that fits your budget. Deliver more for less! 💸",
+  icons: {
+    icon: "/logo.png", // or .png if you prefer
+  },
 };
 
 export default function RootLayout({
