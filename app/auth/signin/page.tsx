@@ -32,16 +32,18 @@ export default function SignInPage() {
     setError("");
 
     try {
-      const res = await fetch("https://jbuit.org/api/login.php", {
+      const res = await fetch("https://your-backend.com/api/login.php", {
         method: "POST",
+        credentials: "include", // 👈 very important
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
         body: JSON.stringify({
           phoneNumber: `+234${phoneNumber}`,
-          password: password,
-        }),
+          password
+        })
       });
+
 
       const data = await res.json();
 
