@@ -34,6 +34,7 @@ export default function SignInPage() {
     try {
       const res = await fetch("https://jbuit.org/api/login.php", {
         method: "POST", // 👈 very important
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json"
         },
