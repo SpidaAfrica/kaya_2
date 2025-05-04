@@ -17,6 +17,11 @@ import { ArrowRight } from "lucide-react";
 import { Hero } from "@/components/Hero";
 
 export default function HomeLayout({ children }: PropsWithChildren) {
+  const isAuthenticated = useAuth(); // This will handle the redirect if not authenticated
+
+  if (!isAuthenticated) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="w-full">
       <Hero />
