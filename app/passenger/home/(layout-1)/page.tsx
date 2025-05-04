@@ -78,7 +78,7 @@ const HomePage: React.FC = () => {
 
   if (!isAuthenticated) {
     return <div>Loading...</div>;
-
+  }
   useEffect(() => {
     const timer = setTimeout(() => setShowLocations(true), 5000);
     return () => clearTimeout(timer);
