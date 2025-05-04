@@ -11,6 +11,7 @@ import { DeliveryDetails_1 } from "@/components/Overlays/DeliveryDetails_1";
 import {
   RefreshCcw
 } from "lucide-react";
+import useAuth from "@/components/useAuth";
 
 
 
@@ -30,6 +31,7 @@ interface ApiResponse {
 
 type PageParams = keyof typeof SAVED_LOCATION_PAGES;
 export type PageParam = keyof typeof SAVED_LOCATION_PAGES;
+
 
 
 const featuresData = [
@@ -72,6 +74,10 @@ const Features: React.FC = () => (
 
 const HomePage: React.FC = () => {
   const [showLocations, setShowLocations] = useState(false);
+  const isAuthenticated = useAuth(); // This will handle the redirect if not authenticated
+
+  if (!isAuthenticated) {
+    return <div>Loading...</div>;
 
   useEffect(() => {
     const timer = setTimeout(() => setShowLocations(true), 5000);
