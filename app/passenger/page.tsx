@@ -1,10 +1,12 @@
 import React from "react";
-import { AuthGuard } from "@/components/AuthGuard";
+import { useAuth } from "@/components/useAuth";
 
 export default function BasePage() {
   return(
-    <AuthGuard>
-      <div></div>
-    </AuthGuard>
+  const isAuthenticated = useAuth(); // This will handle the redirect if not authenticated
+
+  if (!isAuthenticated) {
+    return <div>Loading...</div>; // Display loading while checking auth status
+  }
   );
 }
