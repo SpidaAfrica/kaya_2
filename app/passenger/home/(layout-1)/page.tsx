@@ -175,7 +175,7 @@ const RecentOrdersSection: React.FC<{
   close: () => void;
   onCardClick: (delivery: Delivery) => void;
   selectedDelivery: Delivery | null;
-}> = ({ loading, fetchError, deliveries, showDeliveryDetails, setShowDeliveryDetails, switchPage, close, onCardClick }) => (
+}> = ({ loading, fetchError, deliveries, showDeliveryDetails, setShowDeliveryDetails, switchPage, close, onCardClick, selectedDelivery }) => (
   <div className="w-[95%] mx-auto py-4 px-3 mt-2 bg-[#F3F3F3] rounded-xl">
     <h2 className="font-semibold text-lg text-[rgb(var(--foreground-rgb),1)]">Recent Orders</h2>
     {loading ? (
