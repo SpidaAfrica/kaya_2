@@ -74,11 +74,13 @@ const Features: React.FC = () => (
 
 const HomePage: React.FC = () => {
   const [showLocations, setShowLocations] = useState(false);
+  /*
   const isAuthenticated = useAuth(); // This will handle the redirect if not authenticated
 
   if (!isAuthenticated) {
     return <div>Loading...</div>;
   }
+  */
   useEffect(() => {
     const timer = setTimeout(() => setShowLocations(true), 5000);
     return () => clearTimeout(timer);
