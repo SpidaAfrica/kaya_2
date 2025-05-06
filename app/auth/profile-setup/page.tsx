@@ -26,7 +26,7 @@ export default function ProfileSetup() {
     e.preventDefault();
 
     try {
-      const response = await fetch("https://jbuit.org/api/signup.php", {
+      const response = await fetch("https://spida.africa/kaya-api/signup.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
