@@ -34,7 +34,6 @@ export default function SignInPage() {
     try {
       const res = await fetch("https://spida.africa/kaya-api/login.php", {
         method: "POST", // 👈 very important
-        credentials: 'include',
         headers: {
           "Content-Type": "application/json"
         },
