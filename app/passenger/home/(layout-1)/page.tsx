@@ -123,7 +123,7 @@ const Locations: React.FC = () => {
       }
 
       try {
-        const response = await fetch(`https://jbuit.org/api/get-delivery.php?user_id=${userId}`);
+        const response = await fetch(`https://spida.africa/kaya-api/get-deliveries.php?user_id=${userId}`);
         const data: ApiResponse = await response.json();
 
         if (data.status === "success") {
