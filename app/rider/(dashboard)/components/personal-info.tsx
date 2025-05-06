@@ -215,7 +215,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
       formData.append("plateNumber", data.plateNumber);
       if (licenseFile) formData.append("license-upload", licenseFile); // licenseFile should be a File object
 
-      const response = await fetch("https://spida.africa/kaya-api/rider/vehicle-info.php", {
+      const response = await fetch("https://spida.africa/kaya-api/rider/save-vehicle-info.php", {
         method: "POST",
         body: formData,
       });
