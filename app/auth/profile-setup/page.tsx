@@ -87,7 +87,7 @@ export default function ProfileSetup() {
           {/* Email Address */}
           <fieldset className="flex flex-col w-full gap-3">
             <label htmlFor="email" className="text-[#0A0D14] text-sm md:text-base font-medium">
-              Email Address <span className="text-[#6B7280] text-sm ml-1">(optional)</span>
+              Email Address 
             </label>
             <div className="border w-full border-[#D1D5DB] px-3 rounded-lg flex items-center">
               <Mail className="text-[#868C98] w-5 h-5" />
