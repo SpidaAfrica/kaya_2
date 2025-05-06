@@ -44,12 +44,16 @@ export default function ProfileSetup() {
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Signup failed. Please try again.");
       }
-
+      if (data.message == "Profile setup successful.") {
+        
       // Store to sessionStorage after successful signup
       sessionStorage.setItem("fullName", fullName);
       sessionStorage.setItem("email", email);
 
       router.push("/auth/success");
+      router.push("/auth/login");
+      }
+
     } catch (error) {
       alert(error instanceof Error ? error.message : "Something went wrong. Please try again.");
     }
