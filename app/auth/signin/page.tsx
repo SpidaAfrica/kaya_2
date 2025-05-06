@@ -32,7 +32,7 @@ export default function SignInPage() {
     setError("");
 
     try {
-      const res = await fetch("https://jbuit.org/api/login.php", {
+      const res = await fetch("https://spida.africa/kaya-api/login.php", {
         method: "POST", // 👈 very important
         credentials: 'include',
         headers: {
