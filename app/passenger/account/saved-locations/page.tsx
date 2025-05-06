@@ -41,7 +41,7 @@ export default function SavedLocationsPage() {
       // Check if we're on the client before using sessionStorage
       const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") || "1" : "1";
       
-      const res = await fetch("https://jbuit.org/api/save-locations.php", {
+      const res = await fetch("https://spida.africa/kaya-api/save-locations.php", {
         method: "POST",
         body: new URLSearchParams({
           user_id: userId,
