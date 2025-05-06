@@ -15,14 +15,16 @@ import { useMemo } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { ArrowRight } from "lucide-react";
 import { Hero } from "@/components/Hero";
-import useAuth from "@/components/useAuth";
+//import useAuth from "@/components/useAuth";
 
 export default function HomeLayout({ children }: PropsWithChildren) {
+  /*
   const isAuthenticated = useAuth(); // This will handle the redirect if not authenticated
 
   if (!isAuthenticated) {
     return <div>Loading...</div>;
   }
+  */
   return (
     <div className="w-full">
       <Hero />
