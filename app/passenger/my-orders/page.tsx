@@ -85,7 +85,7 @@ export default function MyOrdersPage() {
           user_id:userId,
         });
 
-        const res = await fetch(`https://jbuit.org/api/filter-packages.php?${params}`);
+        const res = await fetch(`https://spida.africa/kaya-api/filter-packages.php?${params}`);
         const data: ApiResponse = await res.json();
 
         setPackages(data?.data ?? []);
