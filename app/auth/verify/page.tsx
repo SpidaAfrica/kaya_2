@@ -41,7 +41,7 @@ export default function VerifyPage() {
 
     // Call your backend to verify OTP
     try {
-      const response = await fetch("https://jbuit.org/api/verify-otp.php", {
+      const response = await fetch("https://spida.africa/kaya-api/verify-otp.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
