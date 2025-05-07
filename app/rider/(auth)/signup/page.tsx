@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import AuthForm from "../riderAuth";
 import { DropDown, Nigeria } from "@/components/svgs";
