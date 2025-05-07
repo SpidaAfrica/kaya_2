@@ -358,6 +358,7 @@ type ActiveOrderType = {
   id?: number;
   from_location?: string;
   to_location?: string;
+  order_id?: string;
   order_created?: string;
   order_fare?: string;
   pickup_time?: string;
@@ -411,14 +412,14 @@ export const OrderDetailsModal = ({
 
   const router = useRouter();
   console.log(activeOrder);
-  const handleConfirmPickup = async (id?: number) => {
+  const handleConfirmPickup = async (order_id?: string) => {
     try {
       const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ package_id: activeOrder?.id }),
+        body: JSON.stringify({ package_id: activeOrder?.order_id }),
       });
   
       const data = await response.json();
@@ -504,8 +505,8 @@ export const OrderDetailsModal = ({
                 color="#1D2939" 
                 className="cursor-pointer" 
                 onClick={() => {
-                  if (activeOrder?.id) {
-                    router.push(`/rider/chat/${activeOrder.id}`);
+                  if (activeOrder?.order_id) {
+                    router.push(`/rider/chat/${activeOrder.order_id}`);
                   }
                 }}
               />
@@ -528,7 +529,7 @@ export const OrderDetailsModal = ({
                   Order ID:
                 </span>
                 <span className="text-[14px] font-medium text-right leading-[20px] tracking-[-6%] text-[#0A0D14] ">
-                {activeOrder?.id || "Order ID"}
+                {activeOrder?.order_id || "Order ID"}
                 </span>
               </p>
               <p className="flex items-center justify-between">
@@ -648,7 +649,7 @@ export const OrderDetailsModal = ({
         mainText="Confirm Pick up?"
         desc="Please ensure you have verified the package details before confirming pickup."
         continueFn={() => {
-          router.push(`/rider/home/order/${activeOrder?.id}`);
+          router.push(`/rider/home/order/${activeOrder?.order_id}`);
         }}
         cancelFn={() => {}}
       />
