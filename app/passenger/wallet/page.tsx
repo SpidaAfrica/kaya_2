@@ -71,7 +71,7 @@ export default function WalletPage() {
   const [amount, setAmount] = useState("");
 
   useEffect(() => {
-    fetch(`https://jbuit.org/api/get-wallet.php?user_id=${userId}`)
+    fetch(`https://spida.africa/kaya-api/get-wallet.php?user_id=${userId}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) setBalance(Number(data.balance));
