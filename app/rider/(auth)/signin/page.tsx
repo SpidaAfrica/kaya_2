@@ -9,30 +9,68 @@ import { Apple, DropDown, Google, X } from "@/components/svgs";
 import { useRouter } from "next/navigation";
 
 export default function SignInPage() {
-  const [password, setPassword] = React.useState("");
-  const [showPassword, setShowPassword] = React.useState(false);
+const [password, setPassword] = React.useState("");
   const [phoneNumber, setPhoneNumber] = React.useState<string>("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   const router = useRouter();
-
-  const handlePassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(phoneNumber, password);
-    router.push("/rider/home");
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     if (name === "phoneNumber") {
-      setPhoneNumber(value);
+      setPhoneNumber(value.replace(/^0/, ""));
     } else if (name === "password") {
       setPassword(value);
     }
   };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("https://spida.africa/kaya-api/login.php", {
+        method: "POST", // 👈 very important
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          phoneNumber: `+234${phoneNumber}`,
+          password
+        })
+      });
+
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data?.error || "Login failed");
+      }
+
+      // ✅ Store in sessionStorage only on client
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("user", JSON.stringify(data));
+        localStorage.setItem("jwt_token", data.token); // Store JWT token
+        const user = data.user || {};
+
+        sessionStorage.setItem("userId", user.id || "");
+        sessionStorage.setItem("email", user.email || "");
+        sessionStorage.setItem("imageUrl", user.image_url || "");
+        sessionStorage.setItem("fullName", user.fullName || "");
+        sessionStorage.setItem("phoneNumber", user.phone || "");
+      }
+
+      // ✅ Redirect to home
+      router.push("/passenger/home");
+    } catch (err: any) {
+      setError(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <AuthForm>
