@@ -95,7 +95,7 @@ export default function WalletPage() {
       amount: Number(amount) * 100,
       email: email,
       callback: function (response: any) {
-        fetch("https://jbuit.org/api/update-wallet.php", {
+        fetch("https://spida.africa/kaya-api/update-wallet.php", {
           method: "POST",
           body: new URLSearchParams({
             user_id: userId || "",
@@ -137,7 +137,7 @@ export default function WalletPage() {
       });
 
       try {
-        const res = await fetch(`https://jbuit.org/api/get-transactions.php?${query.toString()}`);
+        const res = await fetch(`https://spida.africa/kaya-api/get-transactions.php?${query.toString()}`);
         const data = await res.json();
         if (data.success) {
           setTransactions(data.transactions);
