@@ -363,10 +363,19 @@ type ActiveOrderType = {
   pickup_time?: string;
   dropoff_time?: string;
   status?: string;
-  distance?:number;
-  user_name?:string;
-  user_image?:string;
+  distance?: number;
+  user_name?: string;
+  user_image?: string;
   user_phone?: string;
+};
+
+type OrderDetailsModalProps = {
+  setCustomerNotified: (value: boolean) => void;
+  customerNotified: boolean;
+  activeOrder: ActiveOrderType | null;
+  isOpen: boolean;
+  setDetailsModalOpen: (value: boolean) => void;
+  setActiveOrder: Dispatch<SetStateAction<ActiveOrderType | null>>;
 };
 
 export const OrderDetailsModal = ({
@@ -376,69 +385,66 @@ export const OrderDetailsModal = ({
   isOpen,
   setDetailsModalOpen,
   setActiveOrder,
-}: {
-  setCustomerNotified: (value: boolean) => void;
-  customerNotified: boolean;
-  activeOrder: ActiveOrderType | null;
-  isOpen: boolean;
-  setDetailsModalOpen: (value: boolean) => void;
-  setActiveOrder: Dispatch<SetStateAction<ActiveOrderType | null>>;
-}) => {
+}: OrderDetailsModalProps) => {
+  const [confirmPickupModalOpen, setConfirmPickupModalOpen] = useState(false);
+  const [phoneModalOpen, setPhoneModalOpen] = useState(false);
+  const router = useRouter();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
       document.body.style.paddingRight = "0px";
     } else {
       document.body.style.overflow = "auto";
-      // document.body.style.paddingRight = "17px";
     }
   }, [isOpen]);
 
-  const [confirmPickupModalOpen, setConfirmPickupModalOpen] = useState(false);
-  const [phoneModalOpen, setPhoneModalOpen] = useState(false);
+  const riderId = typeof window !== "undefined" ? sessionStorage.getItem("rider_id") : null;
 
-  if (typeof window === "undefined") return; // Prevent code from running on server
-  
-  const riderId = sessionStorage.getItem("rider_id");
+  const handleConfirmPickup = async () => {
+    if (!riderId) {
+      console.error("No rider ID found in sessionStorage.");
+      alert("Unable to confirm pickup: Rider not logged in.");
+      return;
+    }
 
-  if (!riderId) {
-    console.error("No coordinates found in sessionStorage.");
-    return;
-  }
-  
-if (!activeOrder || !activeOrder.id) {
-  console.error("No active order or order ID found");
-  return;
-}
+    if (!activeOrder?.id) {
+      console.error("No active order or order ID found.");
+      alert("Unable to confirm pickup: No order selected.");
+      return;
+    }
 
-const packageId = activeOrder?.id;
-
-  const router = useRouter();
-  console.log(activeOrder);
-  const handleConfirmPickup = async (packageId?: number) => {
     try {
-      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
-        method: 'POST',
+      const response = await fetch("https://spida.africa/kaya-api/rider/confirm-pickup.php", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ package_id: packageId, rider_id: riderId }),
+        body: JSON.stringify({
+          package_id: activeOrder.id,
+          rider_id: parseInt(riderId),
+        }),
       });
-  
+
       const data = await response.json();
-  
+
       if (data.success) {
         alert("Pickup confirmed successfully!");
-        // Optionally update your local state here (e.g., refresh orders list)
+        // Optionally update state
+        setActiveOrder((prev) => ({
+          ...prev,
+          pickup_time: new Date().toISOString(), // or data.pickup_time if returned
+        }));
       } else {
         alert("Failed to confirm pickup: " + data.message);
       }
     } catch (error) {
-      console.error(error);
-      alert("Something went wrong!");
+      console.error("Pickup confirmation failed:", error);
+      alert("Something went wrong while confirming pickup.");
     }
   };
-  
+
+  if (typeof window === "undefined") return null;
   
 
   return (
