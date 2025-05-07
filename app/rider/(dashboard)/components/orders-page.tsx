@@ -209,7 +209,7 @@ export const SingleOrderCard = ({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          order_id: order.id,
+          order_id: order.order_id,
           rider_id: riderId,
           status,
         }),
@@ -257,7 +257,7 @@ export const SingleOrderCard = ({
               <span>
                 Order Created {order.order_created || "N/A"}
               </span>
-              <span>ID {order.id ?? "N/A"}</span>
+              <span>ID {order.order_id ?? "N/A"}</span>
             </p>
           </div>
         </div>
