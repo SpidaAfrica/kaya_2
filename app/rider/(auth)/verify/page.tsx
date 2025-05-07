@@ -1,7 +1,7 @@
 "use client";
 export const dynamic = "force-dynamic";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import AuthForm from "../riderAuth";
 import { useRouter } from "next/navigation";
