@@ -46,7 +46,7 @@ const ProfileSettings: React.FC = () => {
     console.log(formData)
   
     try {
-      const res = await fetch("https://jbuit.org/api/rider/update-profile-setting.php", {
+      const res = await fetch("https://spida.africa/kaya-api/rider/update-profile-setting.php", {
         method: "POST",
         body: formData,
       });
