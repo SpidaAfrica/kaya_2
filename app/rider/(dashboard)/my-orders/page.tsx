@@ -49,7 +49,7 @@ export default function MyOrdersPage() {
       }).toString();
 
       try {
-        const res = await fetch(`https://jbuit.org/api/rider/get-orders.php?${query}`);
+        const res = await fetch(`https://spida.africa/kaya-api/rider/get-orders.php?${query}`);
         const data = await res.json();
         if (data.status === "success") {
           setPackages(data.data);
