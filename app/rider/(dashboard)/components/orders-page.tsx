@@ -81,7 +81,7 @@ export const OrdersPage = () => {
     setLoading(true);
   
     try {
-      const res = await fetch(`https://jbuit.org/api/rider/get-nearby-orders.php`, {
+      const res = await fetch(`https://spida.africa/kaya-api/rider/get-nearby-orders.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
