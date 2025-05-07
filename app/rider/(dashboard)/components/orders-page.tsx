@@ -396,49 +396,44 @@ export const OrderDetailsModal = ({
 
   const [confirmPickupModalOpen, setConfirmPickupModalOpen] = useState(false);
   const [phoneModalOpen, setPhoneModalOpen] = useState(false);
-/*
-  if (typeof window === "undefined") return; // Prevent code from running on server
+
+ /* if (typeof window === "undefined") return; // Prevent code from running on server
   
   const riderId = sessionStorage.getItem("rider_id");
 
   if (!riderId) {
-    console.error("No rider found in sessionStorage.");
+    console.error("No coordinates found in sessionStorage.");
     return;
-*/
+  }
+  */
+  
 
 
   const router = useRouter();
   console.log(activeOrder);
-  const handleConfirmPickup = async () => {
-  if (!activeOrder?.id) {
-    console.error("Missing order ID or user ID.");
-    alert("Pickup cannot be confirmed: Order or user not found.");
-    return;
-  }
-  try {
-    const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        package_id: activeOrder.id
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      alert("Pickup confirmed successfully!");
-      // Optionally update local state or UI
-    } else {
-      alert("Failed to confirm pickup: " + data.message);
+  const handleConfirmPickup = async (id?: number) => {
+    try {
+      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ package_id: activeOrder?.id }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        alert("Pickup confirmed successfully!");
+        // Optionally update your local state here (e.g., refresh orders list)
+      } else {
+        alert("Failed to confirm pickup: " + data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong!");
     }
-  } catch (error) {
-    console.error("Error confirming pickup:", error);
-    alert("Something went wrong while confirming pickup.");
-  }
-};
+  };
 
   return (
     <div
