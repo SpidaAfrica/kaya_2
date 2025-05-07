@@ -92,7 +92,7 @@ const PersonalInfo = ({
     formData.append("bank_name", bankName);
     formData.append("account_number", accountNumber);
 
-    const res = await fetch("https://jbuit.org/api/rider/bank-details.php", {
+    const res = await fetch("https://spida.africa/kaya-api/rider/bank-details.php", {
       method: "POST",
       body: formData,
     });
