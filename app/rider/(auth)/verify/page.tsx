@@ -41,7 +41,7 @@ export default function VerifyPage() {
 
     // Call your backend to verify OTP
     try {
-      const response = await fetch("https://jbuit.org/api/verify-otp.php", {
+      const response = await fetch("https://spida.africa/kaya-api/verify-otp.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,6 +66,38 @@ export default function VerifyPage() {
       setCurrentStep("error");
     }
   };
+
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleResendOTP = async () => {
+    setLoading(true);
+    setMessage("");
+
+    try {
+      const response = await fetch("http://spida.africa/kaya-api/resend-phone-otp.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ phoneNumber }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setMessage("OTP has been resent successfully!");
+      } else {
+        setMessage(result.message || "An error occurred, please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending OTP:", error);
+      setMessage("Failed to send OTP, please check your connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const renderStep = () => {
     switch (currentStep) {
