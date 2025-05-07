@@ -652,7 +652,6 @@ export const OrderDetailsModal = ({
           router.push(`/rider/home/order/${activeOrder?.order_id}`);
         }}
         cancelFn={() => {}}
-        onclick={handleConfirmPickup}
       />
       {phoneModalOpen && (
       <div 
