@@ -396,7 +396,7 @@ export const OrderDetailsModal = ({
 
   const [confirmPickupModalOpen, setConfirmPickupModalOpen] = useState(false);
   const [phoneModalOpen, setPhoneModalOpen] = useState(false);
-  {/*
+
   if (typeof window === "undefined") return; // Prevent code from running on server
   
   const riderId = sessionStorage.getItem("rider_id");
@@ -405,11 +405,16 @@ export const OrderDetailsModal = ({
     console.error("No coordinates found in sessionStorage.");
     return;
   }
-    */}
+  
+if (!activeOrder || !activeOrder.id) {
+  console.error("No active order or order ID found");
+  return;
+}
 
+const packageId = activeOrder?.id;
 
   const router = useRouter();
-  // console.log(activeOrder);
+  console.log(activeOrder);
   const handleConfirmPickup = async (packageId?: number) => {
     try {
       const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
@@ -417,7 +422,7 @@ export const OrderDetailsModal = ({
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ package_id: packageId }),
+        body: JSON.stringify({ package_id: packageId, rider_id: riderId }),
       });
   
       const data = await response.json();
