@@ -43,7 +43,7 @@ export default function PrivacyAndSecurity() {
       }
 
       try {
-        const res = await fetch("https://jbuit.org/api/change-password.php", {
+        const res = await fetch("https://spida.africa/kaya-api/change-password.php", {
           method: "POST",
           body: new URLSearchParams({
             user_id: userId,
