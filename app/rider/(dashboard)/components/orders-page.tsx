@@ -601,8 +601,8 @@ export const OrderDetailsModal = ({
             onClick={() => {
               if (customerNotified) {
                 setConfirmPickupModalOpen(true);
-                if (activeOrder?.id !== undefined) {
-                  handleConfirmPickup(activeOrder.id);
+                if (activeOrder?.order_id !== undefined) {
+                  handleConfirmPickup(activeOrder.order_id);
                 }
               } else {
                 setActiveOrder((prev: any) => ({
