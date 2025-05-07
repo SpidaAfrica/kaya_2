@@ -410,7 +410,7 @@ export const OrderDetailsModal = ({
   const router = useRouter();
   console.log(activeOrder);
   const handleConfirmPickup = async () => {
-  if (!activeOrder?.id || !activeOrder?.user_id) {
+  if (!activeOrder?.id) {
     console.error("Missing order ID or user ID.");
     alert("Pickup cannot be confirmed: Order or user not found.");
     return;
