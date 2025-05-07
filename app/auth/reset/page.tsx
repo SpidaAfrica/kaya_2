@@ -27,7 +27,7 @@ export default function Reset() {
     e.preventDefault();
   
     try {
-      const response = await fetch("https://apago-server.onrender.com/auth/request-password-reset", {
+      const response = await fetch("https://spida.africa/kaya-api/reset-password.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
