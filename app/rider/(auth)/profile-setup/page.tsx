@@ -9,14 +9,52 @@ import { LockIcon } from "@/lib/icons";
 
 export default function ProfileSetup() {
   const router = useRouter();
-  const [email, setEmail] = React.useState("");
-  const [fullName, setFullName] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  // Get phoneNumber from sessionStorage on mount (client-side only)
+  useEffect(() => {
+    const storedPhone = sessionStorage.getItem("phoneNumber");
+    setPhoneNumber(storedPhone);
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // here you would submit the profile data
-    router.push("/rider/verify");
+
+    try {
+      const response = await fetch("https://spida.africa/kaya-api/signup.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber,
+          fullName,
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Signup failed. Please try again.");
+      }
+      if (data.message == "Profile setup successful.") {
+        
+      // Store to sessionStorage after successful signup
+      sessionStorage.setItem("fullName", fullName);
+      sessionStorage.setItem("email", email);
+
+      router.push("/auth/success");
+      router.push("/auth/login");
+      }
+
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+    }
   };
 
   return (
