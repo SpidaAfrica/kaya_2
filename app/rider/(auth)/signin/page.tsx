@@ -12,9 +12,12 @@ const [password, setPassword] = React.useState("");
   const [phoneNumber, setPhoneNumber] = React.useState<string>("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
-   const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const router = useRouter();
+  const handlePassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
