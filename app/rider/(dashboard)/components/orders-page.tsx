@@ -205,7 +205,7 @@ export const SingleOrderCard = ({
   
   const handleAction = async (status: "ongoing" | "cancelled") => {
     try {
-      const res = await fetch(`https://jbuit.org/api/rider/update-order-status.php`, {
+      const res = await fetch(`https://spida.africa/kaya-api/rider/update-order-status.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -412,7 +412,7 @@ export const OrderDetailsModal = ({
   // console.log(activeOrder);
   const handleConfirmPickup = async (packageId?: number) => {
     try {
-      const response = await fetch('https://jbuit.org/api/rider/confirm-pickup.php', {
+      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
