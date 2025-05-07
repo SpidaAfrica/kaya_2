@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AuthForm from "../riderAuth";
 import { User, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
