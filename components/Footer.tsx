@@ -77,7 +77,7 @@ export const Footer = () => {
 import { Logo_light } from "@/assets";
 import Image from "next/image";
 import Link from "next/link";
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+//import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 export const Footer = () => {
   return (
@@ -98,12 +98,14 @@ export const Footer = () => {
               efficient riders. We are committed to delivering not just parcels
               but also trust, convenience, and peace of mind.
             </p>
+            {/*
             <div className="flex gap-4 mt-2">
               <a href="#"><FaFacebookF /></a>
               <a href="#"><FaTwitter /></a>
               <a href="#"><FaInstagram /></a>
               <a href="#"><FaLinkedinIn /></a>
             </div>
+            */}
           </div>
 
           {/* Quick Links */}
