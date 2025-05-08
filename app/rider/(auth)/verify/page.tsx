@@ -338,6 +338,30 @@ export default function VerifyPage() {
             </button>
           </div>
         );
+ case "error":
+  return (
+    <div className="w-full flex flex-col items-center justify-center text-center px-4">
+      <Image
+        src="/rider/error.svg"
+        alt="Error"
+        width={120}
+        height={120}
+        className="mb-6"
+      />
+      <h3 className="text-red-600 text-xl sm:text-2xl font-bold mb-2">
+        Verification Failed
+      </h3>
+      <p className="text-[#333232] text-sm mb-4">
+        The OTP you entered is incorrect or has expired. Please try again.
+      </p>
+      <button
+        onClick={() => setCurrentStep("otp")}
+        className="bg-[#00ABFD] text-white px-6 py-3 rounded-lg font-medium"
+      >
+        Try Again
+      </button>
+    </div>
+  );
     }
   };
 
