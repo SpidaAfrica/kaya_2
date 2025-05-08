@@ -43,9 +43,7 @@ export default function ProfileSetup() {
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Signup failed. Please try again.");
-      }
-      if (data.sucess) {
-        
+      }else{  
       // Store to sessionStorage after successful signup
       sessionStorage.setItem("fullName", fullName);
       sessionStorage.setItem("email", email);
