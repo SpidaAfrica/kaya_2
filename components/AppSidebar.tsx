@@ -24,7 +24,7 @@ import { User } from "@/lib/icons";
 const SIDEBAR_ITEMS = [
   { url: "home", title: "Home" },
   { url: "my-orders", title: "My Orders" },
-  { url: "chat", title: "Messages" },
+  //{ url: "chat", title: "Messages" },
   { url: "notifications/all-notifications", title: "Notifications" },
   { url: "wallet", title: "Wallet" },
   { url: "account", title: "Account" },
