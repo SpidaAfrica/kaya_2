@@ -77,11 +77,10 @@ export const Footer = () => {
 import { Logo_light } from "@/assets";
 import Image from "next/image";
 import Link from "next/link";
-//import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 export const Footer = () => {
   return (
-    <footer className="bg-primary text-white text-sm">
+    <footer className="bg-primary text-white text-[15px] md:text-sm">
       <div className="w-[95%] mx-auto px-4 py-10">
         {/* Top Grid Layout */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
@@ -92,20 +91,12 @@ export const Footer = () => {
               alt="Kaya Logo"
               className="w-32 h-auto object-contain"
             />
-            <p className="text-left text-sm">
+            <p className="text-left">
               At Kaya, our mission is to simplify parcel delivery by connecting
               individuals and businesses with reliable, affordable, and
               efficient riders. We are committed to delivering not just parcels
               but also trust, convenience, and peace of mind.
             </p>
-            {/*
-            <div className="flex gap-4 mt-2">
-              <a href="#"><FaFacebookF /></a>
-              <a href="#"><FaTwitter /></a>
-              <a href="#"><FaInstagram /></a>
-              <a href="#"><FaLinkedinIn /></a>
-            </div>
-            */}
           </div>
 
           {/* Quick Links */}
@@ -146,4 +137,3 @@ export const Footer = () => {
     </footer>
   );
 };
-
