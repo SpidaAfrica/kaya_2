@@ -66,7 +66,7 @@ const [password, setPassword] = React.useState("");
       }
 
       // ✅ Redirect to home
-      router.push("/passenger/home");
+      router.push("/rider/home");
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {
