@@ -20,42 +20,41 @@ export default function ProfileSetup() {
     setPhoneNumber(storedPhone);
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  const router = useRouter();
 
-    try {
-      const response = await fetch("https://spida.africa/kaya-api/signup.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phoneNumber,
-          fullName,
-          email,
-          password,
-        }),
-      });
+  try {
+    const response = await fetch("https://spida.africa/kaya-api/signup.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber,
+        fullName,
+        email,
+        password,
+      }),
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Signup failed. Please try again.");
-      }
-      if (data.message == "Profile setup successful.") {
-        
-      // Store to sessionStorage after successful signup
-      sessionStorage.setItem("fullName", fullName);
-      sessionStorage.setItem("email", email);
-
-      router.push("/auth/success");
-      router.push("/auth/login");
-      }
-
-    } catch (error) {
-      alert(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || "Signup failed. Please try again.");
     }
-  };
+
+    // Store info in sessionStorage
+    sessionStorage.setItem("fullName", fullName);
+    sessionStorage.setItem("email", email);
+
+    // First go to success page
+    router.push("/auth/login");
+
+  } catch (error) {
+    alert(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+  }
+};
 
   return (
     <AuthForm>
