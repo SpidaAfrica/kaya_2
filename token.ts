@@ -1,4 +1,3 @@
-/token.ts
 export function generateToken(length = 32): string {
   const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let token = "";
