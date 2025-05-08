@@ -43,7 +43,7 @@ export default function SignInPage() {
       }
 
       console.log("OTP sent successfully:", data);
-      router.push("/auth/verify");
+      router.push("/(auth)/verify");
     } catch (error: any) {
       console.error("OTP send error:", error.message);
       alert(error.message);
