@@ -2,6 +2,7 @@
 export const dynamic = "force-dynamic";
 
 import React, { useEffect, useState } from "react";
+import { generateToken } from "@/token"; // adjust path as needed
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Lock } from "@/components/svgs";
@@ -55,7 +56,9 @@ export default function SignInPage() {
         sessionStorage.setItem("user", JSON.stringify(data));
         localStorage.setItem("jwt_token", data.token); // Store JWT token
         const user = data.user || {};
-
+        const token = generateToken();
+        sessionStorage.setItem("kaya_token", token);
+        document.cookie = `kaya_token=${token}; path=/`;
         sessionStorage.setItem("userId", user.id || "");
         sessionStorage.setItem("email", user.email || "");
         sessionStorage.setItem("imageUrl", user.image_url || "");
@@ -71,7 +74,6 @@ export default function SignInPage() {
       setLoading(false);
     }
   };
-
   return (
     <AuthForm showCarousel>
       <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto px-4 py-8 md:px-6">
