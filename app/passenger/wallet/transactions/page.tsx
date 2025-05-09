@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
 // Ensure you import these icons from the correct library
 
-interface Transaction {
+type Props = {
   id: number;
   date: string;
   title: string;
@@ -33,8 +33,10 @@ interface Transaction {
   balance: string;
   status: string;
   amount: string;
-  type: "deposit" | "transfer";
-}
+  type: "deposit" | "transfer" | "withdrawal";
+  onClick?(): void;
+};
+
 
 export default function TransactionsPage() {
 const [transactions, setTransactions] = useState<Transaction[]>([]);
