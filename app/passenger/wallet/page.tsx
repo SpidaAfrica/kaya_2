@@ -57,8 +57,17 @@ export default function WalletPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
-  const email = typeof window !== "undefined" ? sessionStorage.getItem("email") : null;
+  const [userId, setUserId] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  
+  useEffect(() => {
+    const storedUserId = sessionStorage.getItem("userId");
+    const storedEmail = sessionStorage.getItem("email");
+  
+    setUserId(storedUserId);
+    setEmail(storedEmail);
+  }, []);
+
 
   const openDialog = useCallback(() => setShowPaymentMethods(true), []);
   const toggleDialog = useCallback((state: boolean) => setShowPaymentMethods(state), []);
