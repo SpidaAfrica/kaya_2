@@ -28,7 +28,7 @@ interface Transaction {
   balance: string;
   status: string;
   amount: string;
-  type: "deposit" | "transfer";
+  type: "deposit" | "withdrawal";
 }
 
 export default function TransactionsPage() {
@@ -130,7 +130,7 @@ export default function TransactionsPage() {
                       <SelectContent>
                         <SelectItem value="">All</SelectItem>
                         <SelectItem value="deposit">Deposit</SelectItem>
-                        <SelectItem value="transfer">Transfer</SelectItem>
+                        <SelectItem value="transfer">Withdrawal</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
