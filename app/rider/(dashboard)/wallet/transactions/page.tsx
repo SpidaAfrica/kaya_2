@@ -51,7 +51,7 @@ export default function TransactionsPage() {
         date: filterDate,
       });
 
-      const res = await fetch(`/api/transactions.php?${query}`);
+      const res = await fetch(`https://www.spida.africa/kaya-api/rider-transactions.php?${query}`);
       const data = await res.json();
       setTransactions(data.transactions);
       setTotalPages(data.pagination.totalPages);
