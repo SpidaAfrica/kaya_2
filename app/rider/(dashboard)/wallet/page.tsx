@@ -52,7 +52,7 @@ interface Transaction {
   balance: string;
   status: string;
   amount: string;
-  type: "deposit" | "transfer";
+  type: "deposit" | "withdrawal";
 }
 
 
@@ -285,7 +285,7 @@ function WalletOverView({
                       <SelectContent>
                         <SelectItem value="">All</SelectItem>
                         <SelectItem value="deposit">Deposit</SelectItem>
-                        <SelectItem value="transfer">Transfer</SelectItem>
+                        <SelectItem value="transfer">Withdrawal</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
