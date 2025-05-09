@@ -38,7 +38,7 @@ import Script from "next/script";
 
 
 
-interface Transaction {
+type Props = {
   id: number;
   date: string;
   title: string;
@@ -46,8 +46,10 @@ interface Transaction {
   balance: string;
   status: string;
   amount: string;
-  type: "deposit" | "transfer";
-}
+  type: "deposit" | "transfer" | "withdrawal";
+  onClick?(): void;
+};
+
 
 export default function WalletPage() {
   const [hideBalance, setHideBalance] = useState(false);
