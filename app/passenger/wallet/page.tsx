@@ -34,11 +34,7 @@ import TransactionTile from "./TransactionTile";
 import { CardChip, WalletBanner } from "@/assets";
 import Script from "next/script";
 
-
-
-
-
-type Props = {
+type Transaction = {
   id: number;
   date: string;
   title: string;
@@ -47,7 +43,6 @@ type Props = {
   status: string;
   amount: string;
   type: "deposit" | "transfer" | "withdrawal";
-  onClick?(): void;
 };
 
 
