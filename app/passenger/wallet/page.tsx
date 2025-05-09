@@ -40,7 +40,7 @@ type Transaction = {
   title: string;
   referenceId: string;
   balance: string;
-  status: string;
+  status: "pending" | "successful" | "failed";
   amount: string;
   type: "deposit" | "transfer" | "withdrawal";
 };
