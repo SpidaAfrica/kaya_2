@@ -68,7 +68,7 @@ useEffect(() => {
     search,
   });
 
-  fetch(`https://jbuit.org/api/get-transactions.php?${query.toString()}`)
+  fetch(`https://spida.africa/kaya-api/get-transactions.php?${query.toString()}`)
     .then(res => res.json())
     .then(data => {
       if (data.success) {
