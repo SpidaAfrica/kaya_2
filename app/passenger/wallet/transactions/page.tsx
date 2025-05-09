@@ -85,7 +85,7 @@ useEffect(() => {
       <div className="mx-auto space-y-3">
         <div className="flex items-center justify-between">
           <p className="font-semibold text-xl">Recent Transactions</p>
-          <Link href={"wallet/transactions"} className="text-primary">
+          <Link href={"transactions"} className="text-primary">
             View All
           </Link>
         </div>
