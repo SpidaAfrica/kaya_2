@@ -25,13 +25,13 @@ import { Button } from "@/components/ui/button";
 import FormInput from "@/components/FormInput";
 // Ensure you import these icons from the correct library
 
-type Props = {
+type Transaction = {
   id: number;
   date: string;
   title: string;
   referenceId: string;
   balance: string;
-  status: string;
+  status: "pending" | "successful" | "failed";
   amount: string;
   type: "deposit" | "transfer" | "withdrawal";
   onClick?(): void;
