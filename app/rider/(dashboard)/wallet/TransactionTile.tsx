@@ -13,12 +13,12 @@ type Props = {
   balance: string;
   status: string;
   amount: string;
-  type: "deposit" | "transfer";
+  type: "deposit" | "withdrawal";
   onClick?(): void;
 };
 
 export default function TransactionTile(transaction: Props) {
-  const isTransfer = transaction.type === "transfer";
+  const isTransfer = transaction.type === "withdrawal";
   const isSuccessful = transaction.status.toLowerCase() === "successful";
 
   const icon = isTransfer ? (
