@@ -55,7 +55,7 @@ const [password, setPassword] = React.useState("");
       // ✅ Store in sessionStorage only on client
       if (typeof window !== "undefined") {
         sessionStorage.setItem("user", JSON.stringify(data));
-        localStorage.setItem("jwt_token", data.token); // Store JWT token
+        //localStorage.setItem("jwt_token", data.token); // Store JWT token
         const user = data.user || {};
 
         sessionStorage.setItem("userId", user.id || "");
@@ -63,6 +63,7 @@ const [password, setPassword] = React.useState("");
         sessionStorage.setItem("imageUrl", user.image_url || "");
         sessionStorage.setItem("fullName", user.fullName || "");
         sessionStorage.setItem("phoneNumber", user.phone || "");
+        sessionStorage.setItem("role","rider");
       }
 
       // ✅ Redirect to home
