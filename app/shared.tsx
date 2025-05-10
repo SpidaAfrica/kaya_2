@@ -320,8 +320,9 @@ export function Notifications() {
 
   useEffect(() => {
     const userId = sessionStorage.getItem("userId"); // or get from sessionStorage, cookies, etc.
+    const role = sessionStorage.getItem("role"); // e.g. 'user' or 'rider'
 
-    fetch(`https://jbuit.org/api/notifications.php?user_id=${userId}`)
+    fetch(`https://spida.africa/kaya-api/notifications.php?user_id=${userId}&role=${role}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
