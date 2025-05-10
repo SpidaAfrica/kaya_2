@@ -64,6 +64,7 @@ export default function SignInPage() {
         sessionStorage.setItem("imageUrl", user.image_url || "");
         sessionStorage.setItem("fullName", user.fullName || "");
         sessionStorage.setItem("phoneNumber", user.phone || "");
+        sessionStorage.getItem("role","sender");
       }
 
       // ✅ Redirect to home
