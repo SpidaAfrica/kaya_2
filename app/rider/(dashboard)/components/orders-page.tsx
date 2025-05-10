@@ -650,6 +650,8 @@ export const OrderDetailsModal = ({
       <ConfirmPickupModal
         modalOpen={confirmPickupModalOpen}
         setModalOpen={setConfirmPickupModalOpen}
+        activeOrder={activeOrder}
+        setActiveOrder={setActiveOrder}
         mainText="Confirm Pick up?"
         desc="Please ensure you have verified the package details before confirming pickup."
         continueFn={() => {
