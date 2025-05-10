@@ -723,12 +723,36 @@ export const HeadToPickUpTag = ({ className }: { className?: string }) => {
   );
 };
 
-const ArrivalNotification = () => {
+export const ArrivalNotification = () => {
+  const totalSeconds = 10 * 60; // 10 minutes
+  const radius = 16;
+  const circumference = 2 * Math.PI * radius;
+
+  const [secondsLeft, setSecondsLeft] = useState(totalSeconds);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setSecondsLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const progress = (secondsLeft / totalSeconds) * circumference;
+  const minutes = Math.floor(secondsLeft / 60);
+  const seconds = secondsLeft % 60;
+
   return (
     <div className="flex mt-[50px] items-center justify-center">
       {/* Circular Progress Indicator */}
       <div className="relative w-[70px] h-[70px] flex items-center justify-center">
-        <svg className="w-full h-full" viewBox="0 0 36 36">
+        <svg className="w-full h-full rotate-[-90deg]" viewBox="0 0 36 36">
           <circle
             className="text-gray-300"
             stroke="currentColor"
@@ -739,19 +763,21 @@ const ArrivalNotification = () => {
             r="16"
           />
           <circle
-            className="text-[#F17B2C]"
+            className="text-[#F17B2C] transition-all duration-300"
             stroke="currentColor"
             fill="transparent"
             strokeWidth="3"
-            strokeDasharray="100"
-            strokeDashoffset="75"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference - progress}
             strokeLinecap="round"
             cx="18"
             cy="18"
             r="16"
           />
         </svg>
-        <span className="absolute text-xs font-bold text-gray-700">5mins</span>
+        <span className="absolute text-xs font-bold text-gray-700">
+          {minutes}:{seconds.toString().padStart(2, "0")}
+        </span>
       </div>
 
       {/* Text Content */}
@@ -766,3 +792,4 @@ const ArrivalNotification = () => {
     </div>
   );
 };
+
