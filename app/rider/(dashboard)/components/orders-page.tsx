@@ -502,6 +502,7 @@ export const OrderDetailsModal = ({
                 onClick={() => setPhoneModalOpen(true)} 
               />
 
+                {/*  
               <MessageSquareMore 
                 size={25} 
                 color="#1D2939" 
@@ -512,7 +513,7 @@ export const OrderDetailsModal = ({
                   }
                 }}
               />
-
+              */}
               </div>
             </div>
             <div className="w-full flex items-center  justify-end">
