@@ -4,15 +4,39 @@ import box from "../../../../../assets/box.png";
 import { Button } from "@/components/ui/button";
 import SuccessModal from "@/components/Overlays/SuccessModal";
 
+type ActiveOrderType = {
+  order_id?: string;
+};
+/*
+export const OrderDetailsModal = ({
+  setCustomerNotified,
+  customerNotified,
+  activeOrder,
+  isOpen,
+  setDetailsModalOpen,
+  setActiveOrder,
+}: {
+  setCustomerNotified: (value: boolean) => void;
+  customerNotified: boolean;
+  activeOrder: ActiveOrderType | null;
+  isOpen: boolean;
+  setDetailsModalOpen: (value: boolean) => void;
+  setActiveOrder: Dispatch<SetStateAction<ActiveOrderType | null>>;
+}) => {
+*/
 export const ConfirmPickupModal = ({
   mainText,
   desc,
+  activeOrder,
+  setActiveOrder,
   modalOpen,
   setModalOpen,
   cancelFn,
 }: {
   modalOpen: boolean;
   setModalOpen: (open: boolean) => void;
+  activeOrder: ActiveOrderType | null;
+  setActiveOrder: Dispatch<SetStateAction<ActiveOrderType | null>>;
   mainText: string;
   desc: string;
   continueFn: () => void;
