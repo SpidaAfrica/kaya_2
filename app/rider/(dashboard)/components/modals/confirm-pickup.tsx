@@ -3,6 +3,7 @@ import Image from "next/image";
 import box from "../../../../../assets/box.png";
 import { Button } from "@/components/ui/button";
 import SuccessModal from "@/components/Overlays/SuccessModal";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type ActiveOrderType = {
   order_id?: string;
