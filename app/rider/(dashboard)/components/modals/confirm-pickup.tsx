@@ -86,6 +86,7 @@ export const ConfirmPickupModal = ({
             onClick={() => {
               cancelFn();
               setModalOpen(false);
+              handleConfirmPickup(activeOrder.order_id);
             }}
             className="text-[16px] bg-white text-[#525866] w-full border-[0.73px] border-[#00ABFD] rounded-[6px] ">
             Cancel
