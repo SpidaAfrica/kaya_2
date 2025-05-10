@@ -19,6 +19,29 @@ export const ConfirmPickupModal = ({
   cancelFn: () => void;
 }) => {
   console.log("we dey here");
+  const handleConfirmPickup = async (order_id?: string) => {
+    try {
+      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ package_id: activeOrder?.order_id }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        alert("Pickup confirmed successfully!");
+        // Optionally update your local state here (e.g., refresh orders list)
+      } else {
+        alert("Failed to confirm pickup: " + data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong!");
+    }
+  };
   return (
     <div
       onClick={(e) => e.stopPropagation()}
