@@ -412,6 +412,7 @@ export const OrderDetailsModal = ({
 
   const router = useRouter();
   console.log(activeOrder);
+  /*
   const handleConfirmPickup = async (order_id?: string) => {
     try {
       const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
@@ -435,6 +436,7 @@ export const OrderDetailsModal = ({
       alert("Something went wrong!");
     }
   };
+  */
 
   return (
     <div
@@ -601,9 +603,11 @@ export const OrderDetailsModal = ({
             onClick={() => {
               if (customerNotified) {
                 setConfirmPickupModalOpen(true);
+                /*
                 if (activeOrder?.order_id !== undefined) {
                   handleConfirmPickup(activeOrder.order_id);
                 }
+                */
               } else {
                 setActiveOrder((prev: any) => ({
                   ...prev,
