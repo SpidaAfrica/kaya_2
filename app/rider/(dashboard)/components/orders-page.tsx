@@ -672,6 +672,7 @@ export const OrderDetailsModal = ({
               : "Confirm Pick Up"}
           </Button>
           */
+          {orderStatus !== "delivered" && (
           <Button
               onClick={() => {
                 if (orderStatus === "Confirm Pick Up") {
@@ -700,6 +701,7 @@ export const OrderDetailsModal = ({
               className="bg-[#fff] mt-[14px] text-[#00ABFD] hover:text-white">
               Cancel Request
             </Button>
+          )}
           </div>
 
           {customerNotified && <ArrivalNotification />}
