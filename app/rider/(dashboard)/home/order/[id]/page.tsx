@@ -7,8 +7,8 @@ import user from "@/public/user.png";
 import clsx from "clsx";
 import MapWithRoute from "./MapWithRoute"; // your custom component
 import { Button } from "@/components/ui/button";
-import ArrivalNotification from "../order-page/ArrivalNotification";
-import ConfirmPickupModal from "../ConfirmPickupModal";
+import ArrivalNotification from "./../components/orders-page/ArrivalNotification";
+import ConfirmPickupModal from "./../components/orders-page/ConfirmPickupModal";
 
 type ActiveOrderType = {
   id?: number;
