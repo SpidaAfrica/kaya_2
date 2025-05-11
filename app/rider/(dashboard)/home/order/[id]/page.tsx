@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { X, Phone, Clock } from "lucide-react";
 import Image from "next/image";
-import user from "../../../../assets/temi.png";
+import user from "@/assets/temi.png";
 import clsx from "clsx";
 import MapWithRoute from "@/components/Overlays/MapWithRoute"; // your custom component
 import { Button } from "@/components/ui/button";
