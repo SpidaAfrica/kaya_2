@@ -1,4 +1,5 @@
-import { useRouter } from "next/router";
+"use client"
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { X, Phone, Clock } from "lucide-react";
 import Image from "next/image";
