@@ -5,10 +5,10 @@ import { X, Phone, Clock } from "lucide-react";
 import Image from "next/image";
 import user from "@/public/user.png";
 import clsx from "clsx";
-import MapWithRoute from "./MapWithRoute"; // your custom component
+import MapWithRoute from "@/components/Overlays/MapWithRoute"; // your custom component
 import { Button } from "@/components/ui/button";
-import ArrivalNotification from "./../components/orders-page/ArrivalNotification";
-import ConfirmPickupModal from "./../components/orders-page/ConfirmPickupModal";
+import ArrivalNotification from "../../components/orders-page/ArrivalNotification";
+import ConfirmPickupModal from "../../components/orders-page/ConfirmPickupModal";
 
 type ActiveOrderType = {
   id?: number;
