@@ -7,7 +7,7 @@ import user from "@/assets/temi.png";
 import clsx from "clsx";
 import MapWithRoute from "@/components/Overlays/MapWithRoute"; // your custom component
 import { Button } from "@/components/ui/button";
-import { ConfirmPickupModal } from "./../components/modals/confirm-pickup";
+import { ConfirmPickupModal } from "/../components/modals/confirm-pickup";
 
 
 type ActiveOrderType = {
