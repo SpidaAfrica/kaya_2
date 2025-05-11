@@ -38,7 +38,6 @@ export const OrderDetailsModal = ({
   const [activeOrder, setActiveOrder] = useState<ActiveOrderType | null>(null);
   const [customerNotified, setCustomerNotified] = useState(false);
   const [phoneModalOpen, setPhoneModalOpen] = useState(false);
-  const [confirmPickupModalOpen, setConfirmPickupModalOpen] = useState(false);
 
   useEffect(() => {
     if (!package_id) return;
@@ -151,8 +150,6 @@ export const OrderDetailsModal = ({
               Back to Home
             </Button>
           </div>
-
-          {customerNotified && <ArrivalNotification />}
         </div>
         
         {phoneModalOpen && (
