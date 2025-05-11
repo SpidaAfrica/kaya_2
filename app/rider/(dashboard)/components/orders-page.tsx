@@ -472,6 +472,7 @@ export const OrderDetailsModal = ({
 
 
   return (
+    <>
     <div
       onClick={() => setDetailsModalOpen(false)}
       className={clsx(
@@ -747,6 +748,7 @@ export const OrderDetailsModal = ({
     )}
 
     </div>
+  </>
   );
 };
 
