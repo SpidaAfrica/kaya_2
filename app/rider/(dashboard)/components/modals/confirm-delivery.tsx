@@ -9,7 +9,7 @@ type ActiveOrderType = {
   order_id?: string;
 };
 
-export const ConfirmPickupModal = ({
+export const ConfirmDelivery = ({
   mainText,
   desc,
   activeOrder,
