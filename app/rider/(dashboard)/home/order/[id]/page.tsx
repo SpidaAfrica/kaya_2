@@ -7,7 +7,6 @@ import user from "@/assets/temi.png";
 import clsx from "clsx";
 import MapWithRoute from "@/components/Overlays/MapWithRoute"; // your custom component
 import { Button } from "@/components/ui/button";
-import { ConfirmPickupModal } from "/../components/modals/confirm-pickup";
 
 
 type ActiveOrderType = {
@@ -155,20 +154,7 @@ export const OrderDetailsModal = ({
 
           {customerNotified && <ArrivalNotification />}
         </div>
-
-        {confirmPickupModalOpen && (
-          <ConfirmPickupModal
-            modalOpen={confirmPickupModalOpen}
-            setModalOpen={setConfirmPickupModalOpen}
-            activeOrder={activeOrder}
-            setActiveOrder={setActiveOrder}
-            mainText="Confirm Delivery?"
-            desc="Please ensure everything is in order before completing this delivery."
-            continueFn={handleConfirmDelivery}
-            cancelFn={() => setConfirmPickupModalOpen(false)}
-          />
-        )}
-
+        
         {phoneModalOpen && (
           <div
             onClick={() => setPhoneModalOpen(false)}
