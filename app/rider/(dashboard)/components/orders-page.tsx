@@ -397,6 +397,11 @@ export const OrderDetailsModal = ({
 
   const [confirmPickupModalOpen, setConfirmPickupModalOpen] = useState(false);
   const [phoneModalOpen, setPhoneModalOpen] = useState(false);
+  const [orderStatus, setOrderStatus] = useState<string | undefined>(activeOrder?.status);
+  useEffect(() => {
+  setOrderStatus(activeOrder?.status);
+}, [activeOrder]);
+
 
  /* if (typeof window === "undefined") return; // Prevent code from running on server
   
@@ -437,6 +442,34 @@ export const OrderDetailsModal = ({
     }
   };
   */
+    const confirmDelivery = async (order_id?: string) => {
+      if (!order_id) return;
+    
+      try {
+        const response = await fetch('https://spida.africa/kaya-api/rider/confirm-delivery.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ order_id }),
+        });
+    
+        const data = await response.json();
+    
+        if (data.success) {
+          alert("Delivery confirmed! Payment has been initiated.");
+          setOrderStatus("delivered");
+          setActiveOrder((prev) => prev ? { ...prev, status: "delivered" } : null);
+          setDetailsModalOpen(false);
+        } else {
+          alert("Failed to confirm delivery: " + data.message);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Something went wrong confirming delivery!");
+      }
+    };
+
 
   return (
     <div
@@ -600,6 +633,7 @@ export const OrderDetailsModal = ({
                 </div>
               </p>
             </div>
+            {/*
             <Button
             onClick={() => {
               if (customerNotified) {
@@ -609,6 +643,7 @@ export const OrderDetailsModal = ({
                   handleConfirmPickup(activeOrder.order_id);
                 }
                 */
+              /*
               } else {
                 setActiveOrder((prev: any) => ({
                   ...prev,
@@ -635,7 +670,28 @@ export const OrderDetailsModal = ({
               ? "Head to Pick up"
               : "Confirm Pick Up"}
           </Button>
-
+          */
+          <Button
+              onClick={() => {
+                if (orderStatus === "Confirm Pick Up") {
+                  setOrderStatus("ongoing"); // Local state update
+                  setActiveOrder((prev) => prev ? { ...prev, status: "ongoing" } : null);
+                } else if (orderStatus === "ongoing") {
+                  // Trigger confirm delivery logic here
+                  confirmDelivery(activeOrder?.order_id);
+                } else {
+                  setOrderStatus("Confirm Pick Up");
+                  setActiveOrder((prev) => prev ? { ...prev, status: "Confirm Pick Up" } : null);
+                }
+              }}
+              className="bg-[#00ABFD] text-white"
+            >
+              {orderStatus === "Confirm Pick Up"
+                ? "Confirm Pick Up"
+                : orderStatus === "ongoing"
+                ? "Confirm Delivery"
+                : "Head to Pick Up"}
+            </Button>
             <Button
               onClick={() => {
                 setDetailsModalOpen(false);
