@@ -462,7 +462,6 @@ export function RideOrderCard({ data }: RideProp) {
   );
 }
 
-
 interface Delivery {
   id: number;
   created_at: string;
@@ -470,60 +469,121 @@ interface Delivery {
   delivery_id: string;
   price: string;
   status: string;
+  rider_name: string;
+  bank_name: string;
+  account_number: string;
 }
 
 interface Props {
   delivery: Delivery;
   setShowDeliveryDetails: React.Dispatch<React.SetStateAction<boolean>>;
-  switchPage: (page: PageParam) => void;
+  switchPage: (page: string) => void;
 }
 
 export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Props) {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
   const handleClick = () => {
     setShowDeliveryDetails(true);
     switchPage("DELIVERY_DETAILS");
   };
 
+  const handleConfirmTransfer = () => {
+    console.log("Transfer initiated for delivery:", delivery.delivery_id);
+    // TODO: Add your API call here
+    setShowPaymentModal(false);
+  };
+
   return (
-    <button onClick={handleClick} className="flex w-full gap-2 md:gap-4 py-4 px-1">
-      <div className="w-14 h-12 shrink-0 bg-white flex items-center justify-center">
-        <Image src={PackageImg} alt="package" />
-      </div>
-      <div className="flex flex-col w-full gap-2">
-        <div className="flex flex-col md:items-center md:flex-row justify-between w-full">
-          <p className="text-lg font-medium max-w-48 truncate whitespace-nowrap">
-            {delivery.to_location}
-          </p>
-          <p className="text-xs text-green-400 flex gap-1 items-center rounded-md bg-green-100 px-2 py-1 w-fit">
-            <svg
-              width="13"
-              height="12"
-              viewBox="0 0 13 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M6.5 12C3.1862 12 0.5 9.3138 0.5 6C0.5 2.6862 3.1862 0 6.5 0C9.8138 0 12.5 2.6862 12.5 6C12.5 9.3138 9.8138 12 6.5 12ZM5.9018 8.4L10.1438 4.1574L9.2954 3.309L5.9018 6.7032L4.2044 5.0058L3.356 5.8542L5.9018 8.4Z"
-                fill="#38C793"
-              />
-            </svg>
-            {delivery.status}
-          </p>
+    <>
+      <button
+        onClick={handleClick}
+        className="flex w-full gap-2 md:gap-4 py-4 px-1"
+      >
+        <div className="w-14 h-12 shrink-0 bg-white flex items-center justify-center">
+          <Image src={PackageImg} alt="package" />
         </div>
-        <div className="flex items-center justify-between">
-          <p className="text-start text-foreground text-xl font-medium">
-            {delivery.price}
-          </p>
-          <p className="text-base font-medium">Order ID: #{delivery.delivery_id}</p>
+        <div className="flex flex-col w-full gap-2">
+          <div className="flex flex-col md:items-center md:flex-row justify-between w-full">
+            <p className="text-lg font-medium max-w-48 truncate whitespace-nowrap">
+              {delivery.to_location}
+            </p>
+            <p className="text-xs text-green-400 flex gap-1 items-center rounded-md bg-green-100 px-2 py-1 w-fit">
+              <svg
+                width="13"
+                height="12"
+                viewBox="0 0 13 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6.5 12C3.1862 12 0.5 9.3138 0.5 6C0.5 2.6862 3.1862 0 6.5 0C9.8138 0 12.5 2.6862 12.5 6C12.5 9.3138 9.8138 12 6.5 12ZM5.9018 8.4L10.1438 4.1574L9.2954 3.309L5.9018 6.7032L4.2044 5.0058L3.356 5.8542L5.9018 8.4Z"
+                  fill="#38C793"
+                />
+              </svg>
+              {delivery.status}
+            </p>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-start text-foreground text-xl font-medium">
+              {delivery.price}
+            </p>
+            <p className="text-base font-medium">
+              Order ID: #{delivery.delivery_id}
+            </p>
+          </div>
+          <div className="flex flex-col md:items-center md:flex-row justify-between">
+            <p className="text-foreground/60 text-xs text-start">
+              {delivery.created_at}
+            </p>
+            {delivery.status === "completed" && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowPaymentModal(true);
+                }}
+                className="text-xs bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+              >
+                Pay Rider
+              </button>
+            )}
+          </div>
         </div>
-        <div className="flex flex-col md:items-center md:flex-row justify-between">
-          <p className="text-foreground/60 text-xs text-start">{delivery.created_at}</p>
+        <ChevronRight className="hidden md:block" />
+      </button>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-xl p-6 w-full max-w-md shadow-lg">
+            <h2 className="text-xl font-semibold mb-4">Confirm Rider Payment</h2>
+            <div className="space-y-2 text-sm text-gray-700">
+              <p><strong>Rider Name:</strong> {delivery.rider_name}</p>
+              <p><strong>Bank Name:</strong> {delivery.bank_name}</p>
+              <p><strong>Account Number:</strong> {delivery.account_number}</p>
+              <p><strong>Amount:</strong> {delivery.price}</p>
+            </div>
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmTransfer}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Confirm Transfer
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-      <ChevronRight className="hidden md:block" />
-    </button>
+      )}
+    </>
   );
 }
-
 
 export function ViewMapInFullMode({
   userType,
