@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Phone } from "lucide-react"; // import Lucide phone icon
 
 interface Delivery {
   id: number;
@@ -11,7 +12,7 @@ interface Delivery {
   status: string;
   rider: string;
   rider_image: string;
-  rider_phone: string
+  rider_phone: string;
 }
 
 interface DeliveryDetailsProps {
@@ -59,9 +60,27 @@ export const DeliveryDetails_1: React.FC<DeliveryDetailsProps> = ({ delivery, on
             <span className="font-medium">Created At:</span>{" "}
             {new Date(delivery.created_at).toLocaleString()}
           </div>
+
+          {/* Rider Section */}
+          <div className="flex items-center gap-3 mt-4 border-t pt-4">
+            <img
+              src={delivery.rider_image}
+              alt="Rider"
+              className="w-12 h-12 rounded-full object-cover"
+            />
+            <div className="flex flex-col">
+              <span className="font-medium text-gray-800">{delivery.rider}</span>
+              <a
+                href={`tel:${delivery.rider_phone}`}
+                className="text-blue-600 hover:underline text-sm flex items-center gap-1"
+              >
+                <Phone size={14} className="text-blue-600" />
+                {delivery.rider_phone}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
