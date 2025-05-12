@@ -333,7 +333,6 @@ export default function WalletPage() {
               title={txn.description}
               reference={txn.reference}
               status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
-              created_at={txn.created_at}
               amount={txn.amount}
               type={txn.type as "credit" | "debit"}
               description={txn.description}
