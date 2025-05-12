@@ -831,6 +831,39 @@ export const OrderDetailsModal = ({
         </div>
       </div>
     )}
+    {paymentPopupOpen && (
+  <div
+    onClick={() => setPaymentPopupOpen(false)}
+    className="fixed inset-0 z-[200] bg-black/50 flex items-center justify-center"
+  >
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="bg-white rounded-2xl p-6 w-[90%] max-w-md text-center space-y-6"
+    >
+      <h2 className="text-xl font-bold text-[#1E2023]">Confirm Payment</h2>
+      <p className="text-gray-700">Have you received payment from the customer?</p>
+
+      <div className="flex flex-col gap-3">
+        <Button
+          onClick={() => {
+            setPaymentPopupOpen(false);
+            setDetailsModalOpen(false);
+          }}
+          className="bg-[#00ABFD] text-white"
+        >
+          Yes, I have been paid
+        </Button>
+        <Button
+          onClick={() => setPaymentPopupOpen(false)}
+          className="border border-[#00ABFD] text-[#00ABFD]"
+        >
+          No, cancel
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
+
 
     </div>
   </>
