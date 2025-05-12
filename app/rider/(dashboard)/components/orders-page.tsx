@@ -149,21 +149,21 @@ type TabType = keyof typeof statusMap;
         <EmptyOrderState />
       ) : (
           <div className="flex mt-[51px] flex-col gap-4">
-              {orders
-                .filter((order) => {
-                  if (!activeTab || !(activeTab in statusMap)) return false;
-              
-                  return statusMap[activeTab as TabType].includes(order?.status);
-                })
-                .map((order) => (
-                  <SingleOrderCard
-                    key={order.id}
-                    order={order}
-                    case2={activeTab}
-                    setActiveOrder={setActiveOrder}
-                    setDetailsModalOpen={setDetailsModalOpen}
-                    refreshOrders={getOrdersNearby}
-                  />
+            {orders
+              .filter((order) => {
+                if (!activeTab || !(activeTab in statusMap)) return false;
+        
+                return statusMap[activeTab as TabType].includes(order?.status || "");
+              })
+              .map((order) => (
+                <SingleOrderCard
+                  key={order.id}
+                  order={order}
+                  case2={activeTab}
+                  setActiveOrder={setActiveOrder}
+                  setDetailsModalOpen={setDetailsModalOpen}
+                  refreshOrders={getOrdersNearby}
+                />
               ))}
           </div>
       )}
