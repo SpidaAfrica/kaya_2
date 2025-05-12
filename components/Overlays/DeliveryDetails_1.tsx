@@ -11,6 +11,7 @@ interface Delivery {
   price: string;
   status: string;
   rider: string;
+  rider_name: string;
   rider_image: string;
   rider_phone: string;
 }
@@ -69,7 +70,7 @@ export const DeliveryDetails_1: React.FC<DeliveryDetailsProps> = ({ delivery, on
               className="w-12 h-12 rounded-full object-cover"
             />
             <div className="flex flex-col">
-              <span className="font-medium text-gray-800">{delivery.rider}</span>
+              <span className="font-medium text-gray-800">{delivery.rider_name}</span>
               <a
                 href={`tel:${delivery.rider_phone}`}
                 className="text-blue-600 hover:underline text-sm flex items-center gap-1"
