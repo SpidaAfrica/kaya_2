@@ -153,9 +153,9 @@ const Locations: React.FC = () => {
           <ArrowLeftIcon />
           View Saved Locations
         </Link>
-        <div className="flex gap-2 items-center text-sm text-primary">
+        <button className="flex items-center gap-2 text-primary">
           <RefreshCcw /> {loading ? "Refreshing..." : "Refresh"}
-        </div>
+        </button>
       </div>
 
       <RecentOrdersSection
