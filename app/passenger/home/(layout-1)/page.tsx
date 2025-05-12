@@ -25,6 +25,9 @@ interface Delivery {
   rider: string;
   rider_image: string;
   rider_phone: string;
+  rider_name: string;
+  bank_name: string;
+  account_number: string;
 }
 
 interface ApiResponse {
