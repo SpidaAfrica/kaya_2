@@ -35,7 +35,7 @@ import { CardChip, WalletBanner } from "@/assets";
 import Script from "next/script";
 
 type Transaction = {
-  id: number;
+  id: string;
   date: string;
   title: string;
   reference: string;
