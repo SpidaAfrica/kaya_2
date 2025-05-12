@@ -686,77 +686,7 @@ export const OrderDetailsModal = ({
                 </div>
               </p>
             </div>
-            {/*
-            <Button
-            onClick={() => {
-              if (customerNotified) {
-                setConfirmPickupModalOpen(true);
-                /*
-                if (activeOrder?.order_id !== undefined) {
-                  handleConfirmPickup(activeOrder.order_id);
-                }
-                */
-              /*
-              } else {
-                setActiveOrder((prev: any) => ({
-                  ...prev,
-                  status: "Confirm Pick Up",
-                }));
-                setTimeout(() => {
-                  setCustomerNotified(true);
-                }, 1000);
-              }
-            }}
-            disabled={
-              activeOrder?.status === "Confirm Pick Up" && !customerNotified
-            }
-            className={clsx(
-              "bg-[#00ABFD] text-white",
-              activeOrder?.status === "Confirm Pick Up" &&
-                !customerNotified &&
-                "bg-opacity-30"
-            )}
-          >
-            {activeOrder?.status === "Confirm Pick Up"
-              ? "Confirm Pick Up"
-              : activeOrder?.status == "ongoing"
-              ? "Head to Pick up"
-              : "Confirm Pick Up"}
-          </Button>
-          */
-          /*
-          {orderStatus !== "delivered" && (
-          <Button
-              onClick={() => {
-                if (orderStatus === "Confirm Pick Up") {
-                  setOrderStatus("ongoing"); // Local state update
-                  setActiveOrder((prev) => prev ? { ...prev, status: "ongoing" } : null);
-                } else if (orderStatus === "ongoing") {
-                  // Trigger confirm delivery logic here
-                  confirmDelivery(activeOrder?.order_id);
-                } else {
-                  setOrderStatus("Confirm Pick Up");
-                  setActiveOrder((prev) => prev ? { ...prev, status: "Confirm Pick Up" } : null);
-                }
-              }}
-              className="bg-[#00ABFD] text-white"
-            >
-              {orderStatus === "Confirm Pick Up"
-                ? "Confirm Pick Up"
-                : orderStatus === "ongoing"
-                ? "Confirm Delivery"
-                : "Head to Pick Up"}
-            </Button>
-            <Button
-              onClick={() => {
-                setDetailsModalOpen(false);
-              }}
-              className="bg-[#fff] mt-[14px] text-[#00ABFD] hover:text-white">
-              Cancel Request
-            </Button>
-          )}
-          */
-                {orderStatus !== "delivered" && (
+            {orderStatus !== "delivered" && (
                   <>
                     <Button
                       onClick={() => {
@@ -788,20 +718,6 @@ export const OrderDetailsModal = ({
           {customerNotified && <ArrivalNotification />}
         </div>
       </div>
-        {/*
-      <ConfirmPickupModal
-        modalOpen={confirmPickupModalOpen}
-        setModalOpen={setConfirmPickupModalOpen}
-        activeOrder={activeOrder}
-        setActiveOrder={setActiveOrder}
-        mainText="Confirm Pick up?"
-        desc="Please ensure you have verified the package details before confirming pickup."
-        continueFn={() => {
-          router.push(`/rider/home/order/${activeOrder?.order_id}`);
-        }}
-        cancelFn={() => {}}
-      />
-        */}
       {phoneModalOpen && (
       <div 
         onClick={() => setPhoneModalOpen(false)}
