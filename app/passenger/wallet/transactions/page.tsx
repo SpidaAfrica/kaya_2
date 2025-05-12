@@ -291,72 +291,6 @@ export default function WalletPage() {
 
   return (
     <>
-      {/*
-      <MainContent>
-        <div className="md:w-[90%] mx-auto space-y-5">
-          <>
-            <Script
-              src="https://js.paystack.co/v1/inline.js"
-              strategy="beforeInteractive"
-            />
-            <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
-              <Image src={WalletBanner} alt="banner" className="absolute z-10 w-full h-full object-cover" />
-              <div className="relative z-20 w-[90%] mx-auto py-5 h-full flex flex-col justify-between">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <p className="text-lg">Wallet Balance</p>
-                      <button onClick={() => setHideBalance(!hideBalance)}>
-                        {hideBalance ? <EyeClosed /> : <Eye />}
-                      </button>
-                    </div>
-                    <p className="font-semibold text-6xl">
-                      {hideBalance ? "****" : `₦${balance?.toFixed(2)}`}
-                    </p>
-                  </div>
-                  <Image src={CardChip} alt="card-chip" />
-                </div>
-                <div className="w-fit ml-auto">
-                  <Button
-                    variant="ghost"
-                    className="w-fit min-w-60 bg-background text-foreground"
-                    onClick={() => setShowModal(true)}
-                  >
-                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
-                        fill="#1E2023"
-                      />
-                    </svg>
-                    <p>Deposit Funds</p>
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* Modal */}
-            {/*
-            {showModal && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
-                  <h2 className="text-xl font-semibold mb-4">Deposit Funds</h2>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter amount"
-                    className="border w-full p-2 rounded mb-4"
-                  />
-                  <div className="flex justify-end gap-3">
-                    <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
-                    <Button onClick={handlePay}>Proceed</Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
-          */}
-
           <div className="w-[90%] mx-auto space-y-3">
             <div className="flex items-center justify-between">
               <p className="font-semibold text-xl">Recent Transactions</p>
@@ -464,51 +398,6 @@ export default function WalletPage() {
             />
           </div>
         </div>
-  {/*
-        <Dialog open={showPaymentMethods} onOpenChange={toggleDialog}>
-          <DialogContent className="w-full rounded-xl max-w-[90vw] md:max-w-lg">
-            <div className="h-full w-full relative px-6 py-8">
-              <DialogTrigger className="absolute top-4 right-4">
-                <button>
-                  <X />
-                </button>
-              </DialogTrigger>
-              <DialogHeader className="flex flex-row items-center justify-between border-b py-2">
-                <DialogTitle className="text-lg font-semibold">
-                  Add a New Payment Method
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="space-y-4 mt-4">
-                <button className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors text-left">
-                  <div className="rounded-full bg-emerald-100 p-2">
-                    <Building2 className="h-5 w-5 text-emerald-500" />
-                  </div>
-                  <div>
-                    <div className="font-medium">New Bank Account</div>
-                    <div className="text-sm text-gray-500">
-                      Securely add your bank account for seamless payments and quick refunds.
-                    </div>
-                  </div>
-                </button>
-
-                <button className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors text-left">
-                  <div className="rounded-full bg-emerald-100 p-2">
-                    <CreditCard className="h-5 w-5 text-emerald-500" />
-                  </div>
-                  <div>
-                    <div className="font-medium">New Credit/Debit Card</div>
-                    <div className="text-sm text-gray-500">
-                      Save your credit or debit card for fast and secure transactions.
-                    </div>
-                  </div>
-                </button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      </MainContent>
-  */}
     </>
   );
 }
