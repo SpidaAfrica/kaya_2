@@ -38,7 +38,7 @@ type Transaction = {
   id: number;
   date: string;
   title: string;
-  referenceId: string;
+  reference: string;
   balance: string;
   status: "success";
   amount: string;
@@ -331,7 +331,7 @@ export default function WalletPage() {
               id={txn.id}
               date={txn.created_at}
               title={txn.description}
-              referenceId={txn.reference}
+              reference={txn.reference}
               status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
               created_at={txn.created_at}
               amount={txn.amount}
