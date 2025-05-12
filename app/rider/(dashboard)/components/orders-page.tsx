@@ -153,7 +153,7 @@ type TabType = keyof typeof statusMap;
                 .filter((order) => {
                   if (!activeTab || !(activeTab in statusMap)) return false;
               
-                  return statusMap[activeTab as TabType].includes(order.status);
+                  return statusMap[activeTab as TabType].includes(order?.status);
                 })
                 .map((order) => (
                   <SingleOrderCard
