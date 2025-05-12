@@ -1,7 +1,96 @@
 "use client";
 export const dynamic = "force-dynamic";
+import React from "react";
+import { Badge } from "@/components/ui/badge";
 
-import { cn } from "@/lib/utils";
+type Props = {
+  id: number;
+  date: string;
+  title: string;
+  referenceId: string;
+  balance: string;
+  status: "success" | "pending" | "failed";
+  amount: string;
+  type: "credit" | "debit";
+  onClick?: () => void;
+};
+
+const TransactionTile = ({ id, date, title, referenceId, balance, status, amount, type, onClick }: Props) => {
+  const icon = {
+    credit: (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M5.64608 7.02411L0.130508 1.51048L1.50916 0.130859L7.02473 5.64643L11.85 0.820184V11.8504H0.819833L5.64608 7.02411Z"
+          fill="#38C793"
+        />
+      </svg>
+    ),
+    debit: (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M6.351 4.97469L11.8676 10.4893L10.4879 11.8689L4.97333 6.35334L0.147079 11.1796V0.148438H11.1773L6.351 4.97469Z"
+          fill="#DF1C41"
+        />
+      </svg>
+    ),
+  }[type];
+
+  const bgColor = {
+    credit: "bg-green-100",
+    debit: "bg-rose-100",
+  }[type];
+
+  const amountColor = {
+    credit: "text-green-500",
+    debit: "text-rose-500",
+  }[type];
+
+  const formattedDate = new Date(date).toLocaleDateString("en-NG", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return (
+    <div
+      onClick={onClick}
+      className="flex justify-between gap-4 p-3 rounded-2xl hover:bg-gray-50 cursor-pointer"
+    >
+      <div className="flex items-center gap-3 w-full">
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${bgColor}`}>
+          {icon}
+        </div>
+        <div className="flex flex-col justify-between flex-1">
+          <div className="text-[15px] font-medium text-gray-900">{title}</div>
+          <div className="text-xs text-gray-400">{formattedDate}</div>
+          <div className="text-xs text-gray-400">Ref: {referenceId}</div>
+        </div>
+      </div>
+      <div className="text-right flex flex-col items-end justify-center">
+        <div className={`font-semibold text-[15px] ${amountColor}`}>
+          {type === "credit" ? "+" : "-"}₦{Number(amount).toLocaleString()}
+        </div>
+        <Badge
+          className={`capitalize text-xs px-2 py-0.5 mt-1 ${
+            status === "success"
+              ? "bg-green-100 text-green-600"
+              : status === "pending"
+              ? "bg-yellow-100 text-yellow-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {status}
+        </Badge>
+      </div>
+    </div>
+  );
+};
+
+export default TransactionTile;
+
+/*import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import React from "react";
 
@@ -132,7 +221,7 @@ export default function TransactionTile(transaction: Props) {
               </svg>
               <small>{statusBadge.label}</small>
             </div>
-            */}
+            
           </div>
 
           <div className="flex items-center gap-2">
@@ -156,6 +245,7 @@ export default function TransactionTile(transaction: Props) {
     </div>
   );
 }
+*/
 
 
 /*"use client";
@@ -180,7 +270,6 @@ type Props = {
 export default function TransactionTile(transaction: Props) {
   const isTransfer = transaction.type === "withdrawal";
   const isSuccessful = transaction.status.toLowerCase() === "successful";
-
   const icon = isTransfer ? (
     <svg
       width="12"
