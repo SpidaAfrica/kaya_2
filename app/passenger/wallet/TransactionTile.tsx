@@ -10,6 +10,7 @@ type Props = {
   referenceId: string;
   status: "success" | "pending" | "failed";
   amount: string;
+  description: string;
   type: "credit" | "debit";
   onClick?: () => void;
 };
