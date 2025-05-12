@@ -43,6 +43,7 @@ type Transaction = {
   status: "success";
   amount: string;
   created_at: string;
+  description: string;
   type: "credit" | "deposit";
 };
 
@@ -335,6 +336,7 @@ export default function WalletPage() {
               created_at={txn.created_at}
               amount={txn.amount}
               type={txn.type as "credit" | "debit"}
+              description={txn.description}
               onClick={() => console.log("Transaction:", txn.id)}
             />
             )
