@@ -396,6 +396,7 @@ useEffect(() => {
                       </Select>
                     </div>
                     */}
+/*
                     <div>
                       <Select onValueChange={(v) => setTypeFilter(v)}>
                         <Label className="text-xs">Transfer Type</Label>
