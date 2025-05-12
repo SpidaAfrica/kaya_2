@@ -3,17 +3,9 @@ export const dynamic = "force-dynamic";
 
 import React, { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeClosed, Plus, X, Building2, CreditCard } from "lucide-react";
+import { Eye, EyeClosed } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/Pagination";
 import {
@@ -30,9 +22,7 @@ import {
 } from "@/components/ui/custom-select";
 import { Label } from "@/components/ui/label";
 import DayDate from "@/components/DayDate";
-import { MainContent } from "@/app/layouts/app-layout";
 import Script from "next/script";
-import { CardChip, WalletBanner } from "@/assets";
 
 // Define type for transaction
 type Transaction = {
@@ -134,7 +124,7 @@ const TransactionTile = ({
 
 export default function WalletPage() {
   const [hideBalance, setHideBalance] = useState(false);
-  const [showPaymentMethods, setShowPaymentMethods] = useState(false);
+  const [balance, setBalance] = useState<number>(0);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -155,17 +145,7 @@ export default function WalletPage() {
     setEmail(storedEmail);
   }, []);
 
-  
-/*
-  const openDialog = useCallback(() => setShowPaymentMethods(true), []);
-  const toggleDialog = useCallback((state: boolean) => setShowPaymentMethods(state), []);
-
-  const [balance, setBalance] = useState<number>(0);
-  const [showModal, setShowModal] = useState(false);
-  const [amount, setAmount] = useState("");
-*/
   // Fetch wallet balance
-/*
   useEffect(() => {
     if (!userId) return;
     
@@ -186,62 +166,6 @@ export default function WalletPage() {
       })
       .catch(err => console.error("Error fetching wallet balance:", err));
   }, [userId]);
-
-  // Handle payment process
-  /*
-  const handlePay = () => {
-    if (!userId) {
-      alert("User ID is required");
-      return;
-    }
-  
-    const paystack = (window as any).PaystackPop;
-    if (!paystack) {
-      alert("Paystack is not available yet. Please try again.");
-      return;
-    }
-    
-    const reference = `TXN-${userId}-${Date.now()}`;
-  
-    const handler = paystack.setup({
-      key: "pk_test_8dbc024aefd873d13976ab80aa449c8aa6134e1d",
-      amount: Number(amount) * 100,
-      email: email,
-      callback: function (response: any) {
-        fetch("https://spida.africa/kaya-api/update-wallet.php", {
-          method: "POST",
-          body: new URLSearchParams({
-            user_id: userId || "",
-            amount: amount,
-            reference: reference,
-            description: "Wallet Top Up",
-            type: "credit",
-          }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success) {
-              alert("Wallet updated!");
-              setShowModal(false);
-              setBalance((prev) => prev + Number(amount));
-              setAmount("");
-            } else {
-              alert(data.message || "Error updating wallet.");
-            }
-          })
-          .catch(() => {
-            alert("Failed to update wallet on the server.");
-          });
-      },
-      onClose: function () {
-        alert("Payment cancelled.");
-      },
-    });
-  
-    handler.openIframe();
-  };
-  
-  */
   
   // Fetch transactions
   useEffect(() => {
@@ -251,24 +175,21 @@ export default function WalletPage() {
       const query = new URLSearchParams({
         user_id: userId,
         page: page.toString(),
-        type: typeFilter,
-        status: statusFilter,
-        search,
+        ...(typeFilter && { type: typeFilter }),
+        ...(statusFilter && { status: statusFilter }),
+        ...(search && { search }),
       });
 
       try {
         const res = await fetch(`https://spida.africa/kaya-api/get-transactions.php?${query.toString()}`);
         const data = await res.json();
         
-        // Match the exact API structure as provided
         if (data && Array.isArray(data.transactions)) {
           setTransactions(data.transactions);
           
           // Get pagination info
           if (data.pagination && typeof data.pagination === 'object') {
             setTotalPages(data.pagination.totalPages || 1);
-            // Optionally set the current page if needed
-            // setPage(data.pagination.currentPage);
           } else {
             setTotalPages(1);
           }
@@ -289,115 +210,169 @@ export default function WalletPage() {
     if (userId) fetchTransactions();
   }, [typeFilter, statusFilter, search, page, userId]);
 
+  // Toggle balance visibility
+  const toggleBalanceVisibility = useCallback(() => {
+    setHideBalance(prev => !prev);
+  }, []);
+
   return (
-    <>
-          <div className="w-[90%] mx-auto space-y-3">
-            <div className="flex items-center justify-between">
-              <p className="font-semibold text-xl">Recent Transactions</p>
-              <Link href="wallet/transactions" className="text-primary">
-                View All
-              </Link>
-            </div>
-            <p className="text-foreground/60">
-              Quick access to your latest transactions. Check the status or view
-              details.
-            </p>
-          </div>
-
-          <div className="w-[90%] mx-auto">
-            <div className="flex flex-col justify-between md:flex-row md:items-center gap-2">
-              <div className="flex items-center gap-2">
-                <DayDate />
-              </div>
-              <div className="flex items-center gap-2">
-                <Input
-                  type="text"
-                  placeholder="search"
-                  className="text-foreground rounded-md bg-background border border-foreground/20 px-2 !py-2 h-auto min-w-60 outline outline-1 outline-foreground/20"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex gap-3 items-center border-b py-[6px] rounded-md px-2 border">
-                    <svg
-                      width="14"
-                      height="10"
-                      viewBox="0 0 14 10"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M5.5 9.5H8.5V8H5.5V9.5ZM0.25 0.5V2H13.75V0.5H0.25ZM2.5 5.75H11.5V4.25H2.5V5.75Z"
-                        fill="#525866"
-                      />
-                    </svg>
-                    <span className="text-sm text-foreground/70">Filter</span>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-72 right-0 p-2">
-                    <header className="p-2">Filter Options</header>
-                    <div className="p-2 space-y-3 border-t border-b">
-                      <div>
-                        <Select onValueChange={setTypeFilter}>
-                          <Label className="text-xs">Transfer Type</Label>
-                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                            <SelectValue placeholder="select type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="credit">Credit</SelectItem>
-                            <SelectItem value="debit">Debit</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Select onValueChange={setStatusFilter}>
-                          <Label className="text-xs">Transaction Status</Label>
-                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                            <SelectValue placeholder="select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="success">Success</SelectItem>
-                            <SelectItem value="failed">Failed</SelectItem>
-                            <SelectItem value="pending">Pending</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-          </div>
-
-          <div className="w-[90%] mx-auto space-y-3 divide-y">
-            {loading ? (
-              <p>Loading transactions...</p>
-            ) : transactions.length > 0 ? (
-              transactions.map((txn) => (
-                <TransactionTile
-                  key={txn.id}
-                  id={txn.id}
-                  date={txn.created_at}
-                  title={txn.description}
-                  reference={txn.reference}
-                  status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
-                  amount={txn.amount}
-                  type={txn.type as "credit" | "debit"}
-                  balance={txn.balance}
-                  description={txn.description}
-                  created_at={txn.created_at}
-                  onClick={() => console.log("Transaction:", txn.id)}
-                />
-              ))
-            ) : (
-              <p>No transactions found.</p>
-            )}
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={setPage}
-            />
+    <div className="container mx-auto px-4 py-6">
+      {/* Wallet Balance Card */}
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Wallet Balance</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleBalanceVisibility}
+            className="h-8 w-8"
+          >
+            {hideBalance ? <EyeClosed size={18} /> : <Eye size={18} />}
+          </Button>
+        </div>
+        
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-2xl font-bold">
+            ₦{hideBalance ? "****" : balance.toLocaleString()}
+          </span>
         </div>
       </div>
-    </>
+
+      {/* Transactions Section */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <p className="font-semibold text-xl">Recent Transactions</p>
+          <Link href="/wallet/transactions" className="text-primary">
+            View All
+          </Link>
+        </div>
+        
+        <p className="text-foreground/60">
+          Quick access to your latest transactions. Check the status or view details.
+        </p>
+
+        {/* Filter Controls */}
+        <div className="flex flex-col justify-between md:flex-row md:items-center gap-4">
+          <DayDate />
+          
+          <div className="flex items-center gap-2">
+            <Input
+              type="text"
+              placeholder="Search transactions"
+              className="text-foreground rounded-md bg-background border border-foreground/20 px-4 py-2 h-auto min-w-60"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex gap-2 items-center border rounded-md px-4 py-2">
+                <svg
+                  width="14"
+                  height="10"
+                  viewBox="0 0 14 10"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5.5 9.5H8.5V8H5.5V9.5ZM0.25 0.5V2H13.75V0.5H0.25ZM2.5 5.75H11.5V4.25H2.5V5.75Z"
+                    fill="#525866"
+                  />
+                </svg>
+                <span className="text-sm">Filter</span>
+              </DropdownMenuTrigger>
+              
+              <DropdownMenuContent align="end" className="w-72 p-4">
+                <h4 className="font-medium mb-2">Filter Options</h4>
+                <div className="space-y-4 border-t pt-4">
+                  <div>
+                    <Label className="text-xs mb-1 block">Transfer Type</Label>
+                    <Select onValueChange={setTypeFilter} value={typeFilter}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Types</SelectItem>
+                        <SelectItem value="credit">Credit</SelectItem>
+                        <SelectItem value="debit">Debit</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label className="text-xs mb-1 block">Transaction Status</Label>
+                    <Select onValueChange={setStatusFilter} value={statusFilter}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Statuses</SelectItem>
+                        <SelectItem value="success">Success</SelectItem>
+                        <SelectItem value="failed">Failed</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex justify-end">
+                    <Button 
+                      variant="outline" 
+                      className="mr-2"
+                      onClick={() => {
+                        setTypeFilter("");
+                        setStatusFilter("");
+                      }}
+                    >
+                      Reset
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        // Apply filters already handled by state changes
+                      }}
+                    >
+                      Apply
+                    </Button>
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+
+        {/* Transactions List */}
+        <div className="space-y-2 divide-y">
+          {loading ? (
+            <div className="py-8 text-center">Loading transactions...</div>
+          ) : transactions.length > 0 ? (
+            transactions.map((txn) => (
+              <TransactionTile
+                key={txn.id}
+                id={txn.id}
+                date={txn.created_at}
+                title={txn.description}
+                reference={txn.reference}
+                status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
+                amount={txn.amount}
+                type={txn.type as "credit" | "debit"}
+                balance={txn.balance}
+                description={txn.description}
+                created_at={txn.created_at}
+                onClick={() => console.log("Transaction:", txn.id)}
+              />
+            ))
+          ) : (
+            <div className="py-8 text-center">No transactions found.</div>
+          )}
+        </div>
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
+        )}
+      </div>
+    </div>
   );
 }
