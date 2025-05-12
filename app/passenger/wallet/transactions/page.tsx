@@ -242,9 +242,6 @@ export default function WalletPage() {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <p className="font-semibold text-xl">Recent Transactions</p>
-          <Link href="/wallet/transactions" className="text-primary">
-            View All
-          </Link>
         </div>
         
         <p className="text-foreground/60">
