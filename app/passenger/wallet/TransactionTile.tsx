@@ -11,9 +11,9 @@ type Props = {
   title: string;
   referenceId: string;
   balance: string;
-  status: "successful" | "pending" | "failed";
+  status: "success";
   amount: string;
-  type: "deposit" | "transfer" | "withdrawal";
+  type: "credit" | "debit";
   onClick?(): void;
 };
 
@@ -53,16 +53,16 @@ export default function TransactionTile(transaction: Props) {
   }[transaction.type];
 
   const amountColor = {
-    deposit: "text-green-500",
-    transfer: "text-rose-500",
+    credit: "text-green-500",
+    debit: "text-rose-500",
     withdrawal: "text-orange-500",
   }[transaction.type];
 
   const statusBadge = {
-    successful: {
+    success: {
       text: "text-green-400",
       bg: "bg-green-100",
-      label: "Successful",
+      label: "success",
     },
     pending: {
       text: "text-yellow-500",
@@ -144,11 +144,11 @@ export default function TransactionTile(transaction: Props) {
 
         <div className="flex items-center justify-between">
           <p className="font-medium text-lg">Balance: {transaction.balance}</p>
-          <p className="text-sm">Reference: {transaction.referenceId}</p>
+          <p className="text-sm">Reference: {transaction.reference}</p>
         </div>
 
         <div className="flex flex-col md:flex-row md:items-center justify-between">
-          <p className="text-foreground/60 text-xs">{transaction.date}</p>
+          <p className="text-foreground/60 text-xs">{transaction.created_at}</p>
         </div>
       </div>
 
