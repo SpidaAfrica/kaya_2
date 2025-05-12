@@ -204,7 +204,7 @@ const RecentOrdersSection: React.FC<{
           key={index}
           delivery={delivery}
           setShowDeliveryDetails={setShowDeliveryDetails}
-          switchPage={switchPage}
+          switchPage={switchPage as (page: string) => void}
         />
       </div>
       ))
