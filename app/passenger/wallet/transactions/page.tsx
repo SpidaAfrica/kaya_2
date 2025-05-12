@@ -205,7 +205,17 @@ useEffect(() => {
           {loading ? (
             <p>Loading transactions...</p>
           ) : transactions.length > 0 ? (
-            transactions.map((tx) => <TransactionTile key={tx.id} {...tx} />)
+            transactions.map((tx) => <TransactionTile
+              id={txn.id}
+              date={txn.created_at}
+              title={txn.description}
+              reference={txn.reference}
+              status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
+              amount={txn.amount}
+              type={txn.type as "credit" | "debit"}
+              description={txn.description}
+              onClick={() => console.log("Transaction:", txn.id)}
+            />)
           ) : (
             <p>No transactions found.</p>
           )}
