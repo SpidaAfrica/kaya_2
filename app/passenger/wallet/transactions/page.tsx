@@ -29,12 +29,13 @@ type Transaction = {
   id: number;
   date: string;
   title: string;
-  referenceId: string;
+  reference: string;
   balance: string;
-  status: "pending" | "successful" | "failed";
+  status: "success";
   amount: string;
-  type: "deposit" | "transfer" | "withdrawal";
-  onClick?(): void;
+  created_at: string;
+  description: string;
+  type: "credit" | "deposit";
 };
 
 
