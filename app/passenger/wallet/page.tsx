@@ -325,7 +325,17 @@ export default function WalletPage() {
           {loading ? (
             <p>Loading transactions...</p>
           ) : transactions.length > 0 ? (
-            transactions.map((tx) => <TransactionTile key={tx.id} {...tx} />)
+            transactions.map((tx) => <TransactionTile
+              id={parseInt(txn.id)}
+              date={txn.created_at}
+              title={txn.description}
+              referenceId={txn.reference}
+              status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
+              amount={txn.amount}
+              type={txn.type as "credit" | "debit"}
+              onClick={() => console.log("Transaction:", txn.id)}
+            />
+            )
           ) : (
             <p>No transactions found.</p>
           )}
