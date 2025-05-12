@@ -9,6 +9,9 @@ interface Delivery {
   delivery_id: string;
   price: string;
   status: string;
+  rider: string;
+  rider_image: string;
+  rider_phone: string
 }
 
 interface DeliveryDetailsProps {
