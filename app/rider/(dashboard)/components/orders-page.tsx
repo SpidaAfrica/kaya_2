@@ -402,6 +402,58 @@ export const OrderDetailsModal = ({
   setOrderStatus(activeOrder?.status);
 }, [activeOrder]);
 
+  const [paymentPopupOpen, setPaymentPopupOpen] = useState(false);
+
+  const handleConfirmPickup = async (order_id?: string) => {
+    if (!order_id) return;
+    try {
+      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ package_id: order_id }),
+      });
+  
+      const data = await response.json();
+      if (data.success) {
+        setOrderStatus("ongoing");
+        setActiveOrder((prev) => prev ? { ...prev, status: "ongoing" } : null);
+      } else {
+        alert("Failed to confirm pickup: " + data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong confirming pickup!");
+    }
+  };
+  
+  const handleConfirmDelivery = async (order_id?: string) => {
+    if (!order_id) return;
+    try {
+      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-delivery.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ order_id }),
+      });
+  
+      const data = await response.json();
+      if (data.success) {
+        setOrderStatus("delivered");
+        setActiveOrder((prev) => prev ? { ...prev, status: "delivered" } : null);
+        setPaymentPopupOpen(true); // Show payment modal
+      } else {
+        alert("Failed to confirm delivery: " + data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong confirming delivery!");
+    }
+  };
+
+
 
  /* if (typeof window === "undefined") return; // Prevent code from running on server
   
@@ -442,6 +494,7 @@ export const OrderDetailsModal = ({
     }
   };
   */
+  /*
     const confirmDelivery = async (order_id?: string) => {
       if (!order_id) return;
     
@@ -469,8 +522,7 @@ export const OrderDetailsModal = ({
         alert("Something went wrong confirming delivery!");
       }
     };
-
-
+  */
   return (
     <>
     <div
@@ -672,6 +724,7 @@ export const OrderDetailsModal = ({
               : "Confirm Pick Up"}
           </Button>
           */
+          /*
           {orderStatus !== "delivered" && (
           <Button
               onClick={() => {
@@ -702,11 +755,40 @@ export const OrderDetailsModal = ({
               Cancel Request
             </Button>
           )}
+          */
+                {orderStatus !== "delivered" && (
+                  <>
+                    <Button
+                      onClick={() => {
+                        if (orderStatus === "Confirm Pick Up") {
+                          handleConfirmPickup(activeOrder?.order_id);
+                        } else if (orderStatus === "ongoing") {
+                          handleConfirmDelivery(activeOrder?.order_id);
+                        }
+                      }}
+                      className="bg-[#00ABFD] text-white"
+                    >
+                      {orderStatus === "Confirm Pick Up"
+                        ? "Confirm Pick Up"
+                        : orderStatus === "ongoing"
+                        ? "Confirm Delivery"
+                        : "Head to Pick Up"}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setDetailsModalOpen(false);
+                      }}
+                      className="bg-[#fff] mt-[14px] text-[#00ABFD] hover:text-white"
+                    >
+                      Cancel Request
+                    </Button>
+                  </>
+                )}
           </div>
-
           {customerNotified && <ArrivalNotification />}
         </div>
       </div>
+        {/*
       <ConfirmPickupModal
         modalOpen={confirmPickupModalOpen}
         setModalOpen={setConfirmPickupModalOpen}
@@ -719,6 +801,7 @@ export const OrderDetailsModal = ({
         }}
         cancelFn={() => {}}
       />
+        */}
       {phoneModalOpen && (
       <div 
         onClick={() => setPhoneModalOpen(false)}
