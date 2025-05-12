@@ -298,8 +298,8 @@ export default function WalletPage() {
                           <SelectValue placeholder="select type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="deposit">Deposit</SelectItem>
-                          <SelectItem value="transfer">Transfer</SelectItem>
+                          <SelectItem value="deposit">crdeit</SelectItem>
+                          <SelectItem value="transfer">debit</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -310,9 +310,9 @@ export default function WalletPage() {
                           <SelectValue placeholder="select status" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="successful">Successful</SelectItem>
-                          <SelectItem value="failed">Failed</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
+                          <SelectItem value="successful">success</SelectItem>
+                          <SelectItem value="failed">failed</SelectItem>
+                          <SelectItem value="cancelled">cancelled</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -328,6 +328,7 @@ export default function WalletPage() {
             <p>Loading transactions...</p>
           ) : transactions.length > 0 ? (
             transactions.map((txn) => <TransactionTile
+              key={txn.id}
               id={txn.id}
               date={txn.created_at}
               title={txn.description}
