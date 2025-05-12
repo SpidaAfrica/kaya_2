@@ -187,7 +187,7 @@ function Locations() {
                 <OrderCard_1
                   delivery={delivery}
                   setShowDeliveryDetails={setShowDeliveryDetails}
-                  switchPage={switchPage}
+                  switchPage={switchPage as (page: string) => void}
                 />
                 </button>
               </DeliveryDetails>
