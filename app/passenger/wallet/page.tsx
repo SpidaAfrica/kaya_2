@@ -210,6 +210,7 @@ const icon = {
   
 
   return (
+  <>
     <MainContent>
       <div className="md:w-[90%] mx-auto space-y-5">
       <>
@@ -463,5 +464,6 @@ const icon = {
         </DialogContent>
       </Dialog>
     </MainContent>
+  </>
   );
 }
