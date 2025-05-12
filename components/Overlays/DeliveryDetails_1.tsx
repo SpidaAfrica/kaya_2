@@ -14,6 +14,9 @@ interface Delivery {
   rider_name: string;
   rider_image: string;
   rider_phone: string;
+  rider_name: string;
+  bank_name: string;
+  account_number: string;
 }
 
 interface DeliveryDetailsProps {
