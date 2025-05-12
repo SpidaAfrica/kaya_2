@@ -102,9 +102,10 @@ const Locations: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
-  const switchPage = useCallback((page: PageParams) => {
-    setCurrentPage(page);
-  }, []);
+const switchPage = useCallback((page: string) => {
+  setCurrentPage(page as PageParams); // safe cast here
+}, []);
+
 
   const close = useCallback(() => {
     setShowDeliveryDetails(false);
