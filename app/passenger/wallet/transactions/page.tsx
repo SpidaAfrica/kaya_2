@@ -396,8 +396,8 @@ export default function WalletPage() {
               totalPages={totalPages}
               onPageChange={setPage}
             />
-          </div>
         </div>
+      </div>
     </>
   );
 }
