@@ -141,28 +141,27 @@ export const OrdersPage = () => {
       {orders.length === 0 ? (
         <EmptyOrderState />
       ) : (
-        <div className="flex mt-[51px] flex-col gap-4">
-          {orders
-            .filter((order) => {
-              if (activeTab === "available") {
-                return order.status === "pending";
-              } else if (activeTab === "ongoing") {
-                return order.status == "ongoing";
-              }
-              return false;
-            })
-            .map((order) => (
-              <SingleOrderCard
-                key={order.id}
-                order={order}
-                case2={activeTab}
-                setActiveOrder={setActiveOrder}
-                setDetailsModalOpen={setDetailsModalOpen}
-                refreshOrders={getOrdersNearby} // Add refresh after action
-              />
-            ))}
-        </div>
-
+          <div className="flex mt-[51px] flex-col gap-4">
+            {orders
+              .filter((order) => {
+                const statusMap = {
+                  available: ["pending"],
+                  ongoing: ["ongoing", "picked"], // assuming "picked" is a valid status
+                };
+          
+                return statusMap[activeTab]?.includes(order.status);
+              })
+              .map((order) => (
+                <SingleOrderCard
+                  key={order.id}
+                  order={order}
+                  case2={activeTab}
+                  setActiveOrder={setActiveOrder}
+                  setDetailsModalOpen={setDetailsModalOpen}
+                  refreshOrders={getOrdersNearby} // Add refresh after action
+                />
+              ))}
+          </div>
       )}
 
       <OrderDetailsModal
@@ -417,8 +416,8 @@ export const OrderDetailsModal = ({
   
       const data = await response.json();
       if (data.success) {
-        setOrderStatus("ongoing");
-        setActiveOrder((prev) => prev ? { ...prev, status: "ongoing" } : null);
+        setOrderStatus("picked");
+        setActiveOrder((prev) => prev ? { ...prev, status: "picked" } : null);
       } else {
         alert("Failed to confirm pickup: " + data.message);
       }
@@ -441,8 +440,8 @@ export const OrderDetailsModal = ({
   
       const data = await response.json();
       if (data.success) {
-        setOrderStatus("delivered");
-        setActiveOrder((prev) => prev ? { ...prev, status: "delivered" } : null);
+        setOrderStatus("completed");
+        setActiveOrder((prev) => prev ? { ...prev, status: "completed" } : null);
         setPaymentPopupOpen(true); // Show payment modal
       } else {
         alert("Failed to confirm delivery: " + data.message);
@@ -686,21 +685,21 @@ export const OrderDetailsModal = ({
                 </div>
               </p>
             </div>
-            {orderStatus !== "delivered" && (
+            {orderStatus !== "completed" && (
                   <>
                     <Button
                       onClick={() => {
-                        if (orderStatus === "Confirm Pick Up") {
+                        if (orderStatus === "ongoing") {
                           handleConfirmPickup(activeOrder?.order_id);
-                        } else if (orderStatus === "ongoing") {
+                        } else if (orderStatus === "picked") {
                           handleConfirmDelivery(activeOrder?.order_id);
                         }
                       }}
                       className="bg-[#00ABFD] text-white"
                     >
-                      {orderStatus === "Confirm Pick Up"
+                      {orderStatus === "ongoing"
                         ? "Confirm Pick Up"
-                        : orderStatus === "ongoing"
+                        : orderStatus === "picked"
                         ? "Confirm Delivery"
                         : "Head to Pick Up"}
                     </Button>
