@@ -95,6 +95,8 @@ export default function WalletPage() {
       alert("Paystack is not available yet. Please try again.");
       return;
     }
+    
+    const reference = `TXN-${userId}-${Date.now()}`;
   
     const handler = paystack.setup({
       key: "pk_test_8dbc024aefd873d13976ab80aa449c8aa6134e1d",
@@ -106,6 +108,9 @@ export default function WalletPage() {
           body: new URLSearchParams({
             user_id: userId || "",
             amount: amount,
+            reference: reference,
+            description: "Wallet Top Up",
+            type:"credit",
           }),
         })
           .then((res) => res.json())
