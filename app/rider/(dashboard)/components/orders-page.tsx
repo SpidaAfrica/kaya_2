@@ -106,6 +106,13 @@ export const OrdersPage = () => {
     setActiveTab(tab);
   };
 
+const statusMap = {
+  available: ["pending"],
+  ongoing: ["ongoing", "picked"],
+};
+
+type TabType = keyof typeof statusMap;
+
   return (
     <div className="pb-[153px] mt-[115px]">
       {/* Tabs */}
@@ -142,24 +149,21 @@ export const OrdersPage = () => {
         <EmptyOrderState />
       ) : (
           <div className="flex mt-[51px] flex-col gap-4">
-            {orders
-              .filter((order) => {
-                const statusMap = {
-                  available: ["pending"],
-                  ongoing: ["ongoing", "picked"], // assuming "picked" is a valid status
-                };
-          
-                return statusMap[activeTab]?.includes(order.status);
-              })
-              .map((order) => (
-                <SingleOrderCard
-                  key={order.id}
-                  order={order}
-                  case2={activeTab}
-                  setActiveOrder={setActiveOrder}
-                  setDetailsModalOpen={setDetailsModalOpen}
-                  refreshOrders={getOrdersNearby} // Add refresh after action
-                />
+              {orders
+                .filter((order) => {
+                  if (!activeTab || !(activeTab in statusMap)) return false;
+              
+                  return statusMap[activeTab as TabType].includes(order.status);
+                })
+                .map((order) => (
+                  <SingleOrderCard
+                    key={order.id}
+                    order={order}
+                    case2={activeTab}
+                    setActiveOrder={setActiveOrder}
+                    setDetailsModalOpen={setDetailsModalOpen}
+                    refreshOrders={getOrdersNearby}
+                  />
               ))}
           </div>
       )}
