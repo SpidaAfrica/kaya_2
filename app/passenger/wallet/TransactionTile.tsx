@@ -65,7 +65,7 @@ const TransactionTile = ({ id, date, title, reference, status, description, amou
         <div className="flex flex-col justify-between flex-1">
           <div className="text-[15px] font-medium text-gray-900">{title}</div>
           <div className="text-xs text-gray-400">{formattedDate}</div>
-          <div className="text-xs text-gray-400">Ref: {referenceId}</div>
+          <div className="text-xs text-gray-400">Ref: {reference}</div>
         </div>
       </div>
       <div className="text-right flex flex-col items-end justify-center">
