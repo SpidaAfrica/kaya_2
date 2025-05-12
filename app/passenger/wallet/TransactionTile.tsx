@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 type Props = {
   id: number;
   date: string;
-  created_at: string;
   title: string;
   referenceId: string;
   status: "success" | "pending" | "failed";
