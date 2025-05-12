@@ -8,14 +8,13 @@ type Props = {
   date: string;
   title: string;
   referenceId: string;
-  balance: string;
   status: "success" | "pending" | "failed";
   amount: string;
   type: "credit" | "debit";
   onClick?: () => void;
 };
 
-const TransactionTile = ({ id, date, title, referenceId, balance, status, amount, type, onClick }: Props) => {
+const TransactionTile = ({ id, date, title, referenceId, status, amount, type, onClick }: Props) => {
   const icon = {
     credit: (
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
