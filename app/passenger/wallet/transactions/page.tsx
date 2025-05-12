@@ -26,7 +26,7 @@ import FormInput from "@/components/FormInput";
 // Ensure you import these icons from the correct library
 
 type Transaction = {
-  id: number;
+  id: string;
   date: string;
   title: string;
   reference: string;
