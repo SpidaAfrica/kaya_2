@@ -169,7 +169,17 @@ export default function WalletPage() {
     fetch(`https://spida.africa/kaya-api/get-wallet.php?user_id=${userId}`)
       .then(res => res.json())
       .then(data => {
-        if (data.success) setBalance(Number(data.balance));
+        if (data && data.balance) {
+          setBalance(Number(data.balance));
+        } else if (data && typeof data === 'object') {
+          // Try to find balance in the response
+          const possibleBalance = Object.values(data).find(val => 
+            !isNaN(Number(val)) || (typeof val === 'string' && !isNaN(Number(val)))
+          );
+          if (possibleBalance) {
+            setBalance(Number(possibleBalance));
+          }
+        }
       })
       .catch(err => console.error("Error fetching wallet balance:", err));
   }, [userId]);
@@ -243,15 +253,28 @@ export default function WalletPage() {
       try {
         const res = await fetch(`https://spida.africa/kaya-api/get-transactions.php?${query.toString()}`);
         const data = await res.json();
-        if (data.success) {
-          setTransactions(data.transactions || []);
-          setTotalPages(data.totalPages || 1);
+        
+        // Match the exact API structure as provided
+        if (data && Array.isArray(data.transactions)) {
+          setTransactions(data.transactions);
+          
+          // Get pagination info
+          if (data.pagination && typeof data.pagination === 'object') {
+            setTotalPages(data.pagination.totalPages || 1);
+            // Optionally set the current page if needed
+            // setPage(data.pagination.currentPage);
+          } else {
+            setTotalPages(1);
+          }
         } else {
+          console.warn("Unexpected API response format:", data);
           setTransactions([]);
+          setTotalPages(1);
         }
       } catch (error) {
         console.error("Error fetching transactions:", error);
         setTransactions([]);
+        setTotalPages(1);
       } finally {
         setLoading(false);
       }
