@@ -4,7 +4,7 @@ import React from "react";
 import { Badge } from "@/components/ui/badge";
 
 type Props = {
-  id: number;
+  id: string;
   date: string;
   title: string;
   reference: string;
