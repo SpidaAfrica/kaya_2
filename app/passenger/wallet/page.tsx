@@ -325,7 +325,7 @@ export default function WalletPage() {
           {loading ? (
             <p>Loading transactions...</p>
           ) : transactions.length > 0 ? (
-            transactions.map((tx) => <TransactionTile
+            transactions.map((txn) => <TransactionTile
               id={parseInt(txn.id)}
               date={txn.created_at}
               title={txn.description}
