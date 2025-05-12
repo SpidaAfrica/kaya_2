@@ -24,6 +24,7 @@ interface Delivery {
   status: string;
   rider: string;
   rider_image: string;
+  rider_phone: string;
 }
 
 interface ApiResponse {
