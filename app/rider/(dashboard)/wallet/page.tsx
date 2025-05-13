@@ -151,7 +151,7 @@ export default function WalletPage() {
   
   // Load user data from session storage
   useEffect(() => {
-    const storedUserId = sessionStorage.getItem("userId");
+    const storedUserId = sessionStorage.getItem("rider_id");
     const storedEmail = sessionStorage.getItem("email");
   
     setUserId(storedUserId);
