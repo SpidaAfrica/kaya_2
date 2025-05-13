@@ -505,7 +505,6 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
       const data = await response.json();
       if (data.success) {
         setMessage("Payment sent to rider!");
-        onSuccess?.();
         setShowPaymentModal(false);
       } else {
         alert("Failed to confirm delivery: " + data.message);
@@ -549,7 +548,6 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
       const data = await response.json();
       if (data.success) {
         setMessage("Payment sent to rider!");
-        onSuccess?.();
         setShowPaymentModal(false);
       } else {
         setMessage("Failed: " + data.message);
