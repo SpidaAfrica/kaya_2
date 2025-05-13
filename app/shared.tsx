@@ -521,7 +521,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     setMessage("");
     console.log("Transfer initiated for delivery:", delivery.delivery_id);
 
-    const reference = `DEL-${delivery.id}-${Date.now()}`;
+    const reference = `DEL-${delivery.delivery_id}-${Date.now()}`;
     const description = `Delivery payment for order ${delivery.delivery_id}`;
     const riderId = delivery.rider;
     const amount = delivery.price;
