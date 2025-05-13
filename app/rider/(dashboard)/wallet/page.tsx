@@ -36,6 +36,7 @@ import { CardChip, WalletBanner } from "@/assets";
 import FormInput from "@/components/FormInput";
 import SuccessModal from "@/components/Overlays/SuccessModal";
 import { ClogIcon, KeyboardIcon, LockIcon } from "@/lib/icons";
+import WithdrawFunds from "./WithdrawFunds";
 
 // Define type for transaction
 type Transaction = {
@@ -165,6 +166,7 @@ export default function WalletPage() {
   const [balance, setBalance] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState("");
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
 
   // Fetch wallet balance
   useEffect(() => {
@@ -315,8 +317,8 @@ export default function WalletPage() {
                 </div>
                 <div className="w-fit ml-auto">
                     <Button
-                      onClick={() => setActiveStep(3)}
-                      variant={"ghost"}
+                      onClick={() => setShowWithdrawModal(true)}
+                      variant="ghost"
                       className="w-fit bg-background text-foreground">
                       <svg
                         width="11"
@@ -331,6 +333,15 @@ export default function WalletPage() {
                       </svg>
                       <p>Withdraw Funds</p>
                     </Button>
+              
+                    {/* Withdraw Modal */}
+                    {showWithdrawModal && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                        <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
+                          <WithdrawFunds onClose={() => setShowWithdrawModal(false)} />
+                        </div>
+                      </div>
+                    )}
                 </div>
               </div>
             </div>
@@ -623,7 +634,7 @@ const UpdatePin = ({
     </div>
   );
 };
-
+/*
 function WithdrawFunds({
   setActiveStep,
 }: {
@@ -698,3 +709,4 @@ function WithdrawFunds({
     </div>
   );
 }
+*/
