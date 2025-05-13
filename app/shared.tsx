@@ -524,6 +524,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     const reference = `DEL-${delivery.id}-${Date.now()}`;
     const description = `Delivery payment for order ${delivery.delivery_id}`;
     const riderId = delivery.rider;
+    const amount = delivery.price;
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
 
     if (!userId) {
@@ -539,7 +540,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
         body: JSON.stringify({
           sender_id: userId,
           rider_id: riderId,
-          price,
+          amount,
           reference,
           description,
         }),
