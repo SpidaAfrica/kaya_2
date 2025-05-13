@@ -7,7 +7,7 @@ import SuccessModal from "@/components/Overlays/SuccessModal";
 import FormInput from "@/components/FormInput";
 
 export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
-  const [riderId, riderId] = useState<string | null>(null);
+  const [riderId, setRiderId] = useState<string | null>(null);
   const [amount, setAmount] = useState("");
   const [accountName, setAccountName] = useState(""); // bank_name
   const [accountNumber, setAccountNumber] = useState("");
