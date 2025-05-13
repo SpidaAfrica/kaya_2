@@ -494,7 +494,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
   const handleOfflinePayment = async () => {
      const order_id = delivery.delivery_id;
     try {
-      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-payment.php', {
+      const response = await fetch('https://spida.africa/kaya-api/confirm-payment.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -534,7 +534,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     }
 
     try {
-      const response = await fetch("https://spida.africa/kaya-api/wallet/transfer.php", {
+      const response = await fetch("https://spida.africa/kaya-api/transfer.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
