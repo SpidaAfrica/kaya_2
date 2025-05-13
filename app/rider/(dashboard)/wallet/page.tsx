@@ -1,33 +1,26 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { CardChip, MoneyWings, WalletBanner } from "@/assets";
-import Image from "next/image";
+
 import React, { useCallback, useEffect, useState } from "react";
-
-import {
-  ChevronLeft,
-  ChevronRight,
-  Eye,
-  EyeClosed,
-  User,
-  User2,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
+import Link from "next/link";
+import { Eye, EyeClosed, Plus, X, Building2, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-import { Building2, CreditCard } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import Pagination from "@/components/Pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -38,393 +31,479 @@ import {
 import { Label } from "@/components/ui/label";
 import DayDate from "@/components/DayDate";
 import { MainContent } from "@/app/layouts/app-layout";
-import Link from "next/link";
-import TransactionTile from "./TransactionTile";
-import { ClogIcon, KeyboardIcon, LockIcon } from "@/lib/icons";
-import FormInput from "@/components/FormInput";
-import SuccessModal from "@/components/Overlays/SuccessModal";
+import Script from "next/script";
+import { CardChip, WalletBanner } from "@/assets";
 
-interface Transaction {
-  id: number;
+// Define type for transaction
+type Transaction = {
+  id: string;
   date: string;
   title: string;
-  referenceId: string;
+  reference: string;
   balance: string;
-  status: "pending" | "successful" | "failed";
+  status: "success" | "pending" | "failed";
   amount: string;
-  type: "deposit" | "withdrawal";
-}
+  created_at: string;
+  description: string;
+  type: "credit" | "debit";
+};
 
+// TransactionTile component
+const TransactionTile = ({
+  id,
+  date,
+  title,
+  reference,
+  status,
+  amount,
+  type,
+  description,
+  onClick,
+}: Transaction & { onClick: () => void }) => {
+  const icon = {
+    credit: (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M5.64608 7.02411L0.130508 1.51048L1.50916 0.130859L7.02473 5.64643L11.85 0.820184V11.8504H0.819833L5.64608 7.02411Z"
+          fill="#38C793"
+        />
+      </svg>
+    ),
+    debit: (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M6.351 4.97469L11.8676 10.4893L10.4879 11.8689L4.97333 6.35334L0.147079 11.1796V0.148438H11.1773L6.351 4.97469Z"
+          fill="#DF1C41"
+        />
+      </svg>
+    ),
+  };
+
+  const bgColor = {
+    credit: "bg-green-100",
+    debit: "bg-rose-100",
+  };
+
+  const amountColor = {
+    credit: "text-green-500",
+    debit: "text-rose-500",
+  };
+
+  const formattedDate = new Date(date).toLocaleDateString("en-NG", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return (
+    <div
+      onClick={onClick}
+      className="flex justify-between gap-4 p-3 rounded-2xl hover:bg-gray-50 cursor-pointer"
+    >
+      <div className="flex items-center gap-3 w-full">
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${bgColor[type]}`}>
+          {icon[type]}
+        </div>
+        <div className="flex flex-col justify-between flex-1">
+          <div className="text-[15px] font-medium text-gray-900">{title}</div>
+          <div className="text-xs text-gray-400">{formattedDate}</div>
+          <div className="text-xs text-gray-400">Ref: {reference}</div>
+        </div>
+      </div>
+      <div className="text-right flex flex-col items-end justify-center">
+        <div className={`font-semibold text-[15px] ${amountColor[type]}`}>
+          {type === "credit" ? "+" : "-"}₦{Number(amount).toLocaleString()}
+        </div>
+        <Badge
+          className={`capitalize text-xs px-2 py-0.5 mt-1 ${
+            status === "success"
+              ? "bg-green-100 text-green-600"
+              : status === "pending"
+              ? "bg-yellow-100 text-yellow-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {status}
+        </Badge>
+      </div>
+    </div>
+  );
+};
 
 export default function WalletPage() {
-  const [activeStep, setActiveStep] = useState<number | null>(null);
+  const [hideBalance, setHideBalance] = useState(false);
+  const [showPaymentMethods, setShowPaymentMethods] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  const [userId, setUserId] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  
+  // Load user data from session storage
+  useEffect(() => {
+    const storedUserId = sessionStorage.getItem("userId");
+    const storedEmail = sessionStorage.getItem("email");
+  
+    setUserId(storedUserId);
+    setEmail(storedEmail);
+  }, []);
+
+  const openDialog = useCallback(() => setShowPaymentMethods(true), []);
+  const toggleDialog = useCallback((state: boolean) => setShowPaymentMethods(state), []);
+
+  const [balance, setBalance] = useState<number>(0);
+  const [showModal, setShowModal] = useState(false);
+  const [amount, setAmount] = useState("");
+
+  // Fetch wallet balance
+  useEffect(() => {
+    if (!userId) return;
+    
+    fetch(`https://spida.africa/kaya-api/get-wallet.php?user_id=${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.balance) {
+          setBalance(Number(data.balance));
+        } else if (data && typeof data === 'object') {
+          // Try to find balance in the response
+          const possibleBalance = Object.values(data).find(val => 
+            !isNaN(Number(val)) || (typeof val === 'string' && !isNaN(Number(val)))
+          );
+          if (possibleBalance) {
+            setBalance(Number(possibleBalance));
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching wallet balance:", err));
+  }, [userId]);
+
+  // Handle payment process
+  const handlePay = () => {
+    if (!userId) {
+      alert("User ID is required");
+      return;
+    }
+  
+    const paystack = (window as any).PaystackPop;
+    if (!paystack) {
+      alert("Paystack is not available yet. Please try again.");
+      return;
+    }
+    
+    const reference = `TXN-${userId}-${Date.now()}`;
+  
+    const handler = paystack.setup({
+      key: "pk_test_8dbc024aefd873d13976ab80aa449c8aa6134e1d",
+      amount: Number(amount) * 100,
+      email: email,
+      callback: function (response: any) {
+        fetch("https://spida.africa/kaya-api/update-wallet.php", {
+          method: "POST",
+          body: new URLSearchParams({
+            user_id: userId || "",
+            amount: amount,
+            reference: reference,
+            description: "Wallet Top Up",
+            type: "credit",
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              alert("Wallet updated!");
+              setShowModal(false);
+              setBalance((prev) => prev + Number(amount));
+              setAmount("");
+            } else {
+              alert(data.message || "Error updating wallet.");
+            }
+          })
+          .catch(() => {
+            alert("Failed to update wallet on the server.");
+          });
+      },
+      onClose: function () {
+        alert("Payment cancelled.");
+      },
+    });
+  
+    handler.openIframe();
+  };
+  
+  // Fetch transactions
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (!userId) return;
+      
+      const query = new URLSearchParams({
+        user_id: userId,
+        page: page.toString(),
+        type: typeFilter,
+        status: statusFilter,
+        search,
+      });
+
+      try {
+        const res = await fetch(`https://spida.africa/kaya-api/get-transactions.php?${query.toString()}`);
+        const data = await res.json();
+        
+        // Match the exact API structure as provided
+        if (data && Array.isArray(data.transactions)) {
+          setTransactions(data.transactions);
+          
+          // Get pagination info
+          if (data.pagination && typeof data.pagination === 'object') {
+            setTotalPages(data.pagination.totalPages || 1);
+            // Optionally set the current page if needed
+            // setPage(data.pagination.currentPage);
+          } else {
+            setTotalPages(1);
+          }
+        } else {
+          console.warn("Unexpected API response format:", data);
+          setTransactions([]);
+          setTotalPages(1);
+        }
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        setTransactions([]);
+        setTotalPages(1);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchTransactions();
+  }, [typeFilter, statusFilter, search, page, userId]);
 
   return (
     <>
-      {activeStep === null ? (
-        <WalletOverView setActiveStep={setActiveStep} />
-      ) : (
-        <div className=" bg-primary/10 w-[90%] mx-auto my-8 py-6">
-          <div className="w-fit mx-auto relative py-8">
-            <Button
-              variant={"ghost"}
-              className="text-primary w-fit ml-auto right-3 top-0 absolute"
-              onClick={() => {
-                if (activeStep === 2) setActiveStep(1);
-                else {
-                  setActiveStep(null);
-                }
-              }}>
-              <ChevronLeft />
-              <span> {activeStep === 2 ? "Go Back" : "Back to Wallet"}</span>
-            </Button>
-            {activeStep === 1 ? (
-              <BankDetails setActiveStep={setActiveStep} />
-            ) : activeStep === 2 ? (
-              <UpdatePin setActiveStep={setActiveStep} />
-            ) : activeStep === 3 ? (
-              <WithdrawFunds setActiveStep={setActiveStep} />
-            ) : null}
+      <MainContent>
+        <div className="md:w-[90%] mx-auto space-y-5">
+          <>
+            <Script
+              src="https://js.paystack.co/v1/inline.js"
+              strategy="beforeInteractive"
+            />
+            <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
+              <Image src={WalletBanner} alt="banner" className="absolute z-10 w-full h-full object-cover" />
+              <div className="relative z-20 w-[90%] mx-auto py-5 h-full flex flex-col justify-between">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <div className="flex items-center gap-3">
+                      <p className="text-lg">Wallet Balance</p>
+                      <button onClick={() => setHideBalance(!hideBalance)}>
+                        {hideBalance ? <EyeClosed /> : <Eye />}
+                      </button>
+                    </div>
+                    <p className="font-semibold text-6xl">
+                      {hideBalance ? "****" : `₦${balance?.toFixed(2)}`}
+                    </p>
+                  </div>
+                  <Image src={CardChip} alt="card-chip" />
+                </div>
+                <div className="w-fit ml-auto">
+                  <Button
+                    variant="ghost"
+                    className="w-fit min-w-60 bg-background text-foreground"
+                    onClick={() => setShowModal(true)}
+                  >
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path
+                        d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
+                        fill="#1E2023"
+                      />
+                    </svg>
+                    <p>Deposit Funds</p>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal */}
+            {showModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
+                  <h2 className="text-xl font-semibold mb-4">Deposit Funds</h2>
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="Enter amount"
+                    className="border w-full p-2 rounded mb-4"
+                  />
+                  <div className="flex justify-end gap-3">
+                    <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
+                    <Button onClick={handlePay}>Proceed</Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
+
+          <div className="w-[90%] mx-auto space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="font-semibold text-xl">Recent Transactions</p>
+              <Link href="wallet/transactions" className="text-primary">
+                View All
+              </Link>
+            </div>
+            <p className="text-foreground/60">
+              Quick access to your latest transactions. Check the status or view
+              details.
+            </p>
+          </div>
+
+          <div className="w-[90%] mx-auto">
+            <div className="flex flex-col justify-between md:flex-row md:items-center gap-2">
+              <div className="flex items-center gap-2">
+                <DayDate />
+              </div>
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  placeholder="search"
+                  className="text-foreground rounded-md bg-background border border-foreground/20 px-2 !py-2 h-auto min-w-60 outline outline-1 outline-foreground/20"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex gap-3 items-center border-b py-[6px] rounded-md px-2 border">
+                    <svg
+                      width="14"
+                      height="10"
+                      viewBox="0 0 14 10"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M5.5 9.5H8.5V8H5.5V9.5ZM0.25 0.5V2H13.75V0.5H0.25ZM2.5 5.75H11.5V4.25H2.5V5.75Z"
+                        fill="#525866"
+                      />
+                    </svg>
+                    <span className="text-sm text-foreground/70">Filter</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-72 right-0 p-2">
+                    <header className="p-2">Filter Options</header>
+                    <div className="p-2 space-y-3 border-t border-b">
+                      <div>
+                        <Select onValueChange={setTypeFilter}>
+                          <Label className="text-xs">Transfer Type</Label>
+                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
+                            <SelectValue placeholder="select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="credit">Credit</SelectItem>
+                            <SelectItem value="debit">Debit</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Select onValueChange={setStatusFilter}>
+                          <Label className="text-xs">Transaction Status</Label>
+                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
+                            <SelectValue placeholder="select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="success">Success</SelectItem>
+                            <SelectItem value="failed">Failed</SelectItem>
+                            <SelectItem value="pending">Pending</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-[90%] mx-auto space-y-3 divide-y">
+            {loading ? (
+              <p>Loading transactions...</p>
+            ) : transactions.length > 0 ? (
+              transactions.map((txn) => (
+                <TransactionTile
+                  key={txn.id}
+                  id={txn.id}
+                  date={txn.created_at}
+                  title={txn.description}
+                  reference={txn.reference}
+                  status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
+                  amount={txn.amount}
+                  type={txn.type as "credit" | "debit"}
+                  balance={txn.balance}
+                  description={txn.description}
+                  created_at={txn.created_at}
+                  onClick={() => console.log("Transaction:", txn.id)}
+                />
+              ))
+            ) : (
+              <p>No transactions found.</p>
+            )}
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+            />
           </div>
         </div>
-      )}
+
+        <Dialog open={showPaymentMethods} onOpenChange={toggleDialog}>
+          <DialogContent className="w-full rounded-xl max-w-[90vw] md:max-w-lg">
+            <div className="h-full w-full relative px-6 py-8">
+              <DialogTrigger className="absolute top-4 right-4">
+                <button>
+                  <X />
+                </button>
+              </DialogTrigger>
+              <DialogHeader className="flex flex-row items-center justify-between border-b py-2">
+                <DialogTitle className="text-lg font-semibold">
+                  Add a New Payment Method
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="space-y-4 mt-4">
+                <button className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors text-left">
+                  <div className="rounded-full bg-emerald-100 p-2">
+                    <Building2 className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <div>
+                    <div className="font-medium">New Bank Account</div>
+                    <div className="text-sm text-gray-500">
+                      Securely add your bank account for seamless payments and quick refunds.
+                    </div>
+                  </div>
+                </button>
+
+                <button className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors text-left">
+                  <div className="rounded-full bg-emerald-100 p-2">
+                    <CreditCard className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <div>
+                    <div className="font-medium">New Credit/Debit Card</div>
+                    <div className="text-sm text-gray-500">
+                      Save your credit or debit card for fast and secure transactions.
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </MainContent>
     </>
   );
 }
 
-function NoEarnings() {
-  return (
-    <div className="flex flex-col md:flex-row items-center justify-center gap-10 py-12">
-      <Image src={MoneyWings} alt="money-wings" />
-      <div className="">
-        <header className="font-semibold text-xl">
-          You have no earnings yet
-        </header>
-        <p className="text-foreground/60 max-w-md">
-          Your wallet is waiting for its first entry. Accept an order today and
-          start earning!{" "}
-        </p>
-        <button className="flex items-center">
-          <span>Set Up Withdrawal details</span>
-          <ChevronRight />
-        </button>
-      </div>
-    </div>
-  );
-}
 
-function WalletOverView({
-  setActiveStep,
-}: {
-  setActiveStep: (step: number | null) => void;
-}) {
-  const [showEarnings, setShowEarnings] = useState(false);
-  const [hideBalance, setHideBalance] = useState(false);
-  const [showPaymentMethods, setShowPaymentMethods] = useState(false);
-
-  const toggleDialog = useCallback((state: boolean) => {
-    setShowPaymentMethods(state);
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setShowEarnings(true);
-    }, 2000);
-  }, []);
-
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterDate, setFilterDate] = useState("");
-
-  const fetchTransactions = async () => {
-    try {
-      const query = new URLSearchParams({
-        page: page.toString(),
-        search,
-        type: filterType,
-        status: filterStatus,
-        date: filterDate,
-      });
-
-      const res = await fetch(`https://www.spida.africa/kaya-api/rider/rider-transactions.php?${query}`);
-      const data = await res.json();
-      setTransactions(data.transactions);
-      setTotalPages(data.pagination.totalPages);
-    } catch (err) {
-      console.error("Error loading transactions:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [page, search, filterType, filterStatus, filterDate]);
-
-  return (
-    <MainContent>
-      <div className="md:w-[90%] mx-auto space-y-5">
-        <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
-          <Image
-            src={WalletBanner}
-            alt="banner"
-            className="z-10 absolute w-full h-full object-cover"
-          />
-          <div className="relative flex flex-col justify-between z-20 w-[90%] py-5 h-full mx-auto">
-            <div className="flex items-start justify-between">
-              <div className="">
-                <div className="flex items-center gap-3">
-                  <p className="text-lg">Wallet Ballance</p>
-                  <button onClick={() => setHideBalance((prev) => !prev)}>
-                    {hideBalance ? <EyeClosed /> : <Eye />}
-                  </button>
-                </div>
-                <p className="font-semibold text-6xl">
-                  {hideBalance ? "****" : "N0.00"}
-                </p>
-              </div>
-              <Image src={CardChip} alt="card-chip" />
-            </div>
-            <div className="w-fit ml-auto">
-              <Button
-                onClick={() => setActiveStep(3)}
-                variant={"ghost"}
-                className="w-fit bg-background text-foreground">
-                <svg
-                  width="11"
-                  height="11"
-                  viewBox="0 0 11 11"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M6.08151 4.6316L10.7494 9.2978L9.58198 10.4652L4.91578 5.79815L0.832031 9.8819V0.547852H10.1653L6.08151 4.6316Z"
-                    fill="#1E2023"
-                  />
-                </svg>
-                <p>Withdraw Funds</p>
-              </Button>
-            </div>
-          </div>
-        </div>
-        <div className="w-[90%] mx-auto">
-          <button
-            onClick={() => setActiveStep(1)}
-            className="flex items-center gap-2">
-            <ClogIcon />
-            <p className="font-medium">Set up Withdrawal detail</p>
-          </button>
-        </div>
-
-        {showEarnings ? (
-  <>
-    <div className="w-[95%] md:w-[85%] mx-auto py-12">
-      <div className="mx-auto space-y-3">
-        <div className="flex items-center justify-between">
-          <p className="font-semibold text-xl">Recent Transactions</p>
-          <Link href={"./"} className="text-primary">
-            Back To Wallet
-          </Link>
-        </div>
-        <p className="text-foreground/60">
-          Quick access to your latest deliveries! 📦 Check the status or view
-          details.
-        </p>
-      </div>
-
-      <div className="mx-auto">
-        <div className="flex flex-col justify-between md:flex-row md:items-center gap-2">
-          <div className="flex items-center gap-2">
-            <DayDate />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <FormInput
-              type="text"
-              placeholder="search"
-              value={search}
-              onChange={(e: any) => setSearch(e.target.value)}
-              className="text-foreground rounded-md bg-background min-w-60 border-none outline-none"
-              wrapperClassName={() =>
-                "outline !ring-foreground/10 outline-foreground/10 border-foreground/10"
-              }
-            />
-
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex gap-3 items-center border-b py-[6px] rounded-md px-2 border">
-                <svg
-                  width="14"
-                  height="10"
-                  viewBox="0 0 14 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5.5 9.5H8.5V8H5.5V9.5ZM0.25 0.5V2H13.75V0.5H0.25ZM2.5 5.75H11.5V4.25H2.5V5.75Z"
-                    fill="#525866"
-                  />
-                </svg>
-                <span className="text-sm text-foreground/70">Filter</span>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent align="end" className="w-72 right-0 p-2">
-                <header className="p-2">Filter Options</header>
-
-                <div className="p-2 space-y-3 border-t border-b">
-                  <div>
-                    <Label className="text-xs">Transaction Type</Label>
-                    <Select
-                      value={filterType}
-                      onValueChange={(val) => setFilterType(val)}
-                    >
-                      <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                        <SelectValue placeholder="select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All</SelectItem>
-                        <SelectItem value="deposit">Deposit</SelectItem>
-                        <SelectItem value="transfer">Withdrawal</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-xs">Transaction Status</Label>
-                    <Select
-                      value={filterStatus}
-                      onValueChange={(val) => setFilterStatus(val)}
-                    >
-                      <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                        <SelectValue placeholder="select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All</SelectItem>
-                        <SelectItem value="successful">Successful</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="failed">Failed</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label className="text-xs">Date Range</Label>
-                    <Select
-                      value={filterDate}
-                      onValueChange={(val) => setFilterDate(val)}
-                    >
-                      <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                        <SelectValue placeholder="select date" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Time</SelectItem>
-                        <SelectItem value="7days">Last 7 Days</SelectItem>
-                        <SelectItem value="1month">Last 1 Month</SelectItem>
-                        <SelectItem value="3months">Last 3 Months</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      onClick={() => {
-                        setFilterType("");
-                        setFilterStatus("");
-                        setFilterDate("");
-                      }}
-                    >
-                      Reset
-                    </Button>
-                    <Button onClick={() => fetchTransactions()}>Apply</Button>
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-2 divide-y py-4">
-        {transactions.length > 0 ? (
-          transactions.map((transaction, i) => (
-            <TransactionTile key={i} {...transaction} />
-          ))
-        ) : (
-          <p className="text-center text-sm text-muted-foreground py-8">
-            No transactions found.
-          </p>
-        )}
-        <Pagination
-          currentPage={page}
-          onPageChange={setPage}
-          totalPages={totalPages}
-        />
-      </div>
-    </div>
-          </>
-        ) : (
-          <NoEarnings />
-        )}
-      </div>
-
-      {/* <AnimateInOut
-        show={showDeliveryDetails}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed flex items-center justify-center md:justify-end h-svh w-screen z-50 bg-foreground/10 top-0 left-0 cursor-pointer backdrop-blur-sm"
-        onClick={() => setShowDeliveryDetails(false)}>
-        <DeliveryDetails close={() => setShowDeliveryDetails(false)} />
-      </AnimateInOut> */}
-
-      <Dialog open={showPaymentMethods} onOpenChange={toggleDialog}>
-        <DialogContent className="w-full rounded-xl max-w-[90vw] md:max-w-md p-3">
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle className="text-lg font-semibold">
-              Add a New Payment Method
-            </DialogTitle>
-            {/* <button
-              onClick={closeDialog}
-              className="rounded-full p-1 hover:bg-gray-100 transition-colors">
-              <X className="h-5 w-5 text-gray-500" />
-            </button> */}
-          </DialogHeader>
-
-          <div className="space-y-4 mt-4">
-            <button className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors text-left">
-              <div className="rounded-full bg-emerald-100 p-2">
-                <Building2 className="h-5 w-5 text-emerald-500" />
-              </div>
-              <div>
-                <div className="font-medium">New Bank Account</div>
-                <div className="text-sm text-gray-500">
-                  Securely add your bank account for seamless payments and quick
-                  refunds.
-                </div>
-              </div>
-            </button>
-
-            <button className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-gray-50 transition-colors text-left">
-              <div className="rounded-full bg-emerald-100 p-2">
-                <CreditCard className="h-5 w-5 text-emerald-500" />
-              </div>
-              <div>
-                <div className="font-medium">New Credit/Debit Card</div>
-                <div className="text-sm text-gray-500">
-                  Save your credit or debit card for fast and secure
-                  transactions.
-                </div>
-              </div>
-            </button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </MainContent>
-  );
-}
 
 const BankDetails = ({
   setActiveStep,
