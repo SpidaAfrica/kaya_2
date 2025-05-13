@@ -148,6 +148,7 @@ export default function WalletPage() {
 
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
+  const [activeStep, setActiveStep] = useState<number | null>(null);
   
   // Load user data from session storage
   useEffect(() => {
