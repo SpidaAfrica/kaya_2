@@ -1,40 +1,75 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LockIcon, User } from "lucide-react";
 import SuccessModal from "@/components/Overlays/SuccessModal";
 import FormInput from "@/components/FormInput";
 
-export default function WithdrawFunds({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
+  const [riderId, riderId] = useState<string | null>(null);
+  const [amount, setAmount] = useState("");
+  const [accountName, setAccountName] = useState(""); // bank_name
+  const [accountNumber, setAccountNumber] = useState("");
+  const [bankCode, setBankCode] = useState(""); // Could be a dropdown if needed
+  const [walletPin, setWalletPin] = useState(""); // For future security, not needed now
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+
+  useEffect(() => {
+    const storedUserId = sessionStorage.getItem("rider_id");
+    setRiderId(storedUserId);
+  }, []);
+
+  const handleWithdraw = async () => {
+    setLoading(true);
+    if (!riderId) return;
+
+    try {
+      const response = await fetch(
+        "https://www.kaya.ng/kaya-api/rider/request-withdrawal.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            rider_id: riderId,
+            amount,
+            bank_code: bankCode,
+            account_number: accountNumber,
+            bank_name: accountName,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        setSuccess(true);
+      } else {
+        alert(data.message || "Withdrawal failed.");
+      }
+    } catch (error) {
+      alert("Network error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex mx-auto lg:w-[558px] w-[90%] flex-col gap-4">
       <header className="space-y-2">
         <h2 className="text-2xl font-semibold">Withdraw Funds</h2>
         <p className="text-foreground/60">
-          Successfully withdraw your funds. You’ve Earned it!!
+          Successfully withdraw your funds. You’ve earned it!
         </p>
       </header>
 
       <FormInput
-        leading={
-          <svg
-            width="14"
-            height="10"
-            viewBox="0 0 14 10"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M7.00111 7.50012C8.38179 7.50012 9.50111 6.38081 9.50111 5.00012C9.50111 3.61941 8.38179 2.50012 7.00111 2.50012C5.62037 2.50012 4.50109 3.61941 4.50109 5.00012C4.50109 6.38081 5.62037 7.50012 7.00111 7.50012ZM12.6289 0.00195312H1.37891C1.03373 0.00195312 0.753906 0.281772 0.753906 0.626953V9.37693C0.753906 9.72212 1.03373 10.0019 1.37891 10.0019H12.6289C12.9741 10.0019 13.2539 9.72212 13.2539 9.37693V0.626953C13.2539 0.281772 12.9741 0.00195312 12.6289 0.00195312ZM2.00391 7.27906V2.72119C2.70751 2.51075 3.26233 1.9557 3.47245 1.25195H10.5297C10.7404 1.95758 11.2976 2.51372 12.0039 2.72287V7.27737C11.2964 7.48687 10.7385 8.04456 10.5286 8.75193H3.47354C3.26426 8.0465 2.70874 7.48987 2.00391 7.27906Z"
-              fill="#868C98"
-            />
-          </svg>
-        }
-        label="Amount To withdraw"
+        label="Amount To Withdraw"
         placeholder="Enter amount to withdraw"
+        value={amount}
+        onChange={(e: any) => setAmount(e.target.value)}
       />
 
       <div className="flex items-center gap-2 px-3 py-2 rounded-md bg-[#f2f2f2] w-fit">
@@ -54,28 +89,50 @@ export default function WithdrawFunds({
 
       <FormInput
         leading={<User className="size-5" />}
-        label="Destination"
-        placeholder="Meji Austin Peters"
+        label="Account Name"
+        placeholder="e.g., Meji Austin Peters"
+        value={accountName}
+        onChange={(e: any) => setAccountName(e.target.value)}
+      />
+
+      <FormInput
+        leading={<User className="size-5" />}
+        label="Account Number"
+        placeholder="e.g., 0123456789"
+        value={accountNumber}
+        onChange={(e: any) => setAccountNumber(e.target.value)}
+      />
+
+      <FormInput
+        leading={<User className="size-5" />}
+        label="Bank Code"
+        placeholder="e.g., 058 for GTBank"
+        value={bankCode}
+        onChange={(e: any) => setBankCode(e.target.value)}
       />
 
       <FormInput
         leading={<LockIcon className="size-5" />}
         label="Wallet Pin"
-        type="Password"
+        type="password"
         placeholder="4-digit wallet pin"
+        value={walletPin}
+        onChange={(e: any) => setWalletPin(e.target.value)}
       />
 
       <div className="flex md:flex-col items-center gap-3 mt-3">
         <SuccessModal
           title="Withdrawal Successful! 💸"
           message="Your withdrawal has been processed. Check your account shortly!"
-          showButton={false}>
-          <Button>Save and Continue</Button>
+          showButton={false}
+          open={success}
+          onOpenChange={setSuccess}>
+          <Button onClick={handleWithdraw} disabled={loading}>
+            {loading ? "Processing..." : "Withdraw"}
+          </Button>
         </SuccessModal>
-        <Button
-          variant="outline"
-          onClick={onClose}
-          className="text-primary">
+
+        <Button variant="outline" onClick={onClose} className="text-primary">
           Cancel
         </Button>
       </div>
