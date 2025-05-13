@@ -491,18 +491,14 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     switchPage("DELIVERY_DETAILS");
   };
 
-  const handleConfirmTransfer = () => {
-    console.log("Transfer initiated for delivery:", delivery.delivery_id);
-    // TODO: Add your API call here
-    setShowPaymentModal(false);
-  };
 
   const handleConfirmTransfer = async () => {
     setLoading(true);
     setMessage("");
+    console.log("Transfer initiated for delivery:", delivery.delivery_id);
 
     const reference = `DEL-${delivery.id}-${Date.now()}`;
-    const description = `Delivery payment for order ${delivery.id}`;
+    const description = `Delivery payment for order ${delivery.delivery_id}`;
     const riderId = delivery.rider;
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
 
@@ -529,6 +525,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
       if (data.success) {
         setMessage("Payment sent to rider!");
         onSuccess?.();
+        setShowPaymentModal(false);
       } else {
         setMessage("Failed: " + data.message);
       }
