@@ -503,7 +503,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
 
     if (!userId) {
-        setFetchError("User ID is not available.");
+        setMessage("User ID is not available.");
         setLoading(false);
         return;
     }
