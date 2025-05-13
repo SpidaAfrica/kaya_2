@@ -35,6 +35,7 @@ import Script from "next/script";
 import { CardChip, WalletBanner } from "@/assets";
 import FormInput from "@/components/FormInput";
 import SuccessModal from "@/components/Overlays/SuccessModal";
+import { ClogIcon, KeyboardIcon, LockIcon } from "@/lib/icons";
 
 // Define type for transaction
 type Transaction = {
