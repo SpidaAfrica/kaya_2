@@ -125,8 +125,9 @@ export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
           title="Withdrawal Successful! 💸"
           message="Your withdrawal has been processed. Check your account shortly!"
           showButton={false}
-          open={success}
-          onOpenChange={setSuccess}>
+          isOpen={true}
+          onClose?: (state: boolean) => void;
+          >
           <Button onClick={handleWithdraw} disabled={loading}>
             {loading ? "Processing..." : "Withdraw"}
           </Button>
