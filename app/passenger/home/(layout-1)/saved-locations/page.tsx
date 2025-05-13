@@ -15,6 +15,7 @@ interface Delivery {
   delivery_id: string;
   price: string;
   status: string;
+  rider: string;
   rider_name: string;
   bank_name: string;
   account_number: string;
