@@ -469,6 +469,7 @@ interface Delivery {
   delivery_id: string;
   price: string;
   status: string;
+  rider: string;
   rider_name: string;
   bank_name: string;
   account_number: string;
@@ -482,6 +483,8 @@ interface Props {
 
 export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Props) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleClick = () => {
     setShowDeliveryDetails(true);
@@ -492,6 +495,49 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     console.log("Transfer initiated for delivery:", delivery.delivery_id);
     // TODO: Add your API call here
     setShowPaymentModal(false);
+  };
+
+  const handleConfirmTransfer = async () => {
+    setLoading(true);
+    setMessage("");
+
+    const reference = `DEL-${delivery.id}-${Date.now()}`;
+    const description = `Delivery payment for order ${delivery.id}`;
+    const riderId = delivery.rider;
+    const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
+
+    if (!userId) {
+        setFetchError("User ID is not available.");
+        setLoading(false);
+        return;
+    }
+
+    try {
+      const response = await fetch("https://spida.africa/kaya-api/wallet/transfer.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sender_id: userId,
+          rider_id: riderId,
+          amount,
+          reference,
+          description,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setMessage("Payment sent to rider!");
+        onSuccess?.();
+      } else {
+        setMessage("Failed: " + data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      setMessage("Something went wrong during transfer");
+    }
+
+    setLoading(false);
   };
 
   return (
