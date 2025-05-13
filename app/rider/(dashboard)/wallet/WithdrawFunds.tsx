@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { LockIcon, User } from "lucide-react";
-import FormInput from "@/components/shared/FormInput";
 import SuccessModal from "@/components/Overlays/SuccessModal";
+import FormInput from "@/components/FormInput";
 
 export default function WithdrawFunds({
   onClose,
