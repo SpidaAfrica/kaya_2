@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeClosed, Plus, X, Building2, CreditCard } from "lucide-react";
+import { Eye, EyeClosed, Plus, X, Building2, CreditCard,  User2} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -254,7 +254,7 @@ export default function WalletPage() {
       });
 
       try {
-        const res = await fetch(`https://spida.africa/kaya-api/get-transactions.php?${query.toString()}`);
+        const res = await fetch(`https://spida.africa/kaya-api/rider/rider-transactions.php?${query.toString()}`);
         const data = await res.json();
         
         // Match the exact API structure as provided
