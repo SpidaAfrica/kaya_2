@@ -313,19 +313,23 @@ export default function WalletPage() {
                   <Image src={CardChip} alt="card-chip" />
                 </div>
                 <div className="w-fit ml-auto">
-                  <Button
-                    variant="ghost"
-                    className="w-fit min-w-60 bg-background text-foreground"
-                    onClick={() => setShowModal(true)}
-                  >
-                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
-                        fill="#1E2023"
-                      />
-                    </svg>
-                    <p>Deposit Funds</p>
-                  </Button>
+                    <Button
+                      onClick={() => setActiveStep(3)}
+                      variant={"ghost"}
+                      className="w-fit bg-background text-foreground">
+                      <svg
+                        width="11"
+                        height="11"
+                        viewBox="0 0 11 11"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M6.08151 4.6316L10.7494 9.2978L9.58198 10.4652L4.91578 5.79815L0.832031 9.8819V0.547852H10.1653L6.08151 4.6316Z"
+                          fill="#1E2023"
+                        />
+                      </svg>
+                      <p>Withdraw Funds</p>
+                    </Button>
                 </div>
               </div>
             </div>
