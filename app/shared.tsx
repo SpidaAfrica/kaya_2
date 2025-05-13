@@ -491,6 +491,31 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     switchPage("DELIVERY_DETAILS");
   };
 
+  const handleOfflinePayment = async () => {
+     const order_id = delivery.delivery_id;
+    try {
+      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-payment.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ order_id:order_id }),
+      });
+  
+      const data = await response.json();
+      if (data.success) {
+        setMessage("Payment sent to rider!");
+        onSuccess?.();
+        setShowPaymentModal(false);
+      } else {
+        alert("Failed to confirm delivery: " + data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Something went wrong confirming delivery!");
+    }
+  };
+
 
   const handleConfirmTransfer = async () => {
     setLoading(true);
@@ -515,7 +540,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
         body: JSON.stringify({
           sender_id: userId,
           rider_id: riderId,
-          amount,
+          price,
           reference,
           description,
         }),
@@ -615,10 +640,16 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
                 Cancel
               </button>
               <button
+                onClick={handleOfflinePayment}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Confirm Offline Payment
+              </button>
+              <button
                 onClick={handleConfirmTransfer}
                 className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
               >
-                Confirm Transfer
+                Pay With Wallet
               </button>
             </div>
           </div>
