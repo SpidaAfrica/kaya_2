@@ -191,6 +191,7 @@ export default function WalletPage() {
   }, [userId]);
 
   // Handle payment process
+  /*
   const handlePay = () => {
     if (!userId) {
       alert("User ID is required");
@@ -242,6 +243,7 @@ export default function WalletPage() {
   
     handler.openIframe();
   };
+  */
   
   // Fetch transactions
   useEffect(() => {
