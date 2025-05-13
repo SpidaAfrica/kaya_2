@@ -1,14 +1,18 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import TransactionTile from "../TransactionTile";
+export const dynamic = "force-dynamic";
+
+import React, { useCallback, useEffect, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { Eye, EyeClosed } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Pagination from "@/components/Pagination";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import DayDate from "@/components/DayDate";
-import Link from "next/link";
 import {
   Select,
   SelectContent,
@@ -17,88 +21,248 @@ import {
   SelectValue,
 } from "@/components/ui/custom-select";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import FormInput from "@/components/FormInput";
+import DayDate from "@/components/DayDate";
+import Script from "next/script";
 
-interface Transaction {
-  id: number;
+// Define type for transaction
+type Transaction = {
+  id: string;
   date: string;
   title: string;
-  referenceId: string;
+  reference: string;
   balance: string;
-  status: "pending" | "successful" | "failed";
+  status: "success" | "pending" | "failed";
   amount: string;
-  type: "deposit" | "withdrawal";
-}
+  created_at: string;
+  description: string;
+  type: "credit" | "debit";
+};
 
-export default function TransactionsPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const [search, setSearch] = useState("");
-  const [filterType, setFilterType] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
-  const [filterDate, setFilterDate] = useState("");
-
-  const fetchTransactions = async () => {
-    try {
-      const query = new URLSearchParams({
-        page: page.toString(),
-        search,
-        type: filterType,
-        status: filterStatus,
-        date: filterDate,
-      });
-
-      const res = await fetch(`https://www.spida.africa/kaya-api/rider/rider-transactions.php?${query}`);
-      const data = await res.json();
-      setTransactions(data.transactions);
-      setTotalPages(data.pagination.totalPages);
-    } catch (err) {
-      console.error("Error loading transactions:", err);
-    }
+// TransactionTile component
+const TransactionTile = ({
+  id,
+  date,
+  title,
+  reference,
+  status,
+  amount,
+  type,
+  description,
+  onClick,
+}: Transaction & { onClick: () => void }) => {
+  const icon = {
+    credit: (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M5.64608 7.02411L0.130508 1.51048L1.50916 0.130859L7.02473 5.64643L11.85 0.820184V11.8504H0.819833L5.64608 7.02411Z"
+          fill="#38C793"
+        />
+      </svg>
+    ),
+    debit: (
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M6.351 4.97469L11.8676 10.4893L10.4879 11.8689L4.97333 6.35334L0.147079 11.1796V0.148438H11.1773L6.351 4.97469Z"
+          fill="#DF1C41"
+        />
+      </svg>
+    ),
   };
 
-  useEffect(() => {
-    fetchTransactions();
-  }, [page, search, filterType, filterStatus, filterDate]);
+  const bgColor = {
+    credit: "bg-green-100",
+    debit: "bg-rose-100",
+  };
+
+  const amountColor = {
+    credit: "text-green-500",
+    debit: "text-rose-500",
+  };
+
+  const formattedDate = new Date(date).toLocaleDateString("en-NG", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
-    <div className="w-[95%] md:w-[85%] mx-auto py-12">
-      <div className="mx-auto space-y-3">
-        <div className="flex items-center justify-between">
-          <p className="font-semibold text-xl">Recent Transactions</p>
-          <Link href={"./"} className="text-primary">
-            Back To Wallet
-          </Link>
+    <div
+      onClick={onClick}
+      className="flex justify-between gap-4 p-3 rounded-2xl hover:bg-gray-50 cursor-pointer"
+    >
+      <div className="flex items-center gap-3 w-full">
+        <div className={`w-9 h-9 rounded-full flex items-center justify-center ${bgColor[type]}`}>
+          {icon[type]}
         </div>
-        <p className="text-foreground/60">
-          Quick access to your latest deliveries! 📦 Check the status or view
-          details.
-        </p>
+        <div className="flex flex-col justify-between flex-1">
+          <div className="text-[15px] font-medium text-gray-900">{title}</div>
+          <div className="text-xs text-gray-400">{formattedDate}</div>
+          <div className="text-xs text-gray-400">Ref: {reference}</div>
+        </div>
+      </div>
+      <div className="text-right flex flex-col items-end justify-center">
+        <div className={`font-semibold text-[15px] ${amountColor[type]}`}>
+          {type === "credit" ? "+" : "-"}₦{Number(amount).toLocaleString()}
+        </div>
+        <Badge
+          className={`capitalize text-xs px-2 py-0.5 mt-1 ${
+            status === "success"
+              ? "bg-green-100 text-green-600"
+              : status === "pending"
+              ? "bg-yellow-100 text-yellow-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {status}
+        </Badge>
+      </div>
+    </div>
+  );
+};
+
+export default function WalletPage() {
+  const [hideBalance, setHideBalance] = useState(false);
+  const [balance, setBalance] = useState<number>(0);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [typeFilter, setTypeFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  const [userId, setUserId] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+  
+  // Load user data from session storage
+  useEffect(() => {
+    const storedUserId = sessionStorage.getItem("userId");
+    const storedEmail = sessionStorage.getItem("email");
+  
+    setUserId(storedUserId);
+    setEmail(storedEmail);
+  }, []);
+
+  // Fetch wallet balance
+  useEffect(() => {
+    if (!userId) return;
+    
+    fetch(`https://spida.africa/kaya-api/get-wallet.php?user_id=${userId}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.balance) {
+          setBalance(Number(data.balance));
+        } else if (data && typeof data === 'object') {
+          // Try to find balance in the response
+          const possibleBalance = Object.values(data).find(val => 
+            !isNaN(Number(val)) || (typeof val === 'string' && !isNaN(Number(val)))
+          );
+          if (possibleBalance) {
+            setBalance(Number(possibleBalance));
+          }
+        }
+      })
+      .catch(err => console.error("Error fetching wallet balance:", err));
+  }, [userId]);
+  
+  // Fetch transactions
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      if (!userId) return;
+      
+      const query = new URLSearchParams({
+        user_id: userId,
+        page: page.toString(),
+        ...(typeFilter && { type: typeFilter }),
+        ...(statusFilter && { status: statusFilter }),
+        ...(search && { search }),
+      });
+
+      try {
+        const res = await fetch(`https://spida.africa/kaya-api/get-transactions.php?${query.toString()}`);
+        const data = await res.json();
+        
+        if (data && Array.isArray(data.transactions)) {
+          setTransactions(data.transactions);
+          
+          // Get pagination info
+          if (data.pagination && typeof data.pagination === 'object') {
+            setTotalPages(data.pagination.totalPages || 1);
+          } else {
+            setTotalPages(1);
+          }
+        } else {
+          console.warn("Unexpected API response format:", data);
+          setTransactions([]);
+          setTotalPages(1);
+        }
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        setTransactions([]);
+        setTotalPages(1);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchTransactions();
+  }, [typeFilter, statusFilter, search, page, userId]);
+
+  // Toggle balance visibility
+  const toggleBalanceVisibility = useCallback(() => {
+    setHideBalance(prev => !prev);
+  }, []);
+
+  return (
+    <div className="container mx-auto px-4 py-6">
+      {/* Wallet Balance Card */}
+      <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Wallet Balance</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleBalanceVisibility}
+            className="h-8 w-8"
+          >
+            {hideBalance ? <EyeClosed size={18} /> : <Eye size={18} />}
+          </Button>
+        </div>
+        
+        <div className="flex items-center gap-2 mb-6">
+          <span className="text-2xl font-bold">
+            ₦{hideBalance ? "****" : balance.toLocaleString()}
+          </span>
+        </div>
       </div>
 
-      <div className="mx-auto">
-        <div className="flex flex-col justify-between md:flex-row md:items-center gap-2">
-          <div className="flex items-center gap-2">
-            <DayDate />
-          </div>
+      {/* Transactions Section */}
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <p className="font-semibold text-xl">Recent Transactions</p>
+        </div>
+        
+        <p className="text-foreground/60">
+          Quick access to your latest transactions. Check the status or view details.
+        </p>
 
+        {/* Filter Controls */}
+        <div className="flex flex-col justify-between md:flex-row md:items-center gap-4">
+          <DayDate />
+          
           <div className="flex items-center gap-2">
-            <FormInput
+            <Input
               type="text"
-              placeholder="search"
+              placeholder="Search transactions"
+              className="text-foreground rounded-md bg-background border border-foreground/20 px-4 py-2 h-auto min-w-60"
               value={search}
-              onChange={(e: any) => setSearch(e.target.value)}
-              className="text-foreground rounded-md bg-background min-w-60 border-none outline-none"
-              wrapperClassName={() =>
-                "outline !ring-foreground/10 outline-foreground/10 border-foreground/10"
-              }
+              onChange={(e) => setSearch(e.target.value)}
             />
-
+            
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex gap-3 items-center border-b py-[6px] rounded-md px-2 border">
+              <DropdownMenuTrigger className="flex gap-2 items-center border rounded-md px-4 py-2">
                 <svg
                   width="14"
                   height="10"
@@ -111,102 +275,100 @@ export default function TransactionsPage() {
                     fill="#525866"
                   />
                 </svg>
-                <span className="text-sm text-foreground/70">Filter</span>
+                <span className="text-sm">Filter</span>
               </DropdownMenuTrigger>
-
-              <DropdownMenuContent align="end" className="w-72 right-0 p-2">
-                <header className="p-2">Filter Options</header>
-
-                <div className="p-2 space-y-3 border-t border-b">
+              
+              <DropdownMenuContent align="end" className="w-72 p-4">
+                <h4 className="font-medium mb-2">Filter Options</h4>
+                <div className="space-y-4 border-t pt-4">
                   <div>
-                    <Label className="text-xs">Transaction Type</Label>
-                    <Select
-                      value={filterType}
-                      onValueChange={(val) => setFilterType(val)}
-                    >
-                      <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                        <SelectValue placeholder="select type" />
+                    <Label className="text-xs mb-1 block">Transfer Type</Label>
+                    <Select onValueChange={setTypeFilter} value={typeFilter}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select type" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All</SelectItem>
-                        <SelectItem value="deposit">Deposit</SelectItem>
-                        <SelectItem value="transfer">Withdrawal</SelectItem>
+                        <SelectItem value="">All Types</SelectItem>
+                        <SelectItem value="credit">Credit</SelectItem>
+                        <SelectItem value="debit">Debit</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-
+                  
                   <div>
-                    <Label className="text-xs">Transaction Status</Label>
-                    <Select
-                      value={filterStatus}
-                      onValueChange={(val) => setFilterStatus(val)}
-                    >
-                      <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                        <SelectValue placeholder="select status" />
+                    <Label className="text-xs mb-1 block">Transaction Status</Label>
+                    <Select onValueChange={setStatusFilter} value={statusFilter}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All</SelectItem>
-                        <SelectItem value="successful">Successful</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="">All Statuses</SelectItem>
+                        <SelectItem value="success">Success</SelectItem>
                         <SelectItem value="failed">Failed</SelectItem>
-                        <SelectItem value="cancelled">Cancelled</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div>
-                    <Label className="text-xs">Date Range</Label>
-                    <Select
-                      value={filterDate}
-                      onValueChange={(val) => setFilterDate(val)}
-                    >
-                      <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
-                        <SelectValue placeholder="select date" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Time</SelectItem>
-                        <SelectItem value="7days">Last 7 Days</SelectItem>
-                        <SelectItem value="1month">Last 1 Month</SelectItem>
-                        <SelectItem value="3months">Last 3 Months</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
+                  
+                  <div className="flex justify-end">
+                    <Button 
+                      variant="outline" 
+                      className="mr-2"
                       onClick={() => {
-                        setFilterType("");
-                        setFilterStatus("");
-                        setFilterDate("");
+                        setTypeFilter("");
+                        setStatusFilter("");
                       }}
                     >
                       Reset
                     </Button>
-                    <Button onClick={() => fetchTransactions()}>Apply</Button>
+                    <Button 
+                      onClick={() => {
+                        // Apply filters already handled by state changes
+                      }}
+                    >
+                      Apply
+                    </Button>
                   </div>
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
-      </div>
 
-      <div className="space-y-2 divide-y py-4">
-        {transactions.length > 0 ? (
-          transactions.map((transaction, i) => (
-            <TransactionTile key={i} {...transaction} />
-          ))
-        ) : (
-          <p className="text-center text-sm text-muted-foreground py-8">
-            No transactions found.
-          </p>
+        {/* Transactions List */}
+        <div className="space-y-2 divide-y">
+          {loading ? (
+            <div className="py-8 text-center">Loading transactions...</div>
+          ) : transactions.length > 0 ? (
+            transactions.map((txn) => (
+              <TransactionTile
+                key={txn.id}
+                id={txn.id}
+                date={txn.created_at}
+                title={txn.description}
+                reference={txn.reference}
+                status={txn.status.toLowerCase() as "success" | "pending" | "failed"}
+                amount={txn.amount}
+                type={txn.type as "credit" | "debit"}
+                balance={txn.balance}
+                description={txn.description}
+                created_at={txn.created_at}
+                onClick={() => console.log("Transaction:", txn.id)}
+              />
+            ))
+          ) : (
+            <div className="py-8 text-center">No transactions found.</div>
+          )}
+        </div>
+        
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
         )}
-        <Pagination
-          currentPage={page}
-          onPageChange={setPage}
-          totalPages={totalPages}
-        />
       </div>
     </div>
   );
