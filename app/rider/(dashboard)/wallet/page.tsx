@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, EyeClosed, Plus, X, Building2, CreditCard,  User2} from "lucide-react";
+import { Eye, EyeClosed, Plus, X, Building2, CreditCard, User, User2} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
