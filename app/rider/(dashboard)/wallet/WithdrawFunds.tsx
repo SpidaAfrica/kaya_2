@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { LockIcon, User } from "lucide-react";
 import SuccessModal from "@/components/Overlays/SuccessModal";
