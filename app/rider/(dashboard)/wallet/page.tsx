@@ -169,7 +169,7 @@ export default function WalletPage() {
   useEffect(() => {
     if (!userId) return;
     
-    fetch(`https://spida.africa/kaya-api/get-wallet.php?user_id=${userId}`)
+    fetch(`https://spida.africa/kaya-api/rider/get-wallet.php?user_id=${userId}`)
       .then(res => res.json())
       .then(data => {
         if (data && data.balance) {
