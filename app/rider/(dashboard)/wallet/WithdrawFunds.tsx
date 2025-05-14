@@ -57,7 +57,7 @@ export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
 
   return (
     <>
-      <div className="flex mx-auto lg:w-[558px] w-[90%] flex-col gap-4">
+      <div className="flex mx-auto lg:w-[800px] w-[90%] flex-col gap-4">
         <header className="space-y-2">
           <h2 className="text-2xl font-semibold">Withdraw Funds</h2>
           <p className="text-foreground/60">
