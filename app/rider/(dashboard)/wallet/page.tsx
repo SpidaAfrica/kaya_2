@@ -341,11 +341,26 @@ export default function WalletPage() {
                 </Button>
 
                 {showWithdrawModal && (
+      /*
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                     <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
                       <WithdrawFunds onClose={() => setShowWithdrawModal(false)} />
                     </div>
                   </div>
+      */
+
+                    <DialogContent className="max-w-[90vw] md:max-w-2xl p-0 bg-white rounded-2xl shadow-xl">
+                      <div className="relative p-6 max-h-[90vh] overflow-y-auto">
+                        <button
+                          onClick={onClose}
+                          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                    
+                        <WithdrawFunds onClose={onClose} />
+                      </div>
+                    </DialogContent>
                 )}
               </div>
             </div>
