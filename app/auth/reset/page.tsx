@@ -106,15 +106,42 @@ const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 };
 
 
-  const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      // Show error
-      return;
+const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match.");
+    return;
+  }
+
+  try {
+    const response = await fetch("https://spida.africa/kaya-api/set-new-password.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phone: `+234${phoneNumber}`,
+        password: password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to reset password.");
     }
-    // Here you would reset password
-    // setCurrentStep("success");
-  };
+
+    setCurrentStep("success");
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message);
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
+  }
+};
+
 
   const renderStep = () => {
     switch (currentStep) {
