@@ -161,7 +161,7 @@ export default function WalletPage() {
   }, []);
 
   const openDialog = useCallback(() => setShowPaymentMethods(true), []);
-  const toggleDialog = useCallback((state: boolean) => setShowPaymentMethods(state), []);
+  const toggleDialog = () => setShowPaymentMethods((prev) => !prev);
 
   const [balance, setBalance] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
@@ -291,7 +291,7 @@ export default function WalletPage() {
     if (userId) fetchTransactions();
   }, [typeFilter, statusFilter, search, page, userId]);
 
-const toggleDialog = () => setShowPaymentMethods(!showPaymentMethods);
+
 
   return (
     <>
