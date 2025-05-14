@@ -32,7 +32,7 @@ export default function Reset() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phone: phoneNumber }),
+        body: JSON.stringify({ phone: `+234${phoneNumber}` }),
       });
     
       const data = await response.json();
