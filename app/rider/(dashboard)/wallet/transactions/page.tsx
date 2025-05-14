@@ -248,92 +248,68 @@ export default function WalletPage() {
           Quick access to your latest transactions. Check the status or view details.
         </p>
 
-        {/* Filter Controls */}
-        <div className="flex flex-col justify-between md:flex-row md:items-center gap-4">
-          <DayDate />
-          
-          <div className="flex items-center gap-2">
-            <Input
-              type="text"
-              placeholder="Search transactions"
-              className="text-foreground rounded-md bg-background border border-foreground/20 px-4 py-2 h-auto min-w-60"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex gap-2 items-center border rounded-md px-4 py-2">
-                <svg
-                  width="14"
-                  height="10"
-                  viewBox="0 0 14 10"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5.5 9.5H8.5V8H5.5V9.5ZM0.25 0.5V2H13.75V0.5H0.25ZM2.5 5.75H11.5V4.25H2.5V5.75Z"
-                    fill="#525866"
-                  />
-                </svg>
-                <span className="text-sm">Filter</span>
-              </DropdownMenuTrigger>
-              
-              <DropdownMenuContent align="end" className="w-72 p-4">
-                <h4 className="font-medium mb-2">Filter Options</h4>
-                <div className="space-y-4 border-t pt-4">
-                  <div>
-                    <Label className="text-xs mb-1 block">Transfer Type</Label>
-                    <Select onValueChange={setTypeFilter} value={typeFilter}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Types</SelectItem>
-                        <SelectItem value="credit">Credit</SelectItem>
-                        <SelectItem value="debit">Debit</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div>
-                    <Label className="text-xs mb-1 block">Transaction Status</Label>
-                    <Select onValueChange={setStatusFilter} value={statusFilter}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="">All Statuses</SelectItem>
-                        <SelectItem value="success">Success</SelectItem>
-                        <SelectItem value="failed">Failed</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <div className="flex justify-end">
-                    <Button 
-                      variant="outline" 
-                      className="mr-2"
-                      onClick={() => {
-                        setTypeFilter("");
-                        setStatusFilter("");
-                      }}
+        {/* Filters */}
+          <div className="w-[90%] mx-auto">
+            <div className="flex flex-col justify-between md:flex-row md:items-center gap-2">
+              <DayDate />
+              <div className="flex items-center gap-2">
+                <Input
+                  type="text"
+                  placeholder="search"
+                  className="text-foreground rounded-md bg-background border border-foreground/20 px-2 !py-2 h-auto min-w-60 outline outline-1 outline-foreground/20"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex gap-3 items-center border-b py-[6px] rounded-md px-2 border">
+                    <svg
+                      width="14"
+                      height="10"
+                      viewBox="0 0 14 10"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
-                      Reset
-                    </Button>
-                    <Button 
-                      onClick={() => {
-                        // Apply filters already handled by state changes
-                      }}
-                    >
-                      Apply
-                    </Button>
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                      <path
+                        d="M5.5 9.5H8.5V8H5.5V9.5ZM0.25 0.5V2H13.75V0.5H0.25ZM2.5 5.75H11.5V4.25H2.5V5.75Z"
+                        fill="#525866"
+                      />
+                    </svg>
+                    <span className="text-sm text-foreground/70">Filter</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-72 right-0 p-2">
+                    <header className="p-2">Filter Options</header>
+                    <div className="p-2 space-y-3 border-t border-b">
+                      <div>
+                        <Label className="text-xs">Transfer Type</Label>
+                        <Select onValueChange={setTypeFilter}>
+                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10">
+                            <SelectValue placeholder="select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="credit">Credit</SelectItem>
+                            <SelectItem value="debit">Debit</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs">Transaction Status</Label>
+                        <Select onValueChange={setStatusFilter}>
+                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10">
+                            <SelectValue placeholder="select status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="success">Success</SelectItem>
+                            <SelectItem value="failed">Failed</SelectItem>
+                            <SelectItem value="pending">Pending</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </div>
           </div>
-        </div>
 
         {/* Transactions List */}
         <div className="space-y-2 divide-y">
