@@ -142,6 +142,33 @@ const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 };
 
+const handleResendOtp = async () => {
+  try {
+    const response = await fetch("https://spida.africa/kaya-api/reset-password.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phone: `+234${phoneNumber}` }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to resend OTP.");
+    }
+
+    alert("OTP has been resent.");
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message);
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
+  }
+};
+
+
 
   const renderStep = () => {
     switch (currentStep) {
@@ -229,7 +256,7 @@ const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
               </p>
               <button
                 type="button"
-                className="text-[#0A0D14] text-base underline font-medium">
+                className="text-[#0A0D14] text-base underline font-medium" onClick={handleResendOtp}>
                 Resend Code
               </button>
             </div>
