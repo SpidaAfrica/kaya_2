@@ -138,7 +138,7 @@ export default function Reset() {
               </span>
               <p className="text-[#333232] text-sm md:text-base">
                 To Verify your account, please enter the OTP we sent to +234
-                8044679800
+                {phoneNumber}
               </p>
             </div>
 
