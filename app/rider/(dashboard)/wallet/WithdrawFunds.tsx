@@ -27,7 +27,7 @@ export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
 
     try {
       const response = await fetch(
-        "https://www.kaya.ng/kaya-api/rider/request-withdrawal.php",
+        "https://www.spida.africa/kaya-api/rider/request-withdrawal.php",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -57,7 +57,7 @@ export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
 
   return (
     <>
-      <div className="flex mx-auto lg:w-[800px] w-[90%] flex-col gap-4">
+      <div className="flex mx-auto lg:w-[100%] w-[90%] flex-col gap-4">
         <header className="space-y-2">
           <h2 className="text-2xl font-semibold">Withdraw Funds</h2>
           <p className="text-foreground/60">
