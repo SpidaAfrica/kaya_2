@@ -15,48 +15,49 @@ export default function ProfileSetup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Get phoneNumber from sessionStorage on mount (client-side only)
   useEffect(() => {
     const storedPhone = sessionStorage.getItem("phoneNumber");
     setPhoneNumber(storedPhone);
   }, []);
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  const router = useRouter();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMessage(null); // Clear previous errors
 
-  try {
-    const response = await fetch("https://spida.africa/kaya-api/signup.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        phoneNumber,
-        fullName,
-        email,
-        password,
-      }),
-    });
+    try {
+      const response = await fetch("https://spida.africa/kaya-api/signup.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phoneNumber,
+          fullName,
+          email,
+          password,
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (!response.ok || !data.success) {
-      throw new Error(data.message || "Signup failed. Please try again.");
+      if (!response.ok || !data.success) {
+        setErrorMessage(data.message || "Signup failed. Please try again.");
+        return;
+      }
+
+      // Store info in sessionStorage
+      sessionStorage.setItem("fullName", fullName);
+      sessionStorage.setItem("email", email);
+
+      router.push("/auth/success");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : "Something went wrong. Please try again."
+      );
     }
-
-    // Store info in sessionStorage
-    sessionStorage.setItem("fullName", fullName);
-    sessionStorage.setItem("email", email);
-
-    // First go to success page
-    router.push("/auth/success");
-
-  } catch (error) {
-    alert(error instanceof Error ? error.message : "Something went wrong. Please try again.");
-  }
-};
+  };
 
   return (
     <AuthForm>
@@ -87,10 +88,10 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             </div>
           </fieldset>
 
-          {/* Email Address */}
+          {/* Email */}
           <fieldset className="flex flex-col w-full gap-3">
             <label htmlFor="email" className="text-[#0A0D14] text-sm md:text-base font-medium">
-              Email Address 
+              Email Address
             </label>
             <div className="border w-full border-[#D1D5DB] px-3 rounded-lg flex items-center">
               <Mail className="text-[#868C98] w-5 h-5" />
@@ -121,12 +122,16 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             />
           </fieldset>
 
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="text-red-600 text-sm text-center font-medium">{errorMessage}</div>
+          )}
+
           {/* Submit Button */}
           <button
             type="submit"
             disabled={!phoneNumber || !fullName || !password}
             className="w-full bg-[#00ABFD] text-white py-3 rounded-lg text-base font-medium mt-8 disabled:opacity-60"
-            onClick={handleSubmit}
           >
             Continue
           </button>
