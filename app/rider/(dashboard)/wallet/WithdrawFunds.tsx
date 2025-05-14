@@ -85,7 +85,7 @@ export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
             fill="#475467"
           />
         </svg>
-        <span>Current Balance: NGN 50,000</span>
+
       </div>
 
       <FormInput
