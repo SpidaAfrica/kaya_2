@@ -70,25 +70,38 @@ export default function Reset() {
     }
   };
 
-  const handleOtpSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Here you would validate OTP
-    const otpValue = otp.join("");
+const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    // Call your backend to verify OTP
-    try {
-      const response = await fetch("https://spida.africa/kaya-api/verify-reset-otp.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phone: `+234${phoneNumber}`,
-          otp: otpValue,
-        }),
-      });
-    setCurrentStep("password");
-  };
+  const otpValue = otp.join(""); // Join the 4-digit OTP
+
+  try {
+    const response = await fetch("https://spida.africa/kaya-api/verify-reset-otp.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phone: `+234${phoneNumber}`,
+        otp: otpValue,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      // Proceed to password input step
+      setCurrentStep("password");
+    } else {
+      // Show error from backend
+      alert(result.message || "Invalid OTP. Please try again.");
+    }
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    alert("Something went wrong. Please try again later.");
+  }
+};
+
 
   const handlePasswordSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
