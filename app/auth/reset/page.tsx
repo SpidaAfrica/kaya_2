@@ -25,6 +25,9 @@ export default function Reset() {
 
   const handlePhoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (phoneNumber) {
+      setPhoneNumber(value.replace(/^0/, ""));
+    } 
   
     try {
       const response = await fetch("https://spida.africa/kaya-api/reset-password.php", {
