@@ -46,12 +46,12 @@ export const Footer = () => {
 
           {/* About Kaya *
           <div className="flex-[2] border-t border-blue-400 pt-6 md:border-none md:pt-0">
-            <p className="text-left text-sm md:text-base">
-              At Kaya, our mission is to simplify parcel delivery by connecting
-              individuals and businesses with reliable, affordable, and
-              efficient riders. We are committed to delivering not just parcels
-              but also trust, convenience, and peace of mind.
-            </p>
+              <p className="text-left text-base md:text-lg">
+                At Kaya, our mission is to simplify parcel delivery by 
+                seamlessly connecting individuals and businesses with reliable, 
+                affordable, and efficient riders. We are dedicated to not only delivering parcels, 
+                but also building trust, enhancing convenience, and providing peace of mind with every delivery experience.
+              </p>
           </div>
         </div>
 
