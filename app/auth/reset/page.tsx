@@ -70,6 +70,20 @@ export default function Reset() {
   const handleOtpSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Here you would validate OTP
+    const otpValue = otp.join("");
+
+    // Call your backend to verify OTP
+    try {
+      const response = await fetch("https://spida.africa/kaya-api/verify-reset-otp.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone: `+234${phoneNumber}`,
+          otp: otpValue,
+        }),
+      });
     setCurrentStep("password");
   };
 
