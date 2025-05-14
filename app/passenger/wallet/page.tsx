@@ -304,8 +304,8 @@ export default function WalletPage() {
                         {hideBalance ? <EyeClosed /> : <Eye />}
                       </button>
                     </div>
-                    <p className="font-semibold text-6xl">
-                      {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
+                    <p className="font-semibold text-3xl">
+                      ₦{hideBalance ? "****" : balance.toLocaleString()}
                     </p>
                   </div>
                   <Image src={CardChip} alt="card-chip" />
