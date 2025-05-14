@@ -291,6 +291,8 @@ export default function WalletPage() {
     if (userId) fetchTransactions();
   }, [typeFilter, statusFilter, search, page, userId]);
 
+const toggleDialog = () => setShowPaymentMethods(!showPaymentMethods);
+
   return (
     <>
       <MainContent>
