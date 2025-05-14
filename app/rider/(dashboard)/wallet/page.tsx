@@ -295,60 +295,61 @@ export default function WalletPage() {
     <>
       <MainContent>
         <div className="md:w-[90%] mx-auto space-y-5">
-          <>
-            <Script
-              src="https://js.paystack.co/v1/inline.js"
-              strategy="beforeInteractive"
+          {/* Wallet Card */}
+          <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
+            <Image
+              src={WalletBanner}
+              alt="banner"
+              className="absolute z-10 w-full h-full object-cover"
             />
-            <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
-              <Image src={WalletBanner} alt="banner" className="absolute z-10 w-full h-full object-cover" />
-              <div className="relative z-20 w-[90%] mx-auto py-5 h-full flex flex-col justify-between">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <p className="text-lg">Wallet Balance</p>
-                      <button onClick={() => setHideBalance(!hideBalance)}>
-                        {hideBalance ? <EyeClosed /> : <Eye />}
-                      </button>
-                    </div>
-                    <p className="font-semibold text-6xl">
-                      {hideBalance ? "****" : `₦${balance?.toFixed(2)}`}
-                    </p>
+            <div className="relative z-20 w-[90%] mx-auto py-5 h-full flex flex-col justify-between">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="flex items-center gap-3">
+                    <p className="text-lg">Wallet Balance</p>
+                    <button onClick={() => setHideBalance(!hideBalance)}>
+                      {hideBalance ? <EyeClosed /> : <Eye />}
+                    </button>
                   </div>
-                  <Image src={CardChip} alt="card-chip" />
+                  <p className="font-semibold text-6xl">
+                    {hideBalance ? "****" : `₦${balance?.toFixed(2)}`}
+                  </p>
                 </div>
-                <div className="w-fit ml-auto">
-                    <Button
-                      onClick={() => setShowWithdrawModal(true)}
-                      variant="ghost"
-                      className="w-fit bg-background text-foreground">
-                      <svg
-                        width="11"
-                        height="11"
-                        viewBox="0 0 11 11"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M6.08151 4.6316L10.7494 9.2978L9.58198 10.4652L4.91578 5.79815L0.832031 9.8819V0.547852H10.1653L6.08151 4.6316Z"
-                          fill="#1E2023"
-                        />
-                      </svg>
-                      <p>Withdraw Funds</p>
-                    </Button>
-              
-                    {/* Withdraw Modal */}
-                    {showWithdrawModal && (
-                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                        <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
-                          <WithdrawFunds onClose={() => setShowWithdrawModal(false)} />
-                        </div>
-                      </div>
-                    )}
-                </div>
+                <Image src={CardChip} alt="card-chip" />
+              </div>
+              <div className="w-fit ml-auto">
+                <Button
+                  onClick={() => setShowWithdrawModal(true)}
+                  variant="ghost"
+                  className="w-fit bg-background text-foreground"
+                >
+                  <svg
+                    width="11"
+                    height="11"
+                    viewBox="0 0 11 11"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M6.08151 4.6316L10.7494 9.2978L9.58198 10.4652L4.91578 5.79815L0.832031 9.8819V0.547852H10.1653L6.08151 4.6316Z"
+                      fill="#1E2023"
+                    />
+                  </svg>
+                  <p>Withdraw Funds</p>
+                </Button>
+
+                {showWithdrawModal && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                    <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
+                      <WithdrawFunds onClose={() => setShowWithdrawModal(false)} />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-        
+          </div>
 
+          {/* Recent Transactions Header */}
           <div className="w-[90%] mx-auto space-y-3">
             <div className="flex items-center justify-between">
               <p className="font-semibold text-xl">Recent Transactions</p>
@@ -362,11 +363,10 @@ export default function WalletPage() {
             </p>
           </div>
 
+          {/* Filters */}
           <div className="w-[90%] mx-auto">
             <div className="flex flex-col justify-between md:flex-row md:items-center gap-2">
-              <div className="flex items-center gap-2">
-                <DayDate />
-              </div>
+              <DayDate />
               <div className="flex items-center gap-2">
                 <Input
                   type="text"
@@ -395,9 +395,9 @@ export default function WalletPage() {
                     <header className="p-2">Filter Options</header>
                     <div className="p-2 space-y-3 border-t border-b">
                       <div>
+                        <Label className="text-xs">Transfer Type</Label>
                         <Select onValueChange={setTypeFilter}>
-                          <Label className="text-xs">Transfer Type</Label>
-                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
+                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10">
                             <SelectValue placeholder="select type" />
                           </SelectTrigger>
                           <SelectContent>
@@ -407,9 +407,9 @@ export default function WalletPage() {
                         </Select>
                       </div>
                       <div>
+                        <Label className="text-xs">Transaction Status</Label>
                         <Select onValueChange={setStatusFilter}>
-                          <Label className="text-xs">Transaction Status</Label>
-                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10 focus:outline focus:outline-1">
+                          <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10">
                             <SelectValue placeholder="select status" />
                           </SelectTrigger>
                           <SelectContent>
@@ -426,6 +426,7 @@ export default function WalletPage() {
             </div>
           </div>
 
+          {/* Transactions */}
           <div className="w-[90%] mx-auto space-y-3 divide-y">
             {loading ? (
               <p>Loading transactions...</p>
@@ -456,15 +457,14 @@ export default function WalletPage() {
             />
           </div>
         </div>
-        </>
+
+        {/* Payment Method Dialog */}
         <Dialog open={showPaymentMethods} onOpenChange={toggleDialog}>
           <DialogContent className="w-full rounded-xl max-w-[90vw] md:max-w-lg">
             <div className="h-full w-full relative px-6 py-8">
-              <DialogTrigger className="absolute top-4 right-4">
-                <button>
-                  <X />
-                </button>
-              </DialogTrigger>
+              <button onClick={toggleDialog} className="absolute top-4 right-4">
+                <X />
+              </button>
               <DialogHeader className="flex flex-row items-center justify-between border-b py-2">
                 <DialogTitle className="text-lg font-semibold">
                   Add a New Payment Method
@@ -503,7 +503,6 @@ export default function WalletPage() {
     </>
   );
 }
-
 
 
 const BankDetails = ({
