@@ -8,9 +8,9 @@ export default function Splash() {
       <Image
         src={IconLogo}
         alt="icon-logo"
-        width={150} // Adjust width as needed
+        width={150}
         height={150}
-        className="w-24 sm:w-36 md:w-40 lg:w-44 object-contain"
+        className="object-contain"
         priority
       />
     </div>
