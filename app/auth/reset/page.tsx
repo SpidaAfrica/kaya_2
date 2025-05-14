@@ -23,36 +23,39 @@ export default function Reset() {
   const [error, setError] = React.useState<string | null>(null);
   const router = useRouter();
 
-  const handlePhoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (phoneNumber) {
-      setPhoneNumber(value.replace(/^0/, ""));
-    } 
-  
-    try {
-      const response = await fetch("https://spida.africa/kaya-api/reset-password.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ phone: `+234${phoneNumber}` }),
-      });
-    
-      const data = await response.json();
-    
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to request password reset.");
-      }
-    
-      setCurrentStep("otp");
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message);
-      } else {
-        alert("Something went wrong. Please try again.");
-      }
-    }    
-  };
+const handlePhoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  // Format and store phone number without leading 0
+  const formattedPhone = phoneNumber.replace(/^0/, "");
+
+  try {
+    const response = await fetch("https://spida.africa/kaya-api/reset-password.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ phone: `+234${formattedPhone}` }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to request password reset.");
+    }
+
+    // Update state only after success
+    setPhoneNumber(formattedPhone);
+    setCurrentStep("otp");
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(error.message);
+    } else {
+      alert("Something went wrong. Please try again.");
+    }
+  }
+};
+
   
 
   const handleOtpChange = (index: number, value: string) => {
