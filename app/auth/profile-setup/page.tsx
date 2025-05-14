@@ -126,6 +126,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
             type="submit"
             disabled={!phoneNumber || !fullName || !password}
             className="w-full bg-[#00ABFD] text-white py-3 rounded-lg text-base font-medium mt-8 disabled:opacity-60"
+            onClick={handleSubmit}
           >
             Continue
           </button>
