@@ -91,7 +91,7 @@ export const Footer = () => {
               alt="Kaya Logo"
               className="w-32 h-auto object-contain"
             />
-            <p className="text-left">
+            <p className="text-left md:text-lg">
               At Kaya, our mission is to simplify parcel delivery by connecting
               individuals and businesses with reliable, affordable, and
               efficient riders. We are committed to delivering not just parcels
