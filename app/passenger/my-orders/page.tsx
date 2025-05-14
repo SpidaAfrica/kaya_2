@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/date-picker";
 import FormInput from "@/components/FormInput";
 import Pagination from "@/components/Pagination";
@@ -24,9 +23,7 @@ import { OrderCard } from "@/app/shared";
 import Image from "next/image";
 import Link from "next/link";
 import NoOrders from "@/assets/no-orders.svg";
-import { ChevronLeft, Package } from "lucide-react";
-
-
+import { ChevronLeft } from "lucide-react";
 
 type Package = {
   id: number;
@@ -56,19 +53,16 @@ export default function MyOrdersPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Load userId from sessionStorage
   useEffect(() => {
     const storedId = sessionStorage.getItem("userId");
     if (storedId) setUserId(storedId);
   }, []);
 
-  // Simulate order presence
   useEffect(() => {
     const timer = setTimeout(() => setHasOrders(true), 3000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Fetch packages
   useEffect(() => {
     if (!userId) return;
 
@@ -82,7 +76,7 @@ export default function MyOrdersPage() {
           package_category: packageType,
           date_filter: dateFilter,
           page: page.toString(),
-          user_id:userId,
+          user_id: userId,
         });
 
         const res = await fetch(`https://spida.africa/kaya-api/filter-packages.php?${params}`);
@@ -187,7 +181,6 @@ export default function MyOrdersPage() {
                 <FilterSelect label="Order Status" value={status} onChange={setStatus} options={["pending", "completed", "cancelled"]} />
                 <FilterSelect label="Rider Rating" value={rating} onChange={setRating} options={["5", "4", "3", "2", "1"]} />
                 <FilterSelect label="Package Type" value={packageType} onChange={setPackageType} options={["Small", "Medium", "Large"]} />
-          
                 <div className="flex items-center gap-3 border-t pt-3">
                   <Button variant="outline" onClick={clearFilters}>Cancel</Button>
                   <Button>Apply</Button>
@@ -205,14 +198,7 @@ export default function MyOrdersPage() {
           packages.map((pack) => (
             <Fragment key={pack.id}>
               <DeliveryDetails>
-                <OrderCard data={{
-                  id: pack.id,
-                  created_at: pack.created_at,
-                  to_location: pack.to_location,
-                  delivery_id: pack.delivery_id,
-                  price: pack.price,
-                  status: pack.status
-                }} />
+                <OrderCard data={pack} />
               </DeliveryDetails>
             </Fragment>
           ))
@@ -228,23 +214,26 @@ export default function MyOrdersPage() {
   );
 }
 
-function FilterSelect({ label, value, onChange, options }: {
+// ✅ Reusable & Safe Filter Select
+function FilterSelect({
+  label,
+  value,
+  onChange,
+  options,
+}: {
   label: string;
-  value: string | undefined;
+  value: string;
   onChange: (val: string) => void;
   options: string[];
 }) {
   return (
     <div className="space-y-1">
       <label className="text-sm text-muted-foreground">{label}</label>
-      <Select value={value} onValueChange={onChange}>
+      <Select value={value || undefined} onValueChange={onChange}>
         <SelectTrigger>
           <SelectValue placeholder={`Select ${label}`} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="" disabled>
-            Select {label}
-          </SelectItem>
           {options.map((option) => (
             <SelectItem key={option} value={option}>
               {option}
