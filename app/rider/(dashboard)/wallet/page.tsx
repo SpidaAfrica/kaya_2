@@ -347,27 +347,7 @@ export default function WalletPage() {
                 </div>
               </div>
             </div>
-
-            {/* Modal */}
-            {showModal && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-white rounded-lg p-6 w-[90%] max-w-md">
-                  <h2 className="text-xl font-semibold mb-4">Deposit Funds</h2>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter amount"
-                    className="border w-full p-2 rounded mb-4"
-                  />
-                  <div className="flex justify-end gap-3">
-                    <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
-                    <Button onClick={handlePay}>Proceed</Button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </>
+        
 
           <div className="w-[90%] mx-auto space-y-3">
             <div className="flex items-center justify-between">
