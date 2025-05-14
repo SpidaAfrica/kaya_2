@@ -305,7 +305,7 @@ export default function WalletPage() {
                       </button>
                     </div>
                     <p className="font-semibold text-6xl">
-                      {hideBalance ? "****" : `₦${balance?.toFixed(2)}`}
+                      {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
                     </p>
                   </div>
                   <Image src={CardChip} alt="card-chip" />
