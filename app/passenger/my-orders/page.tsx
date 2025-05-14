@@ -184,10 +184,10 @@ export default function MyOrdersPage() {
             <DropdownMenuContent align="end" className="w-72 right-0 p-2">
               <header className="p-2">Filter Options</header>
               <div className="p-2 space-y-3 border-t">
-                <FilterSelect label="Order Status" value={status} onChange={setStatus} options={["pending", "completed", "Cancelled"]} />
+                <FilterSelect label="Order Status" value={status} onChange={setStatus} options={["pending", "completed", "cancelled"]} />
                 <FilterSelect label="Rider Rating" value={rating} onChange={setRating} options={["5", "4", "3", "2", "1"]} />
                 <FilterSelect label="Package Type" value={packageType} onChange={setPackageType} options={["Small", "Medium", "Large"]} />
-
+          
                 <div className="flex items-center gap-3 border-t pt-3">
                   <Button variant="outline" onClick={clearFilters}>Cancel</Button>
                   <Button>Apply</Button>
@@ -230,21 +230,25 @@ export default function MyOrdersPage() {
 
 function FilterSelect({ label, value, onChange, options }: {
   label: string;
-  value: string;
+  value: string | undefined;
   onChange: (val: string) => void;
   options: string[];
 }) {
   return (
-    <div>
-      <Label className="text-xs">{label}</Label>
+    <div className="space-y-1">
+      <label className="text-sm text-muted-foreground">{label}</label>
       <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className="p-2 rounded !outline outline-1 outline-foreground/10">
-          <SelectValue placeholder={`All ${label}`} />
+        <SelectTrigger>
+          <SelectValue placeholder={`Select ${label}`} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">{`All ${label}`}</SelectItem>
-          {options.map((opt) => (
-            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+          <SelectItem value="" disabled>
+            Select {label}
+          </SelectItem>
+          {options.map((option) => (
+            <SelectItem key={option} value={option}>
+              {option}
+            </SelectItem>
           ))}
         </SelectContent>
       </Select>
