@@ -456,7 +456,7 @@ export default function WalletPage() {
             />
           </div>
         </div>
-
+        </>
         <Dialog open={showPaymentMethods} onOpenChange={toggleDialog}>
           <DialogContent className="w-full rounded-xl max-w-[90vw] md:max-w-lg">
             <div className="h-full w-full relative px-6 py-8">
