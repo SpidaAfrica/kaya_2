@@ -10,6 +10,7 @@ export default function FormInput({
   wrapperClassName,
   label,
   outerClassName,
+  error,
   ...props
 }: ComponentProps<typeof Input> & {
   leading?: React.ReactNode;
@@ -19,6 +20,7 @@ export default function FormInput({
   label?: string | React.ReactNode;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   outerClassName?: string;
+  error?: string;
 }) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const [isFocused, setIsFocused] = React.useState(false);
