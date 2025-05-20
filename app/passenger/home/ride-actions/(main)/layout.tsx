@@ -2,7 +2,7 @@ import { HeroMap, MiniMap } from "@/assets";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import React, { PropsWithChildren } from "react";
+import React, {useState, PropsWithChildren } from "react";
 import MapWithRoute from "@/components/Overlays/MapWithRoute";
 import { ViewMapInFullMode } from "@/app/shared";
 
