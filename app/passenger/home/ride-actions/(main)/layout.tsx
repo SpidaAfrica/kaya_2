@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import React, { PropsWithChildren } from "react";
-import MapWithRoute from "./MapWithRoute";
+import MapWithRoute from "@/components/Overlays/MapWithRoute";
 import { ViewMapInFullMode } from "@/app/shared";
 
 export default function RideActionsLayout({ children }: PropsWithChildren) {
