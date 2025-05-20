@@ -14,6 +14,7 @@ import { SuggestPrice } from "./SuggestPrice";
 import { OrderDetails } from "./OrderDetails";
 import MapWithRoute from "./MapWithRoute";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 export const dynamic = "force-dynamic";
 
@@ -198,6 +199,7 @@ export function DeliveryDetails({
       const result = await response.json();
       if (result.status === "success") {
         alert("Package created successfully!");
+        router.push("/passenger/home/ride-actions");
       } else {
         alert(`Error: ${result.message}`);
       }
