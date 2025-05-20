@@ -7,15 +7,28 @@ import MapWithRoute from "@/components/Overlays/MapWithRoute";
 import { ViewMapInFullMode } from "@/app/shared";
 
 export default function RideActionsLayout({ children }: PropsWithChildren) {
+      /*
       const fromLocation = typeof window !== "undefined" ? sessionStorage.getItem("fromLocation") : null;
       const toLocation = typeof window !== "undefined" ? sessionStorage.getItem("toLocation") : null;
       const safeString = (val: string | null): string | undefined => val ?? undefined;
+      */
+      const [fromLocation, setFromLocation] = useState<string | undefined>();
+      const [toLocation, setToLocation] = useState<string | undefined>();
+
+      useEffect(() => {
+        const from = sessionStorage.getItem("fromLocation") ?? undefined;
+        const to = sessionStorage.getItem("toLocation") ?? undefined;
+        setFromLocation(from);
+        setToLocation(to);
+      }, []);
+
   return (
     <div className="w-[95%] mx-auto py-4">
       <div className="hidden md:block mx-auto relative">
         {/*<Image src={HeroMap} alt="map" className="w-full h-full object-cover" />*/}
-        <MapWithRoute from={safeString(fromLocation)} to={safeString(toLocation)} />
-        <ViewMapInFullMode userType="passenger" fromLocation={safeString(fromLocation)} toLocation={safeString(toLocation)} />
+        {fromLocation && toLocation && <MapWithRoute from={fromLocation} to={toLocation} />}
+
+            {/*<ViewMapInFullMode userType="passenger" fromLocation={safeString(fromLocation)} toLocation={safeString(toLocation)} />*/}
         {/*
         <Button asChild className="bg-black w-fit absolute bottom-4 right-4">
           <Link href={"/passenger/big-map"}>
@@ -36,7 +49,7 @@ export default function RideActionsLayout({ children }: PropsWithChildren) {
         */}
       </div>
       <div className="md:hidden">
-          <MapWithRoute from={safeString(fromLocation)} to={safeString(toLocation)} />
+            {fromLocation && toLocation && <MapWithRoute from={fromLocation} to={toLocation} />}
       </div>
       <div className="md:w-[95%] mx-auto flex flex-col md:flex-row gap-10 items-stretch my-8">
         <div className="flex-1">{children}</div>
