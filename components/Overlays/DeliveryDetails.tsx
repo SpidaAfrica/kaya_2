@@ -58,6 +58,7 @@ export function DeliveryDetails({
 }) {
   const [packageData, setPackageData] = useState<Package | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   {/*  useEffect(() => {
     if (typeof window === "undefined") return;
