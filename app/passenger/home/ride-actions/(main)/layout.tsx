@@ -3,12 +3,19 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import React, { PropsWithChildren } from "react";
+import MapWithRoute from "./MapWithRoute";
+import { ViewMapInFullMode } from "@/app/shared";
 
 export default function RideActionsLayout({ children }: PropsWithChildren) {
+      const fromLocation = typeof window !== "undefined" ? sessionStorage.getItem("fromLocation") : null;
+      const toLocation = typeof window !== "undefined" ? sessionStorage.getItem("toLocation") : null;
   return (
     <div className="w-[95%] mx-auto py-4">
       <div className="hidden md:block mx-auto relative">
-        <Image src={HeroMap} alt="map" className="w-full h-full object-cover" />
+        {/*<Image src={HeroMap} alt="map" className="w-full h-full object-cover" />*/}
+        <MapWithRoute from={fromLocation} to={toLocation} />
+        <ViewMapInFullMode userType="passenger" fromLocation={fromLocation} toLocation={toLocation} />
+        {/*
         <Button asChild className="bg-black w-fit absolute bottom-4 right-4">
           <Link href={"/passenger/big-map"}>
             <svg
@@ -25,9 +32,10 @@ export default function RideActionsLayout({ children }: PropsWithChildren) {
             View Map in full Mode
           </Link>
         </Button>
+        */}
       </div>
       <div className="md:hidden">
-        <Image src={MiniMap} alt="map" className="w-full" />
+          <MapWithRoute from={fromLocation} to={toLocation} />
       </div>
       <div className="md:w-[95%] mx-auto flex flex-col md:flex-row gap-10 items-stretch my-8">
         <div className="flex-1">{children}</div>
