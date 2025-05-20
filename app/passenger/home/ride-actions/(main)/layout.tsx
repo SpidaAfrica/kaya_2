@@ -2,7 +2,7 @@ import { HeroMap, MiniMap } from "@/assets";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import React, {useState, PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react";
 import MapWithRoute from "@/components/Overlays/MapWithRoute";
 import { ViewMapInFullMode } from "@/app/shared";
 
@@ -12,8 +12,8 @@ export default function RideActionsLayout({ children }: PropsWithChildren) {
       const toLocation = typeof window !== "undefined" ? sessionStorage.getItem("toLocation") : null;
       const safeString = (val: string | null): string | undefined => val ?? undefined;
       */
-      const [fromLocation, setFromLocation] = useState<string | undefined>();
-      const [toLocation, setToLocation] = useState<string | undefined>();
+      const [fromLocation, setFromLocation] = React.useState<string | undefined>();
+      const [toLocation, setToLocation] = React.useState<string | undefined>();
 
       useEffect(() => {
         const from = sessionStorage.getItem("fromLocation") ?? undefined;
