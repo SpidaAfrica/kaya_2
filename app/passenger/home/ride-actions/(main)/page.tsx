@@ -23,6 +23,10 @@ export default function RideActionsPage() {
   const [toLocation, setToLocation] = useState<string | undefined>();
   const [price, setPrice] = useState<string | undefined>();
   const [paymentMethod, setPaymentMethod] = useState<string | undefined>();
+  const [senderPhone, setSenderPhone] = useState<string | undefined>();
+  const [recipientPhone, setRecipientPhone] = useState<string | undefined>();
+  const [packageDescription, setPackageDescription] = useState<string | undefined>();
+  
     useEffect(() => {
     const getSessionValue = (key: string): string | undefined => {
       if (typeof window === 'undefined') return undefined;
@@ -89,7 +93,11 @@ export default function RideActionsPage() {
               <p className="text-gray-400 font-medium text-sm">Order Details</p>
               <div className="flex items-center gap-3">
                 <p className="text-lg font-medium">
-                  +2348052866502, +2348054676804, Small envelope with fragile...
+                  Sender: {senderPhone}
+                  <br/>
+                  Recipient: {recipientPhone}
+                  <br/>
+                  Package Description: {packageDescription}
                 </p>
               </div>
             </div>
