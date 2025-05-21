@@ -19,6 +19,8 @@ export default function RideActionsLayout({ children }: PropsWithChildren) {
     setToLocation(getSessionValue('toLocation'));
   }, []);
 
+  console.log("FROM:", fromLocation, "TO:", toLocation);
+
   const renderMap = () =>
     fromLocation && toLocation ? (
       <MapWithRoute from={fromLocation} to={toLocation} />
