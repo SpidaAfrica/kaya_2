@@ -21,6 +21,8 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 export default function RideActionsPage() {
   const [fromLocation, setFromLocation] = useState<string | undefined>();
   const [toLocation, setToLocation] = useState<string | undefined>();
+  const [price, setPrice] = useState<string | undefined>();
+  const [paymentMethod, setPaymentMethod] = useState<string | undefined>();
     useEffect(() => {
     const getSessionValue = (key: string): string | undefined => {
       if (typeof window === 'undefined') return undefined;
@@ -29,6 +31,8 @@ export default function RideActionsPage() {
 
     setFromLocation(getSessionValue('fromLocation'));
     setToLocation(getSessionValue('toLocation'));
+    setPrice(getSessionValue('price'));
+    setPaymentMethod(getSessionValue('paymentMethod'));
   }, []);
   return (
     <div className="flex flex-col-reverse md:flex-row gap-10">
@@ -42,12 +46,12 @@ export default function RideActionsPage() {
             <div className="border-b-[1px] border-b-foreground/10 py-3 flex-1">
               <p className="text-gray-400 font-medium text-sm">Order Price</p>
               <div className="flex items-center gap-3">
-                <p className="text-lg font-medium">NGN30,000</p>
+                <p className="text-lg font-medium">{price}</p>
                 <div className="flex items-center gap-1 py-1 px-2 rounded-lg outline outline-1 outline-gray-400/80 shadow">
                   <span>
                     <Slash className="stroke-background p-1 rounded-full bg-gray-400 w-4 h-4" />
                   </span>
-                  <small className="font-medium text-gray-400">Cash</small>
+                  <small className="font-medium text-gray-400">{paymentMethod}</small>
                 </div>
               </div>
             </div>
