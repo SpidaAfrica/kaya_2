@@ -296,43 +296,38 @@ function AvailableRides({
 }: {
   setRideState: (state: RideState) => void;
 }) {
-  const rides = [
-    {
-      driver: "Mathew Aaron",
-      rides: 933,
-      rating: 4.5,
-      price: 20000,
-      eta: 11,
-    },
-    {
-      driver: "Mathew Aaron",
-      rides: 933,
-      rating: 4.5,
-      price: 20000,
-      eta: 11,
-    },
-    {
-      driver: "Mathew Aaron",
-      rides: 933,
-      rating: 4.5,
-      price: 20000,
-      eta: 11,
-    },
-    {
-      driver: "Mathew Aaron",
-      rides: 933,
-      rating: 4.5,
-      price: 20000,
-      eta: 11,
-    },
-    {
-      driver: "Mathew Aaron",
-      rides: 933,
-      rating: 4.5,
-      price: 20000,
-      eta: 11,
-    },
-  ];
+  const [availableRiders, setAvailableRiders] = useState([]);
+
+  useEffect(() => {
+    const storedCords = sessionStorage.getItem("pickupCoords");
+    if (!storedCords) return;
+
+    const { lat, lng } = JSON.parse(storedCords);
+    fetchAvailableRiders(lat, lng);
+  }, []);
+
+  const fetchAvailableRiders = async (pickupLat, pickupLng) => {
+    try {
+      const formData = new FormData();
+      formData.append("pickup_lat", pickupLat);
+      formData.append("pickup_lng", pickupLng);
+
+      const response = await fetch("https://spida.africa/kaya-api/get-nearby-riders.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+        setAvailableRiders(data.riders); // Set top 5 nearby riders
+      } else {
+        console.error("Server error:", data.message);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
 
   return (
     <div className="mx-auto px-4 max-h-96 flex flex-col">
@@ -342,17 +337,7 @@ function AvailableRides({
           {/* <Users className="mr-2 h-5 w-5" /> */}
           <div className=" flex items-center -space-x-5">
             <Image
-              src={RiderAvatar}
-              alt="rider"
-              className="w-12 aspect-square object-cover rounded-full bg-purple-300"
-            />
-            <Image
-              src={RiderAvatar}
-              alt="rider"
-              className="w-12 aspect-square object-cover rounded-full bg-purple-300"
-            />
-            <Image
-              src={RiderAvatar}
+              src={availableRiders.imageUrl}
               alt="rider"
               className="w-12 aspect-square object-cover rounded-full bg-purple-300"
             />
@@ -362,12 +347,12 @@ function AvailableRides({
       </header>
 
       <div className="space-y-4 pt-6 flex-1 overflow-y-auto">
-        {rides.map((ride, index) => (
+        {availableRiders.map((ride, index) => (
           <div key={index} className="rounded-lg mb-4 overflow-hidden">
             <div className="flex items-center p-4">
               <div className="flex-grow">
                 <div className="flex items-center mb-2">
-                  <span className="font-semibold mr-2">{ride.driver}</span>
+                  <span className="font-semibold mr-2">{availabelRiders.}fullName</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="text-sm text-foreground/70">
