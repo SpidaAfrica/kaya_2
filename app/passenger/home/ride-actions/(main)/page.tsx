@@ -37,6 +37,9 @@ export default function RideActionsPage() {
     setToLocation(getSessionValue('toLocation'));
     setPrice(getSessionValue('price'));
     setPaymentMethod(getSessionValue('paymentMethod'));
+    setSenderPhone(getSessionValue('senderPhone'));
+    setRecipientPhone(getSessionValue('recipientPhone'));
+    setPackageDescription(getSessionValue('packageDescription'));
   }, []);
   return (
     <div className="flex flex-col-reverse md:flex-row gap-10">
