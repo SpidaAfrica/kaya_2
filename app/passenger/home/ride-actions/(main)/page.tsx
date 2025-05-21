@@ -19,6 +19,17 @@ import { Info } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export default function RideActionsPage() {
+  const [fromLocation, setFromLocation] = useState<string | undefined>();
+  const [toLocation, setToLocation] = useState<string | undefined>();
+    useEffect(() => {
+    const getSessionValue = (key: string): string | undefined => {
+      if (typeof window === 'undefined') return undefined;
+      return sessionStorage.getItem(key) ?? undefined;
+    };
+
+    setFromLocation(getSessionValue('fromLocation'));
+    setToLocation(getSessionValue('toLocation'));
+  }, []);
   return (
     <div className="flex flex-col-reverse md:flex-row gap-10">
       <div className="flex-1">
@@ -49,7 +60,7 @@ export default function RideActionsPage() {
             <div className="border-b-[1px] border-b-foreground/10 py-3 flex-1">
               <p className="text-gray-400 font-medium text-sm">Origin</p>
               <div className="flex items-center gap-3">
-                <p className="text-lg font-medium">Hebert Macauley Road</p>
+                <p className="text-lg font-medium">{fromLocation}</p>
               </div>
             </div>
           </div>
@@ -59,9 +70,9 @@ export default function RideActionsPage() {
               <Map />
             </div>
             <div className="border-b-[1px] border-b-foreground/10 py-3 flex-1">
-              <p className="text-gray-400 font-medium text-sm">Origin</p>
+              <p className="text-gray-400 font-medium text-sm">Destination</p>
               <div className="flex items-center gap-3">
-                <p className="text-lg font-medium">Hebert Macauley Road</p>
+                <p className="text-lg font-medium">{toLocation}</p>
               </div>
             </div>
           </div>
