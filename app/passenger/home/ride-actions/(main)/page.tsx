@@ -339,9 +339,9 @@ function AvailableRides({
         <h3 className="font-medium text-xl">Available Rides</h3>
         <div className="flex items-center text-sm text-foreground mb-4 gap-2">
           <div className="flex items-center -space-x-5">
-            {availableRiders[0]?.imageUrl && (
+            {availableRiders[0]?.image_url && (
               <Image
-                src={availableRiders[0].imageUrl}
+                src={availableRiders[0].image_url}
                 alt="rider"
                 width={48}
                 height={48}
