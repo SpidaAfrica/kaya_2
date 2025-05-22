@@ -279,10 +279,9 @@ function RiderStatus({
 
 
 
-import { useEffect, useState } from "react";
-import Image from "next/image";
+
 import { Star } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 
 function AvailableRides({
   setRideState,
