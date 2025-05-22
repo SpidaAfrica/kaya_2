@@ -385,7 +385,7 @@ function AvailableRides({
                   NGN {ride.price?.toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-500 text-right">
-                  {ride.eta} min away
+                  {ride.distance} km away
                 </div>
               </div>
             </div>
