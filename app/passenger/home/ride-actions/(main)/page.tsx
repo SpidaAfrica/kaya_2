@@ -2,9 +2,7 @@
 export const dynamic = "force-dynamic";
 import AnimateInOut from "@/components/AnimateInOut";
 import { Button } from "@/components/ui/button";
-import {DeliveryDetails} from "@/components/Overlays/DeliveryDetails";
 import Link from "next/link";
-
 import {
   CircularProgressBar,
   MessageIconSquare,
@@ -15,6 +13,15 @@ import {
   Stars,
   Warn,
 } from "@/assets";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/custom-select";
+import { DeliveryDetails } from "@/components/Overlays/DeliveryDetails";
+import SuccessModal from "@/components/Overlays/SuccessModal";
 import { ChevronRight, Loader, Map, Phone, Slash, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
