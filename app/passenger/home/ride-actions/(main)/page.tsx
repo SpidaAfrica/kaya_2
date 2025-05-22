@@ -277,26 +277,19 @@ function RiderStatus({
   );
 }
 
-import { Star } from "lucide-react";
+"use client";
 
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/custom-select";
-import { DeliveryDetails } from "@/components/Overlays/DeliveryDetails";
-import SuccessModal from "@/components/Overlays/SuccessModal";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 function AvailableRides({
   setRideState,
 }: {
   setRideState: (state: RideState) => void;
 }) {
-  const [availableRiders, setAvailableRiders] = useState([]);
+  const [availableRiders, setAvailableRiders] = useState<any[]>([]);
 
   useEffect(() => {
     const storedCords = sessionStorage.getItem("pickupCoords");
@@ -306,11 +299,11 @@ function AvailableRides({
     fetchAvailableRiders(lat, lng);
   }, []);
 
-  const fetchAvailableRiders = async (pickupLat, pickupLng) => {
+  const fetchAvailableRiders = async (pickupLat: number, pickupLng: number) => {
     try {
       const formData = new FormData();
-      formData.append("pickup_lat", pickupLat);
-      formData.append("pickup_lng", pickupLng);
+      formData.append("pickup_lat", pickupLat.toString());
+      formData.append("pickup_lng", pickupLng.toString());
 
       const response = await fetch("https://spida.africa/kaya-api/get-nearby-riders.php", {
         method: "POST",
@@ -320,7 +313,7 @@ function AvailableRides({
       const data = await response.json();
 
       if (data.status === "success") {
-        setAvailableRiders(data.riders); // Set top 5 nearby riders
+        setAvailableRiders(data.riders);
       } else {
         console.error("Server error:", data.message);
       }
@@ -334,13 +327,16 @@ function AvailableRides({
       <header className="space-y-3 border-b py-3">
         <h3 className="font-medium text-xl">Available Rides</h3>
         <div className="flex items-center text-sm text-foreground mb-4 gap-2">
-          {/* <Users className="mr-2 h-5 w-5" /> */}
-          <div className=" flex items-center -space-x-5">
-            <Image
-              src={availableRiders.imageUrl}
-              alt="rider"
-              className="w-12 aspect-square object-cover rounded-full bg-purple-300"
-            />
+          <div className="flex items-center -space-x-5">
+            {availableRiders[0]?.imageUrl && (
+              <Image
+                src={availableRiders[0].imageUrl}
+                alt="rider"
+                width={48}
+                height={48}
+                className="w-12 aspect-square object-cover rounded-full bg-purple-300"
+              />
+            )}
           </div>
           <span className="font-medium">and 5 others are viewing request</span>
         </div>
@@ -348,11 +344,11 @@ function AvailableRides({
 
       <div className="space-y-4 pt-6 flex-1 overflow-y-auto">
         {availableRiders.map((ride, index) => (
-          <div key={index} className="rounded-lg mb-4 overflow-hidden">
+          <div key={index} className="rounded-lg mb-4 overflow-hidden border">
             <div className="flex items-center p-4">
               <div className="flex-grow">
                 <div className="flex items-center mb-2">
-                  <span className="font-semibold mr-2">{availabelRiders.}fullName</span>
+                  <span className="font-semibold mr-2">{ride.fullName}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="text-sm text-foreground/70">
@@ -369,15 +365,13 @@ function AvailableRides({
                         }`}
                       />
                     ))}
-                    <span className="ml-2 text-foreground/60">
-                      {ride.rating}
-                    </span>
+                    <span className="ml-2 text-foreground/60">{ride.rating}</span>
                   </div>
                 </div>
               </div>
               <div>
                 <div className="text-lg font-bold text-right">
-                  NGN {ride.price.toLocaleString()}
+                  NGN {ride.price?.toLocaleString()}
                 </div>
                 <div className="text-sm text-gray-500 text-right">
                   {ride.eta} min away
@@ -385,14 +379,8 @@ function AvailableRides({
               </div>
             </div>
             <div className="flex items-center gap-2 p-1 w-[75%] ml-auto">
-              <Button variant={"outline"} className="">
-                Decline
-              </Button>
-              <Button
-                onClick={() => setRideState("rider-details")}
-                className="">
-                Accept
-              </Button>
+              <Button variant="outline">Decline</Button>
+              <Button onClick={() => setRideState("rider-details")}>Accept</Button>
             </div>
           </div>
         ))}
@@ -400,6 +388,8 @@ function AvailableRides({
     </div>
   );
 }
+
+export default AvailableRides;
 
 function FareIncreaseInterface({
   setRideState,
