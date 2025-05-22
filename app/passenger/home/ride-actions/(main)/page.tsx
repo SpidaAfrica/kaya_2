@@ -2,6 +2,7 @@
 export const dynamic = "force-dynamic";
 import AnimateInOut from "@/components/AnimateInOut";
 import { Button } from "@/components/ui/button";
+import {DeliveryDetails} from "@/components/Overlays/DeliveryDetails";
 import {
   CircularProgressBar,
   MessageIconSquare,
