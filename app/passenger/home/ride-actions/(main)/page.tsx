@@ -277,7 +277,7 @@ function RiderStatus({
   );
 }
 
-"use client";
+
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
@@ -389,7 +389,6 @@ function AvailableRides({
   );
 }
 
-export default AvailableRides;
 
 function FareIncreaseInterface({
   setRideState,
