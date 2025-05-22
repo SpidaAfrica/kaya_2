@@ -401,19 +401,91 @@ function AvailableRides({
 }
 
 
+
 function FareIncreaseInterface({
   setRideState,
 }: {
   setRideState: (state: RideState) => void;
 }) {
   const [fare, setFare] = useState(30000);
+  const [rideRequestId, setRideRequestId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const storedId = sessionStorage.getItem("rideRequestId");
+    if (storedId) setRideRequestId(storedId);
+  }, []);
 
   const decreaseFare = () => {
-    setFare(Math.max(0, fare - 1000));
+    setFare(prev => Math.max(0, prev - 1000));
   };
 
   const increaseFare = () => {
-    setFare(Math.min(fare + 1000, 100000)); // Capped at ±N100
+    setFare(prev => Math.min(prev + 1000, 100000));
+  };
+
+  const [availableRiders, setAvailableRiders] = useState<any[]>([]);
+
+  useEffect(() => {
+    const storedCords = sessionStorage.getItem("pickupCoords");
+    if (!storedCords) return;
+
+    const { lat, lng } = JSON.parse(storedCords);
+    fetchAvailableRiders(lat, lng);
+  }, []);
+
+  const fetchAvailableRiders = async (pickupLat: number, pickupLng: number) => {
+    try {
+      const formData = new FormData();
+      formData.append("pickup_lat", pickupLat.toString());
+      formData.append("pickup_lng", pickupLng.toString());
+
+      const response = await fetch("https://spida.africa/kaya-api/get-nearby-riders.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+        setAvailableRiders(data.riders);
+      } else {
+        console.error("Server error:", data.message);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+
+  const submitFareUpdate = async () => {
+    if (!rideRequestId) return alert("No ride request found.");
+
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("request_id", rideRequestId);
+    formData.append("fare", String(fare));
+
+    try {
+      const res = await fetch("https://spida.africa/kaya-api/passenger-update-fare.php", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.status === "success") {
+        alert("Fare updated successfully!");
+        setRideState("available-rides"); // move to next screen
+      } else {
+        alert(data.message || "Something went wrong");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update fare.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -421,27 +493,21 @@ function FareIncreaseInterface({
       <header className="space-y-3 border-b py-3">
         <h3 className="font-medium text-xl">Available Rides</h3>
         <div className="flex items-center text-sm text-foreground mb-4 gap-2">
-          {/* <Users className="mr-2 h-5 w-5" /> */}
-          <div className=" flex items-center -space-x-5">
-            <Image
-              src={RiderAvatar}
-              alt="rider"
-              className="w-12 aspect-square object-cover rounded-full bg-purple-300"
-            />
-            <Image
-              src={RiderAvatar}
-              alt="rider"
-              className="w-12 aspect-square object-cover rounded-full bg-purple-300"
-            />
-            <Image
-              src={RiderAvatar}
-              alt="rider"
-              className="w-12 aspect-square object-cover rounded-full bg-purple-300"
-            />
+          <div className="flex items-center -space-x-5">
+            {availableRiders[0]?.image_url && (
+              <Image
+                src={availableRiders[0].image_url}
+                alt="rider"
+                width={48}
+                height={48}
+                className="w-12 aspect-square object-cover rounded-full bg-purple-300"
+              />
+            )}
           </div>
           <span className="font-medium">and 5 others are viewing request</span>
         </div>
       </header>
+
       <div className="bg-yellow-50 border-l-4 border-yellow-500 p-3 flex items-start space-x-3">
         <Info className="h-5 w-5 text-yellow-600 mt-1 flex-shrink-0" />
         <div>
@@ -453,7 +519,9 @@ function FareIncreaseInterface({
           </p>
         </div>
       </div>
+
       <div className="text-sm text-foreground/60 mb-2">Enter a new offer</div>
+
       <div className="flex items-center border rounded-lg">
         <button
           onClick={decreaseFare}
@@ -469,6 +537,7 @@ function FareIncreaseInterface({
           +
         </button>
       </div>
+
       <div className="border-l-4 border-primary p-3 flex items-center space-x-3">
         <Info className="h-5 w-5 text-foreground/70 flex-shrink-0" />
         <p className="text-foreground/70 text-sm">
@@ -477,15 +546,15 @@ function FareIncreaseInterface({
       </div>
 
       <Button
-        onClick={() => {
-          setRideState("available-rides");
-        }}
+        disabled={loading}
+        onClick={submitFareUpdate}
         className="w-full py-3 rounded-lg transition">
-        Increase Fare
+        {loading ? "Updating Fare..." : "Increase Fare"}
       </Button>
     </div>
   );
 }
+
 
 function AcceptedRiderDetails({}: {
   setRideState: (state: RideState) => void;
