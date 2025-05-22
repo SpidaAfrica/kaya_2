@@ -20,6 +20,8 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { useRouter } from "next/navigation";
+
 
 export default function RideActionsPage() {
   const [fromLocation, setFromLocation] = useState<string | undefined>();
