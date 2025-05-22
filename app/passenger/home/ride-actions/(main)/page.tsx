@@ -408,11 +408,11 @@ function FareIncreaseInterface({
   setRideState: (state: RideState) => void;
 }) {
   const [fare, setFare] = useState(30000);
-  const [rideRequestId, setRideRequestId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const storedId = sessionStorage.getItem("rideRequestId");
+    const storedId = sessionStorage.getItem("userId");
     if (storedId) setRideRequestId(storedId);
   }, []);
 
@@ -459,11 +459,11 @@ function FareIncreaseInterface({
 
 
   const submitFareUpdate = async () => {
-    if (!rideRequestId) return alert("No ride request found.");
+    if (!userId) return alert("No user found.");
 
     setLoading(true);
     const formData = new FormData();
-    formData.append("request_id", rideRequestId);
+    formData.append("user_id", userId);
     formData.append("fare", String(fare));
 
     try {
