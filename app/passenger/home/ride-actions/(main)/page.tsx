@@ -305,16 +305,15 @@ function AvailableRides({
 
   useEffect(() => {
     const storedId = sessionStorage.getItem("userId");
-    if (storedId) setUserId(storedId);
-  }, []);
-
-  useEffect(() => {
     const storedCords = sessionStorage.getItem("pickupCoords");
-    if (!storedCords) return;
-
-    const { lat, lng } = JSON.parse(storedCords);
-    fetchAvailableRiders(lat, lng);
+  
+    if (storedId && storedCords) {
+      setUserId(storedId);
+      const { lat, lng } = JSON.parse(storedCords);
+      fetchAvailableRiders(lat, lng, storedId); // pass storedId directly
+    }
   }, []);
+
 
   const fetchAvailableRiders = async (pickupLat: number, pickupLng: number, userId: number) => {
     if (!userId) return alert("No user found.");
@@ -418,11 +417,19 @@ function FareIncreaseInterface({
   const [fare, setFare] = useState(30000);
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
+  const [availableRiders, setAvailableRiders] = useState<any[]>([]);
+  
   useEffect(() => {
     const storedId = sessionStorage.getItem("userId");
-    if (storedId) setUserId(storedId);
+    const storedCords = sessionStorage.getItem("pickupCoords");
+  
+    if (storedId && storedCords) {
+      setUserId(storedId);
+      const { lat, lng } = JSON.parse(storedCords);
+      fetchAvailableRiders(lat, lng, storedId); // pass storedId directly
+    }
   }, []);
+
 
   const decreaseFare = () => {
     setFare(prev => Math.max(0, prev - 1000));
@@ -432,16 +439,7 @@ function FareIncreaseInterface({
     setFare(prev => Math.min(prev + 1000, 100000));
   };
 
-  const [availableRiders, setAvailableRiders] = useState<any[]>([]);
-
-  useEffect(() => {
-    const storedCords = sessionStorage.getItem("pickupCoords");
-    if (!storedCords) return;
-
-    const { lat, lng } = JSON.parse(storedCords);
-    fetchAvailableRiders(lat, lng);
-  }, []);
-
+  
   const fetchAvailableRiders = async (pickupLat: number, pickupLng: number, userId: number) => {
     if (!userId) return alert("No user found.");
     try {
