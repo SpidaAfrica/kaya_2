@@ -594,13 +594,15 @@ function FareIncreaseInterface({
   );
 }
 
+import { Dispatch, SetStateAction } from "react";
+
+interface AcceptedRiderDetailsProps {
+  setRideState: Dispatch<SetStateAction<RideState>>;
+}
 
 
 function AcceptedRiderDetails({
-  setRideState,
-}: {
-  setRideState: (state: string) => void;
-}) {
+{ setRideState }: AcceptedRiderDetailsProps) {
   const [riderDetails, setRiderDetails] = useState<any>(null);
   const [rideArrived, setRideArrived] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
