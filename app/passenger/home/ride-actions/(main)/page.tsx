@@ -595,20 +595,51 @@ function FareIncreaseInterface({
 }
 
 
-function AcceptedRiderDetails({}: {
-  setRideState: (state: RideState) => void;
+
+function AcceptedRiderDetails({
+  setRideState,
+}: {
+  setRideState: (state: string) => void;
 }) {
+  const [riderDetails, setRiderDetails] = useState<any>(null);
   const [rideArrived, setRideArrived] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => {
+    const userId = sessionStorage.getItem("userId");
+    if (!userId) return;
+
+    const formData = new FormData();
+    formData.append("user_id", userId);
+
+    fetch("https://spida.africa/kaya-api/get-accepted-rider.php", {
+      method: "POST",
+      body: formData,
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          setRiderDetails(data.rider);
+        } else {
+          console.error(data.message);
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    const arrivalTimer = setTimeout(() => {
       setRideArrived(true);
-      setTimeout(() => {
+      const completeTimer = setTimeout(() => {
         setShowCompleted(true);
       }, 5000);
+      return () => clearTimeout(completeTimer);
     }, 5000);
+    return () => clearTimeout(arrivalTimer);
   }, []);
+
+  if (!riderDetails) {
+    return <p className="text-center py-8">Loading rider details...</p>;
+  }
 
   return (
     <>
@@ -618,105 +649,87 @@ function AcceptedRiderDetails({}: {
           <div className="flex items-center gap-2 pb-1 pt-3">
             <div className="rounded-full bg-purple-300">
               <Image
-                src={RiderAvatar}
+                src={riderDetails.image_url || "/default-avatar.jpg"}
                 alt="rider"
-                className="w-12 aspect-square object-cover"
+                width={48}
+                height={48}
+                className="w-12 aspect-square object-cover rounded-full"
               />
             </div>
             <div className="w-full">
               <div className="flex items-center justify-between font-medium">
-                <p className="">Matthew Aaron</p>
-                <p>EPE248UH</p>
+                <p>{riderDetails.fullName}</p>
+                <p>{riderDetails.vehicle_number}</p>
               </div>
               <div className="flex items-center text-foreground/70 w-full text-sm">
                 <div className="flex items-center gap-2">
-                  <span>933 (rides)</span>
-                  <div className="">
-                    <Image src={StarRating} alt="rating" />
-                  </div>
-                  <span>4.5</span>
+                  <span>{riderDetails.rides} rides</span>
+                  <span>⭐ {riderDetails.rating}</span>
                 </div>
-                <span className="ml-auto">Grey BAJAJ</span>
+                <span className="ml-auto">{riderDetails.vehicle_model}</span>
               </div>
             </div>
           </div>
         </header>
+
         <div className="space-y-4 py-3">
-          <div className="space-y-2">
-            <RiderStatus
-              info={
-                rideArrived ? "Your Rider Has Arrived🛵" : "EST Arrival 14mins"
-              }
-              title={
-                rideArrived
-                  ? "Waiting time : 10mins"
-                  : "Your driver is on the way"
-              }
-              text={
-                rideArrived
-                  ? "Mathew has arrived and is ready to assist you with your delivery. Please head to the pickup point."
-                  : undefined
-              }
-            />
-            {rideArrived && (
-              <AnimateInOut
-                show={rideArrived}
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                className="w-full flex items-center justify-center py-6">
-                <Image src={CircularProgressBar} alt="progress" />
-              </AnimateInOut>
-            )}
-            <SendDriverMessage />
-          </div>
+          <RiderStatus
+            info={rideArrived ? "Your Rider Has Arrived🛵" : "EST Arrival 14mins"}
+            title={
+              rideArrived ? "Waiting time: 10mins" : "Your driver is on the way"
+            }
+            text={
+              rideArrived
+                ? `${riderDetails.fullName} has arrived and is ready to assist you with your delivery. Please head to the pickup point.`
+                : undefined
+            }
+          />
+          {rideArrived && (
+            <div className="flex justify-center py-6">
+              <Image src="/progress.gif" alt="progress" width={80} height={80} />
+            </div>
+          )}
+
+          <SendDriverMessage />
+
           <div className="space-y-6">
-            <AnimateInOut
-              show={!rideArrived}
-              animate={{ height: "auto" }}
-              exit={{ height: 0 }}
-              className="space-y-6 overflow-y-hidden">
-              <div className="flex items-center gap-3 text-primary">
-                <svg
-                  width="24"
-                  height="19"
-                  viewBox="0 0 24 19"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M12.125 13.25H9.875C8.02955 13.2493 6.21901 13.753 4.63911 14.7068C3.05921 15.6605 1.77005 17.0279 0.911002 18.6612C0.886855 18.3581 0.874846 18.0541 0.875001 17.75C0.875001 11.5366 5.91163 6.5 12.125 6.5V0.875L23.375 9.875L12.125 18.875V13.25Z"
-                    fill="#00ABFD"
-                  />
-                </svg>
+            {!rideArrived && (
+              <>
+                <div className="flex items-center gap-3 text-primary">
+                  <svg
+                    width="24"
+                    height="19"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M12.125 13.25H9.875C8.02955 13.2493 6.21901 13.753 4.63911 14.7068C3.05921 15.6605 1.77005 17.0279 0.911002 18.6612C0.886855 18.3581 0.874846 18.0541 0.875001 17.75C0.875001 11.5366 5.91163 6.5 12.125 6.5V0.875L23.375 9.875L12.125 18.875V13.25Z"
+                      fill="#00ABFD"
+                    />
+                  </svg>
+                  <div className="flex-1">Share ride details</div>
+                  <ChevronRight />
+                </div>
 
-                <div className="flex-1">Share ride details</div>
-                <ChevronRight className="" />
-              </div>
-              <div className="flex items-center gap-3 text-primary">
-                <svg
-                  width="22"
-                  height="25"
-                  viewBox="0 0 22 25"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M11.25 15.5335V24.25H2.90764e-07C-0.000348878 22.8762 0.313786 21.5206 0.918336 20.2871C1.52289 19.0535 2.4018 17.9747 3.48774 17.1333C4.57368 16.2919 5.83782 15.7103 7.1833 15.433C8.52877 15.1557 9.91987 15.1901 11.25 15.5335V15.5335ZM9 14.125C5.27062 14.125 2.25 11.1044 2.25 7.375C2.25 3.64562 5.27062 0.625 9 0.625C12.7294 0.625 15.75 3.64562 15.75 7.375C15.75 11.1044 12.7294 14.125 9 14.125ZM15.75 18.625V15.25H18V18.625H21.375V20.875H18V24.25H15.75V20.875H12.375V18.625H15.75Z"
-                    fill="#00ABFD"
-                  />
-                </svg>
-
-                <div className="flex-1">Request a new rider</div>
-                <ChevronRight className="" />
-              </div>
-            </AnimateInOut>
-            <div className="pt-2">
-              <CancelRequest />
-            </div>
-            <div className="pt-2">
-              <SuccessModal>
-                <Button>Complete Order</Button>
-              </SuccessModal>
-            </div>
+                <div className="flex items-center gap-3 text-primary">
+                  <svg
+                    width="22"
+                    height="25"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                      d="M11.25 15.5335V24.25H2.90764e-07C-0.000348878 22.8762 0.313786 21.5206 0.918336 20.2871C1.52289 19.0535 2.4018 17.9747 3.48774 17.1333C4.57368 16.2919 5.83782 15.7103 7.1833 15.433C8.52877 15.1557 9.91987 15.1901 11.25 15.5335V15.5335ZM9 14.125C5.27062 14.125 2.25 11.1044 2.25 7.375C2.25 3.64562 5.27062 0.625 9 0.625C12.7294 0.625 15.75 3.64562 15.75 7.375C15.75 11.1044 12.7294 14.125 9 14.125ZM15.75 18.625V15.25H18V18.625H21.375V20.875H18V24.25H15.75V20.875H12.375V18.625H15.75Z"
+                      fill="#00ABFD"
+                    />
+                  </svg>
+                  <div className="flex-1">Request a new rider</div>
+                  <ChevronRight />
+                </div>
+              </>
+            )}
+            <CancelRequest />
+            <SuccessModal>
+              <Button>Complete Order</Button>
+            </SuccessModal>
           </div>
         </div>
       </div>
@@ -725,6 +738,8 @@ function AcceptedRiderDetails({}: {
     </>
   );
 }
+
+
 
 function NoRides() {
   return (
