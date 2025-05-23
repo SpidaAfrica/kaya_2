@@ -629,7 +629,7 @@ function FareIncreaseInterface({
 }
 
 
-function CircularCountdown({ duration = 10 }: { duration?: number }) {
+function CircularCountdown({ duration = 600 }: { duration?: number }) {
   const [timeLeft, setTimeLeft] = useState(duration);
 
   useEffect(() => {
