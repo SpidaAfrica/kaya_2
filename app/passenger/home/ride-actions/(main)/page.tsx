@@ -773,7 +773,7 @@ function AcceptedRiderDetails({ setRideState }: AcceptedRiderDetailsProps) {
           />
           {rideArrived && (
             <div className="flex justify-center py-6">
-              <CircularCountdown duration={10} />
+              <CircularCountdown duration={600} />
             </div>
           )}
 
