@@ -340,6 +340,26 @@ function AvailableRides({
     }
   };
 
+  const acceptRide = async (userId: string, riderId: string) => {
+    const formData = new FormData();
+    formData.append("user_id", userId);
+    formData.append("rider_id", riderId);
+  
+    const response = await fetch("https://spida.africa/kaya-api/accept-ride-request.php", {
+      method: "POST",
+      body: formData,
+    });
+  
+    const data = await response.json();
+    if (data.status === "success") {
+      console.log("Ride accepted.");
+    } else {
+      console.error("Error:", data.message);
+    }
+  };
+
+
+
   return (
     <div className="mx-auto px-4 max-h-96 flex flex-col">
       <header className="space-y-3 border-b py-3">
@@ -398,7 +418,18 @@ function AvailableRides({
             </div>
             <div className="flex items-center gap-2 p-1 w-[75%] ml-auto">
               <Button variant="outline">Decline</Button>
-              <Button onClick={() => setRideState("rider-details")}>Accept</Button>
+              <Button
+                onClick={() => {
+                  if (userId && ride.rider_id) {
+                    acceptRide(userId, ride.rider_id);
+                    setRideState("rider-details"); // Optional: move to rider details view after accepting
+                  } else {
+                    alert("User or Rider ID missing.");
+                  }
+                }}
+              >
+                Accept
+              </Button>
             </div>
           </div>
         ))}
