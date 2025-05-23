@@ -626,7 +626,6 @@ function FareIncreaseInterface({
   );
 }
 
-import { useEffect, useState } from "react";
 
 function CircularCountdown({ duration = 10 }: { duration?: number }) {
   const [timeLeft, setTimeLeft] = useState(duration);
