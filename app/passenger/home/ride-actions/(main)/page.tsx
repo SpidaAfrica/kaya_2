@@ -301,6 +301,12 @@ function AvailableRides({
   setRideState: (state: RideState) => void;
 }) {
   const [availableRiders, setAvailableRiders] = useState<any[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedId = sessionStorage.getItem("userId");
+    if (storedId) setUserId(storedId);
+  }, []);
 
   useEffect(() => {
     const storedCords = sessionStorage.getItem("pickupCoords");
@@ -311,10 +317,12 @@ function AvailableRides({
   }, []);
 
   const fetchAvailableRiders = async (pickupLat: number, pickupLng: number) => {
+    if (!userId) return alert("No user found.");
     try {
       const formData = new FormData();
       formData.append("pickup_lat", pickupLat.toString());
       formData.append("pickup_lng", pickupLng.toString());
+      formData.append("user_id", userId);
 
       const response = await fetch("https://spida.africa/kaya-api/get-nearby-riders.php", {
         method: "POST",
