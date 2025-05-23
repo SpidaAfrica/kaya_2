@@ -198,17 +198,49 @@ function RideActionSection() {
   }
 }
 
-function SendDriverMessage() {
+interface SendDriverMessageProps {
+  riderPhone: string;
+}
+
+function SendDriverMessage({ riderPhone }: SendDriverMessageProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleCall = () => {
+    window.location.href = `tel:${riderPhone}`;
+    setOpen(false);
+  };
+
   return (
-    <Link href={"/passenger/chat"}>
-      <div className="flex items-center bg-background p-3 gap-3">
+    <div className="flex items-center bg-background p-3 gap-3 justify-between">
+      {/* Chat link */}
+      <Link href="/passenger/chat" className="flex items-center gap-3 flex-1">
         <div className="bg-[#B47818]/10 p-3 rounded-full">
           <Image src={MessageIconSquare} alt="message" />
         </div>
-        <div className="flex-1">Send driver a message</div>
-        <Phone className="fill-foreground/80 stroke-none" />
-      </div>
-    </Link>
+        <span>Send driver a message</span>
+      </Link>
+
+      {/* Phone modal */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <button>
+            <Phone className="fill-foreground/80 stroke-none" />
+          </button>
+        </DialogTrigger>
+        <DialogContent className="max-w-sm">
+          <DialogTitle>Call Rider</DialogTitle>
+          <DialogDescription>
+            Do you want to call the rider at <strong>{riderPhone}</strong>?
+          </DialogDescription>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="ghost" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleCall}>Call</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
 
@@ -594,6 +626,60 @@ function FareIncreaseInterface({
   );
 }
 
+import { useEffect, useState } from "react";
+
+function CircularCountdown({ duration = 10 }: { duration?: number }) {
+  const [timeLeft, setTimeLeft] = useState(duration);
+
+  useEffect(() => {
+    if (timeLeft === 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const radius = 40;
+  const stroke = 6;
+  const normalizedRadius = radius - stroke * 2;
+  const circumference = normalizedRadius * 2 * Math.PI;
+  const strokeDashoffset =
+    circumference - (timeLeft / duration) * circumference;
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <svg height={radius * 2} width={radius * 2}>
+        <circle
+          stroke="#e5e7eb"
+          fill="transparent"
+          strokeWidth={stroke}
+          r={normalizedRadius}
+          cx={radius}
+          cy={radius}
+        />
+        <circle
+          stroke="#00ABFD"
+          fill="transparent"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          r={normalizedRadius}
+          cx={radius}
+          cy={radius}
+          style={{ transition: "stroke-dashoffset 1s linear" }}
+        />
+      </svg>
+      <span className="mt-2 text-sm text-muted-foreground">
+        {timeLeft}s remaining
+      </span>
+    </div>
+  );
+}
+
+
 import { Dispatch, SetStateAction } from "react";
 
 interface AcceptedRiderDetailsProps {
@@ -659,14 +745,14 @@ function AcceptedRiderDetails({ setRideState }: AcceptedRiderDetailsProps) {
             <div className="w-full">
               <div className="flex items-center justify-between font-medium">
                 <p>{riderDetails.fullName}</p>
-                <p>{riderDetails.vehicle_number}</p>
+                <p>{riderDetails.plate_number}</p>
               </div>
               <div className="flex items-center text-foreground/70 w-full text-sm">
                 <div className="flex items-center gap-2">
                   <span>{riderDetails.rides} rides</span>
                   <span>⭐ {riderDetails.rating}</span>
                 </div>
-                <span className="ml-auto">{riderDetails.vehicle_model}</span>
+                <span className="ml-auto">{riderDetails.vehicle_type}</span>
               </div>
             </div>
           </div>
@@ -686,11 +772,12 @@ function AcceptedRiderDetails({ setRideState }: AcceptedRiderDetailsProps) {
           />
           {rideArrived && (
             <div className="flex justify-center py-6">
-              <Image src="/progress.gif" alt="progress" width={80} height={80} />
+              <CircularCountdown duration={10} />
             </div>
           )}
 
-          <SendDriverMessage />
+          <SendDriverMessage riderPhone={riderDetails.phone} />
+
 
           <div className="space-y-6">
             {!rideArrived && (
