@@ -67,7 +67,7 @@ export default function MessagingPage(): JSX.Element {
 
   const fetchMessages = async (id: string) => {
     try {
-      const res = await fetch(`https://jbuit.org/api/chat/fetch-messages.php?chat_id=${id}`);
+      const res = await fetch(`https://spida.africa/kaya-api/chat/fetch-messages.php?chat_id=${id}`);
       const data = await res.json();
       setMessages(data);
       setLoading(false);
@@ -108,7 +108,7 @@ export default function MessagingPage(): JSX.Element {
     };
 
     try {
-      const res = await fetch("https://jbuit.org/api/chat/send-message.php", {
+      const res = await fetch("https://spida.africa/kaya-api/chat/send-message.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams(messageData),
