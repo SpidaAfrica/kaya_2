@@ -413,7 +413,7 @@ function FareIncreaseInterface({
 
   useEffect(() => {
     const storedId = sessionStorage.getItem("userId");
-    if (storedId) setRideRequestId(storedId);
+    if (storedId) setUserId(storedId);
   }, []);
 
   const decreaseFare = () => {
