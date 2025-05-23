@@ -600,9 +600,7 @@ interface AcceptedRiderDetailsProps {
   setRideState: Dispatch<SetStateAction<RideState>>;
 }
 
-
-function AcceptedRiderDetails({
-{ setRideState }: AcceptedRiderDetailsProps) {
+function AcceptedRiderDetails({ setRideState }: AcceptedRiderDetailsProps) {
   const [riderDetails, setRiderDetails] = useState<any>(null);
   const [rideArrived, setRideArrived] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
