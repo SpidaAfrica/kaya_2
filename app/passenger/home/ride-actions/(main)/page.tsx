@@ -316,7 +316,7 @@ function AvailableRides({
     fetchAvailableRiders(lat, lng);
   }, []);
 
-  const fetchAvailableRiders = async (pickupLat: number, pickupLng: number) => {
+  const fetchAvailableRiders = async (pickupLat: number, pickupLng: number, userId: number) => {
     if (!userId) return alert("No user found.");
     try {
       const formData = new FormData();
@@ -442,7 +442,7 @@ function FareIncreaseInterface({
     fetchAvailableRiders(lat, lng);
   }, []);
 
-  const fetchAvailableRiders = async (pickupLat: number, pickupLng: number) => {
+  const fetchAvailableRiders = async (pickupLat: number, pickupLng: number, userId: number) => {
     if (!userId) return alert("No user found.");
     try {
       const formData = new FormData();
