@@ -198,6 +198,8 @@ function RideActionSection() {
   }
 }
 
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+
 interface SendDriverMessageProps {
   riderPhone: string;
 }
