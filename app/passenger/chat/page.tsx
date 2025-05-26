@@ -178,11 +178,12 @@ useEffect(() => {
   return (
     <MainContent>
       <div className="w-full flex gap-3 md:w-[96%] mx-auto">
-        {loading ? (
+        {/*{loading ? (
           <div className="h-full w-full py-8 flex items-center justify-center">
             <Loader className="w-12 h-12 text-center text-primary animate-spin" />
           </div>
         ) : (
+        */}
           <>
             <div className="w-full flex flex-col bg-primary/10 rounded-2xl my-2 max-h-[calc(100svh-6rem)] pb-4">
               <header className="w-full border-primary/30 border-b">
@@ -315,7 +316,7 @@ useEffect(() => {
               </DeliveryDetails>
             </div>
           </>
-        )}
+        {/* )}*/}
       </div>
     </MainContent>
   );
