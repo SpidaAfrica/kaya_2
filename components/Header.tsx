@@ -134,7 +134,6 @@ export const Header = ({
               </div>
             )}
           </NavLink>
-          {/*
           <NavLink className="" href={`/${userType}/chat`}>
             {({ isActive }) => (
               <div className={cn("w-12 h-12 flex items-center justify-center rounded-full", isActive && "bg-primary/10")}>
@@ -156,7 +155,6 @@ export const Header = ({
               </div>
             )}
           </NavLink>
-          */}
         </div>
 
         <div className="flex items-center">
