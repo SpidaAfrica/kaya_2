@@ -10,9 +10,9 @@ export default function Splash() {
         alt="icon-logo"
         width={75}
         height={75}
-        className="object-contain"
         priority
       />
     </div>
   );
 }
+/*className="object-contain"*/
