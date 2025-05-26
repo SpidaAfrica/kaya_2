@@ -8,8 +8,8 @@ export default function Splash() {
       <Image
         src={IconLogo}
         alt="icon-logo"
-        width={150}
-        height={150}
+        width={75}
+        height={75}
         className="object-contain"
         priority
       />
