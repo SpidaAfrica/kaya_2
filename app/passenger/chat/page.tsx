@@ -76,26 +76,52 @@ export default function MessagingPage(): JSX.Element {
     }
   };
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+useEffect(() => {
+  if (typeof window === "undefined") return;
 
-    const storedUser = sessionStorage.getItem("user");
-    const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+  const storedUser = sessionStorage.getItem("user");
+  const parsedUser = storedUser ? JSON.parse(storedUser) : null;
 
-    const storedRider = sessionStorage.getItem("rider");
-    const parsedRider = storedRider ? JSON.parse(storedRider) : null;
+  if (!parsedUser?.id) return;
 
-    if (parsedUser && parsedRider) {
-      setSenderId(parsedUser.id);
-      setChatId(parsedUser.chat_id);
-      setRiderId(parsedRider.id);
-      setRiderDetails(parsedRider);
+  const fetchAcceptedRider = async () => {
+    try {
+      const res = await fetch("https://spida.africa/kaya-api/get-accepted-rider.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ passenger_id: parsedUser.id }),
+      });
 
-      if (parsedUser.chat_id) {
-        fetchMessages(parsedUser.chat_id);
+      const result = await res.json();
+
+      if (result.success && result.rider) {
+        const rider = result.rider;
+        setSenderId(parsedUser.id);
+        setChatId(result.chat_id);
+        setRiderId(rider.id);
+        setRiderDetails({
+          name: rider.name,
+          phone: rider.phone,
+          rating: parseFloat(rider.rating) || 0,
+          avatar: rider.avatar || RiderAvatar,
+        });
+
+        if (result.chat_id) {
+          fetchMessages(result.chat_id);
+        }
+      } else {
+        console.warn("No accepted rider found.");
+        setLoading(false);
       }
+    } catch (err) {
+      console.error("Failed to fetch accepted rider", err);
+      setLoading(false);
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  };
+
+  fetchAcceptedRider();
+}, []);
+
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !chatId || !senderId || isSending) return;
