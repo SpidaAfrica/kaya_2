@@ -89,7 +89,7 @@ useEffect(() => {
       const res = await fetch("https://spida.africa/kaya-api/get-accepted-rider.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ passenger_id: parsedUser.id }),
+        body: new URLSearchParams({ user_id: parsedUser.id }),
       });
 
       const result = await res.json();
