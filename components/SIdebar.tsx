@@ -26,6 +26,11 @@ const NAV_LINKS: NavLinkType[] = [
     title: "My Orders",
   },
   {
+    href: "/passenger/chat",
+    // icon: Message-icon-square,
+    title: "Message",
+  },
+  {
     href: "/passenger/wallet",
     // icon: DesktopIcon,
     title: "Wallet",
