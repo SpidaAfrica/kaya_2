@@ -156,7 +156,7 @@ export default function SignInPage() {
         <div className="flex flex-col gap-6 w-full mt-8">
           <p className="text-center text-foreground/70 font-semibold text-sm md:text-base">
             Don&apos;t have an account?{" "}
-            <Link href="auth/signup">
+            <Link href="./signup">
               <span className="text-[#00ABFD]">Register</span>
             </Link>
           </p>
