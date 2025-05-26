@@ -147,7 +147,7 @@ export default function SignInPage() {
             <p className="text-foreground/70 text-sm md:text-base">
               Forgot Password?
             </p>
-            <Link href="/reset">
+            <Link href="./reset">
               <p className="text-[#00ABFD] text-sm md:text-base">Reset It</p>
             </Link>
           </div>
