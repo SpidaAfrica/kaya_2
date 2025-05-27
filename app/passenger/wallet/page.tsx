@@ -293,40 +293,61 @@ export default function WalletPage() {
               src="https://js.paystack.co/v1/inline.js"
               strategy="beforeInteractive"
             />
-            <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
-              <Image src={WalletBanner} alt="banner" className="absolute z-10 w-full h-full object-cover" />
-              <div className="relative z-20 w-[90%] mx-auto py-5 h-full flex flex-col justify-between">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <div className="flex items-center gap-3">
-                      <p className="text-lg">Wallet Balance</p>
-                      <button onClick={() => setHideBalance(!hideBalance)}>
-                        {hideBalance ? <EyeClosed /> : <Eye />}
-                      </button>
-                    </div>
-                    <p className="font-semibold text-3xl">
-                      ₦{hideBalance ? "****" : balance.toLocaleString()}
-                    </p>
-                  </div>
-                  <Image src={CardChip} alt="card-chip" />
+            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl mx-6 my-6 overflow-hidden h-60 shadow-xl">
+              {/* Background Image */}
+              <Image
+                src={WalletBanner}
+                alt="banner"
+                className="absolute inset-0 z-0 w-full h-full object-cover"
+              />
+            
+              {/* Card Content */}
+              <div className="relative z-10 w-full h-full px-6 py-4 flex flex-col justify-between">
+                
+                {/* Top Row (Logo or $ sign if needed) */}
+                <div className="flex justify-between items-start">
+                  <div className="text-2xl font-semibold tracking-wide">$</div>
                 </div>
-                <div className="w-fit ml-auto">
+            
+                {/* Centered Wallet Balance */}
+                <div className="flex flex-col items-center justify-center">
+                  <p className="text-sm uppercase tracking-wide text-gray-300">Wallet Balance</p>
+                  <p className="text-4xl font-bold mt-1">
+                    {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
+                  </p>
+                  <button
+                    onClick={() => setHideBalance(!hideBalance)}
+                    className="mt-1 text-white text-sm"
+                  >
+                    {hideBalance ? <EyeClosed /> : <Eye />}
+                  </button>
+                </div>
+            
+                {/* Bottom Row (Deposit Button) */}
+                <div className="flex justify-end">
                   <Button
                     variant="ghost"
-                    className="w-fit min-w-60 bg-background text-foreground"
+                    className="w-fit min-w-60 bg-white/90 text-gray-900 backdrop-blur-sm"
                     onClick={() => setShowModal(true)}
                   >
-                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="11"
+                      height="11"
+                      viewBox="0 0 11 11"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
                         fill="#1E2023"
                       />
                     </svg>
-                    <p>Deposit Funds</p>
+                    <span className="ml-2">Deposit Funds</span>
                   </Button>
                 </div>
               </div>
             </div>
+
 
             {/* Modal */}
             {showModal && (
