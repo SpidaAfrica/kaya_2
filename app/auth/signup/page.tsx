@@ -10,7 +10,9 @@ import { useRouter } from "next/navigation";
 export default function SignInPage() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = React.useState<string>("");
-
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value.replace(/\D/g, ""); // allow only digits
     setPhoneNumber(rawValue.replace(/^0/, "")); // remove leading zero
@@ -22,33 +24,39 @@ export default function SignInPage() {
     }
   }, [phoneNumber]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
 
-    try {
-      const res = await fetch("https://spida.africa/kaya-api/send-phone-otp.php", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          phoneNumber: `+234${phoneNumber}`,
-        }),
-      });
 
-      const data = await res.json();
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setErrorMsg(null); // Reset error
+  setLoading(true);
 
-      if (!res.ok) {
-        throw new Error(data.message || "Something went wrong!");
-      }
+  try {
+    const res = await fetch("https://spida.africa/kaya-api/send-phone-otp.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phoneNumber: `+234${phoneNumber}`,
+      }),
+    });
 
-      console.log("OTP sent successfully:", data);
-      router.push("/auth/verify");
-    } catch (error: any) {
-      console.error("OTP send error:", error.message);
-      alert(error.message);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Something went wrong!");
     }
-  };
+
+    router.push("/auth/verify");
+  } catch (error: any) {
+    console.error("OTP send error:", error.message);
+    setErrorMsg(error.message); // Show on UI
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <AuthForm>
@@ -91,12 +99,17 @@ export default function SignInPage() {
           </fieldset>
 
           <fieldset className="mt-8 md:mt-[60px] w-full">
+            {errorMsg && (
+              <div className="text-red-600 text-sm text-center w-full md:w-[400px] mb-4">
+                {errorMsg}
+              </div>
+            )}
             <button
               type="submit"
-              disabled={!phoneNumber}
+              disabled={!phoneNumber || loading}
               className="bg-[#00ABFD] disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-[400px] text-white text-sm md:text-[16px] font-normal tracking-[-0.06em] leading-[24px] px-4 py-2.5 rounded-[8px]"
             >
-              Create an Account
+              {loading ? "Sending OTP..." : "Create an Account"}
             </button>
           </fieldset>
 
