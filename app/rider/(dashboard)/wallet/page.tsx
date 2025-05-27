@@ -297,33 +297,42 @@ export default function WalletPage() {
     <>
       <MainContent>
         <div className="md:w-[90%] mx-auto space-y-5">
-          {/* Wallet Card */}
-          <div className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-background rounded-xl mx-6 my-4 overflow-clip md:h-80 h-60">
+          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl mx-6 my-6 overflow-hidden h-60 shadow-xl">
+            {/* Background Image */}
             <Image
               src={WalletBanner}
               alt="banner"
-              className="absolute z-10 w-full h-full object-cover"
+              className="absolute inset-0 z-0 w-full h-full object-cover"
             />
-            <div className="relative z-20 w-[90%] mx-auto py-5 h-full flex flex-col justify-between">
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="flex items-center gap-3">
-                    <p className="text-lg">Wallet Balance</p>
-                    <button onClick={() => setHideBalance(!hideBalance)}>
-                      {hideBalance ? <EyeClosed /> : <Eye />}
-                    </button>
-                  </div>
-                  <p className="font-semibold text-3xl">
-                    ₦{hideBalance ? "****" : balance.toLocaleString()}
-                  </p>
-                </div>
+          
+            {/* Card Content */}
+            <div className="relative z-10 w-full h-full px-6 py-4 flex flex-col justify-between">
+              
+              {/* Top Row */}
+              <div className="flex justify-between items-center">
+                <div className="text-2xl font-semibold tracking-wide">Wallet Balance</div>
                 <Image src={CardChip} alt="card-chip" />
               </div>
-              <div className="w-fit ml-auto">
+          
+              {/* Balance Row */}
+              <div className="flex flex-row items-center justify-start">
+                <p className="text-2xl font-bold mt-1">
+                  {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
+                </p>
+                <button
+                  onClick={() => setHideBalance(!hideBalance)}
+                  className="mt-1 ml-4 text-white text-sm"
+                >
+                  {hideBalance ? <EyeClosed /> : <Eye />}
+                </button>
+              </div>
+          
+              {/* Bottom Row (Withdraw Button) */}
+              <div className="flex justify-start items-center">
                 <Button
                   onClick={() => setShowWithdrawModal(true)}
                   variant="ghost"
-                  className="w-fit bg-background text-foreground"
+                  className="w-fit min-w-60 bg-white/90 text-gray-900 backdrop-blur-sm"
                 >
                   <svg
                     width="11"
@@ -337,8 +346,12 @@ export default function WalletPage() {
                       fill="#1E2023"
                     />
                   </svg>
-                  <p>Withdraw Funds</p>
+                  <span className="ml-2">Withdraw Funds</span>
                 </Button>
+              </div>
+            </div>
+          </div>
+          
 
                 {showWithdrawModal && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
