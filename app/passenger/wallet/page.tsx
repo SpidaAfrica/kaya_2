@@ -305,16 +305,17 @@ export default function WalletPage() {
               <div className="relative z-10 w-full h-full px-6 py-4 flex flex-col justify-between">
                 
                 {/* Top Row (Logo or $ sign if needed) */}
-                <div className="flex justify-between items-start">
-                  <div className="text-2xl font-semibold tracking-wide">$</div>
+                <div className="flex justify-center items-center">
+                  <div className="text-2xl font-semibold tracking-wide">Wallet Balance</div>
                 </div>
             
                 {/* Centered Wallet Balance */}
                 <div className="flex flex-col items-center justify-center">
-                  <p className="text-sm uppercase tracking-wide text-gray-300">Wallet Balance</p>
-                  <p className="text-4xl font-bold mt-1">
+                  <p className="text-2xl font-bold mt-1">
                     {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
                   </p>
+                </div>
+                <div className="flex justify-center items-center">
                   <button
                     onClick={() => setHideBalance(!hideBalance)}
                     className="mt-1 text-white text-sm"
