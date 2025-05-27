@@ -317,14 +317,14 @@ export default function WalletPage() {
                   </p>
                   <button
                     onClick={() => setHideBalance(!hideBalance)}
-                    className="mt-1 text-white text-sm"
+                    className="mt-1 ml-4 text-white text-sm"
                   >
                     {hideBalance ? <EyeClosed /> : <Eye />}
                   </button>
                 </div>
             
                 {/* Bottom Row (Deposit Button) */}
-                <div className="flex justify-center items-center">
+                <div className="flex justify-start items-center">
                   <Button
                     variant="ghost"
                     className="w-fit min-w-60 bg-white/90 text-gray-900 backdrop-blur-sm"
