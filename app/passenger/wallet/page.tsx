@@ -311,7 +311,7 @@ export default function WalletPage() {
                 </div>
             
                 {/* Centered Wallet Balance */}
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center justify-between">
                   <p className="text-2xl font-bold mt-1">
                     {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
                   </p>
