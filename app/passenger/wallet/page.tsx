@@ -305,8 +305,9 @@ export default function WalletPage() {
               <div className="relative z-10 w-full h-full px-6 py-4 flex flex-col justify-between">
                 
                 {/* Top Row (Logo or $ sign if needed) */}
-                <div className="flex justify-center items-center">
+                <div className="flex justify-between items-center">
                   <div className="text-2xl font-semibold tracking-wide">Wallet Balance</div>
+                  <Image src={CardChip} alt="card-chip" />
                 </div>
             
                 {/* Centered Wallet Balance */}
