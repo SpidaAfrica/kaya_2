@@ -92,10 +92,11 @@ export function AppSidebar({
     }
   }, []);
 
-  // 🚫 Avoid SSR crash
-  if (!isClient || !userInfo) {
-    return <div className="px-4 py-6 text-sm text-muted-foreground">Loading sidebar...</div>;
-  }
+// 🚫 Avoid SSR crash
+if (!isClient || !userInfo) {
+  return null; // silently skip rendering without UI
+}
+
 
   return (
     <Sidebar
