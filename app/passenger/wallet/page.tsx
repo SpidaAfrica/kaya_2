@@ -293,7 +293,7 @@ export default function WalletPage() {
               src="https://js.paystack.co/v1/inline.js"
               strategy="beforeInteractive"
             />
-            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl overflow-hidden h-44 shadow-xl">
+            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl overflow-hidden mx-6 my-6 h-44 shadow-xl">
               {/* Background Image */}
               <Image
                 src={WalletBanner}
