@@ -348,11 +348,6 @@ export default function WalletPage() {
                   </svg>
                   <span className="ml-2">Withdraw Funds</span>
                 </Button>
-              </div>
-            </div>
-          </div>
-          
-
                 {showWithdrawModal && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                     <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
