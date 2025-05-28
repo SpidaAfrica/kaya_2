@@ -287,7 +287,7 @@ export default function WalletPage() {
   return (
     <>
       <MainContent>
-        <div className="md:w-[90%] mx-auto space-y-5">
+        <div className="md:w-[95%] mx-auto space-y-5">
           <>
             <Script
               src="https://js.paystack.co/v1/inline.js"
