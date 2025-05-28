@@ -293,41 +293,41 @@ export default function WalletPage() {
               src="https://js.paystack.co/v1/inline.js"
               strategy="beforeInteractive"
             />
-            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-6 overflow-hidden h-44 shadow-lg">
-              {/* Background image */}
+             <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-6 overflow-hidden h-44 shadow-xl">
+              {/* Background Image */}
               <Image
                 src={WalletBanner}
                 alt="banner"
                 className="absolute inset-0 z-0 w-full h-full object-cover"
               />
             
-              {/* Card content */}
-              <div className="relative z-10 w-full h-full px-6 py-3 flex flex-col justify-between rounded-xl">
+              {/* Card Content */}
+              <div className="relative z-10 w-full h-full px-6 py-4 flex flex-col justify-between">
                 
-                {/* Top Row */}
+                {/* Top Row (Logo or $ sign if needed) */}
                 <div className="flex justify-between items-center">
-                  <div className="text-lg font-medium tracking-wide">Wallet Balance</div>
+                  <div className="text-2xl font-semibold tracking-wide">Wallet Balance</div>
                   <Image src={CardChip} alt="card-chip" />
                 </div>
             
-                {/* Center Balance */}
-                <div className="flex items-center justify-start">
-                  <p className="text-xl font-bold">
-                    {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
+                {/* Centered Wallet Balance */}
+                <div className="flex flex-row items-center justify-start">
+                  <p className="text-2xl font-bold mt-1">
+                    {hideBalance ? "****" : ₦${balance.toLocaleString()}}
                   </p>
                   <button
                     onClick={() => setHideBalance(!hideBalance)}
-                    className="ml-3 text-white"
+                    className="mt-1 ml-4 text-white text-sm"
                   >
                     {hideBalance ? <EyeClosed /> : <Eye />}
                   </button>
                 </div>
             
-                {/* Bottom Button */}
+                {/* Bottom Row (Deposit Button) */}
                 <div className="flex justify-start items-center">
                   <Button
                     variant="ghost"
-                    className="bg-white/90 text-gray-900 backdrop-blur-sm px-4 py-2 rounded-md"
+                    className="w-fit min-w-60 bg-white/90 text-gray-900 backdrop-blur-sm"
                     onClick={() => setShowModal(true)}
                   >
                     <svg
