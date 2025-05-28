@@ -293,7 +293,7 @@ export default function WalletPage() {
               src="https://js.paystack.co/v1/inline.js"
               strategy="beforeInteractive"
             />
-             <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-6 overflow-hidden h-44 shadow-xl">
+            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl mx-6 my-6 overflow-hidden h-44 shadow-xl">
               {/* Background Image */}
               <Image
                 src={WalletBanner}
@@ -313,7 +313,7 @@ export default function WalletPage() {
                 {/* Centered Wallet Balance */}
                 <div className="flex flex-row items-center justify-start">
                   <p className="text-2xl font-bold mt-1">
-                    {hideBalance ? "****" : ₦${balance.toLocaleString()}}
+                    {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
                   </p>
                   <button
                     onClick={() => setHideBalance(!hideBalance)}
