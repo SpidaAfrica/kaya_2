@@ -293,7 +293,7 @@ export default function WalletPage() {
               src="https://js.paystack.co/v1/inline.js"
               strategy="beforeInteractive"
             />
-            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl mx-6 my-6 overflow-hidden h-44 shadow-xl">
+            <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-6 overflow-hidden h-44 shadow-xl">
               {/* Background Image */}
               <Image
                 src={WalletBanner}
@@ -302,17 +302,17 @@ export default function WalletPage() {
               />
             
               {/* Card Content */}
-              <div className="relative z-10 w-full h-full px-6 py-4 flex flex-col justify-between">
+              <div className="relative z-10 w-full h-full px-6 py-3 flex flex-col justify-between">
                 
                 {/* Top Row (Logo or $ sign if needed) */}
                 <div className="flex justify-between items-center">
-                  <div className="text-2xl font-semibold tracking-wide">Wallet Balance</div>
+                  <div className="text-xl font-semibold tracking-wide">Wallet Balance</div>
                   <Image src={CardChip} alt="card-chip" />
                 </div>
             
                 {/* Centered Wallet Balance */}
                 <div className="flex flex-row items-center justify-start">
-                  <p className="text-2xl font-bold mt-1">
+                  <p className="text-xl font-bold mt-1">
                     {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
                   </p>
                   <button
@@ -327,7 +327,7 @@ export default function WalletPage() {
                 <div className="flex justify-start items-center">
                   <Button
                     variant="ghost"
-                    className="w-fit min-w-60 bg-white/90 text-gray-900 backdrop-blur-sm"
+                    className="w-fit min-w-60 bg-white/90 text-gray-800 backdrop-blur-sm"
                     onClick={() => setShowModal(true)}
                   >
                     <svg
