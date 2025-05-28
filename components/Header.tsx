@@ -57,7 +57,7 @@ export const Header = ({
 
   return (
     <header className="w-full h-28 items-center backdrop-blur-md z-50">
-      <div className={cn("w-[95%] h-full mx-auto flex justify-between items-center")}>
+      <div className={cn("w-[95%] h-full mx-auto flex justify-between items-center px-4")}>
         <div className="flex items-center gap-3 whitespace-nowrap">
           <Link href={`/${userType}/home`} className={""}>
             <Image
