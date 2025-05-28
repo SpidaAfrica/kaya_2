@@ -324,7 +324,7 @@ export default function WalletPage() {
                 </div>
             
                 {/* Bottom Button */}
-                <div className="flex items-center">
+                <div className="flex justify-start items-center">
                   <Button
                     variant="ghost"
                     className="bg-white/90 text-gray-900 backdrop-blur-sm px-4 py-2 rounded-md"
