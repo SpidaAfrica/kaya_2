@@ -344,7 +344,6 @@ export default function WalletPage() {
                       </svg>
                       <span className="ml-1">Deposit</span>
                     </Button>
-                  </div>
                 </div>
               </div>
             </div>
