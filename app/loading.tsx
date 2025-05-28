@@ -1,4 +1,4 @@
-import { IconLogo } from "@/assets";
+/*import { IconLogo } from "@/assets";
 import Image from "next/image";
 import React from "react";
 
@@ -8,4 +8,4 @@ export default function Loading() {
       <Image src={IconLogo} alt="icon-logo" />
     </div>
   );
-}
+}*/
