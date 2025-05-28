@@ -297,7 +297,7 @@ export default function WalletPage() {
     <>
       <MainContent>
         <div className="md:w-[95%] mx-auto space-y-5">
-          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl overflow-hidden h-44 shadow-xl">
+          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl overflow-hidden mx-6 my-6 h-44 shadow-xl">
             {/* Background Image */}
             <Image
               src={WalletBanner}
