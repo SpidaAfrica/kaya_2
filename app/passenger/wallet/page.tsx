@@ -324,26 +324,27 @@ export default function WalletPage() {
                 </div>
             
                 {/* Bottom Row (Deposit Button) */}
-                <div className="flex justify-start items-center">
-                  <Button
-                    variant="ghost"
-                    className="w-fit min-w-60 bg-white/90 text-gray-800 backdrop-blur-sm"
-                    onClick={() => setShowModal(true)}
-                  >
-                    <svg
-                      width="11"
-                      height="11"
-                      viewBox="0 0 11 11"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
+                  <div className="flex justify-start items-center">
+                    <Button
+                      variant="ghost"
+                      className="w-fit min-w-[6rem] px-2 py-1 text-xs bg-white/90 text-gray-800 backdrop-blur-sm"
+                      onClick={() => setShowModal(true)}
                     >
-                      <path
-                        d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
-                        fill="#1E2023"
-                      />
-                    </svg>
-                    <span className="ml-2">Deposit Funds</span>
-                  </Button>
+                      <svg
+                        width="6"
+                        height="6"
+                        viewBox="0 0 11 11"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M4.98624 6.36595L0.319214 1.70058L1.48576 0.533203L6.15279 5.20023L10.2357 1.11648V10.4497H0.902489L4.98624 6.36595Z"
+                          fill="#1E2023"
+                        />
+                      </svg>
+                      <span className="ml-1">Deposit</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
