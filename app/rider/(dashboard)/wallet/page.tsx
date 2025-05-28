@@ -297,7 +297,7 @@ export default function WalletPage() {
     <>
       <MainContent>
         <div className="md:w-[90%] mx-auto space-y-5">
-          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-2xl mx-6 my-6 overflow-hidden h-60 shadow-xl">
+          <div className="relative bg-gradient-to-br from-gray-900 to-gray-800 text-white rounded-xl mx-6 my-6 overflow-hidden h-44 shadow-xl">
             {/* Background Image */}
             <Image
               src={WalletBanner}
@@ -306,17 +306,17 @@ export default function WalletPage() {
             />
           
             {/* Card Content */}
-            <div className="relative z-10 w-full h-full px-6 py-4 flex flex-col justify-between">
+            <div className="relative z-10 w-full h-full px-6 py-3 flex flex-col justify-between">
               
               {/* Top Row */}
               <div className="flex justify-between items-center">
-                <div className="text-2xl font-semibold tracking-wide">Wallet Balance</div>
+                <div className="text-xl font-semibold tracking-wide">Wallet Balance</div>
                 <Image src={CardChip} alt="card-chip" />
               </div>
           
               {/* Balance Row */}
               <div className="flex flex-row items-center justify-start">
-                <p className="text-2xl font-bold mt-1">
+                <p className="text-xl font-bold mt-1">
                   {hideBalance ? "****" : `₦${balance.toLocaleString()}`}
                 </p>
                 <button
@@ -332,11 +332,11 @@ export default function WalletPage() {
                 <Button
                   onClick={() => setShowWithdrawModal(true)}
                   variant="ghost"
-                  className="w-fit min-w-60 bg-white/90 text-gray-900 backdrop-blur-sm"
+                  className="w-fit min-w-[6rem] px-2 py-1 text-xs bg-white/90 text-gray-800 backdrop-blur-sm"
                 >
                   <svg
-                    width="11"
-                    height="11"
+                    width="6"
+                    height="6"
                     viewBox="0 0 11 11"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -346,8 +346,9 @@ export default function WalletPage() {
                       fill="#1E2023"
                     />
                   </svg>
-                  <span className="ml-2">Withdraw Funds</span>
+                  <span className="ml-1">Withdraw</span>
                 </Button>
+
                 {showWithdrawModal && (
                   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
                     <div className="bg-white p-6 rounded-xl shadow-lg max-w-lg w-full">
