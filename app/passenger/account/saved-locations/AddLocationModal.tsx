@@ -49,12 +49,12 @@ export function AddLocationModal({
     const payload = new URLSearchParams({
       user_id: userId,
       name: address,
-      address: "Lagos, Nigeria",
+      address: "Nigeria",
       type: locationType,
     });
 
     try {
-      const res = await fetch("https://jbuit.org/api/save-locations.php", {
+      const res = await fetch("https://spida.africa/kaya-api/save-locations.php", {
         method: "POST",
         body: payload,
         headers: {
