@@ -87,7 +87,7 @@ export default function MessagingPage() {
   useEffect(() => {
     async function fetchSenderReceiver() {
       try {
-        const response = await fetch(`https://jbuit.org/api/chat/get-chat-id.php?package_id=${packageId}`);
+        const response = await fetch(`https://spida.africa/kaya-api/chat/get-chat-id.php?package_id=${packageId}`);
         const result = await response.json();
 
         if (result.status === 'success') {
@@ -134,7 +134,7 @@ export default function MessagingPage() {
   
     const fetchMessages = async () => {
       try {
-        const res = await fetch(`https://jbuit.org/api/chat/fetch-messages.php?package_id=${packageId}`);
+        const res = await fetch(`https://spida.africa/kaya-api/chat/fetch-messages.php?package_id=${packageId}`);
         const response = await res.json();
   
         if (response.success) {
@@ -164,7 +164,7 @@ export default function MessagingPage() {
 
     try {
       // Send to API
-      await fetch('https://jbuit.org/api/chat/send-message.php', {
+      await fetch('https://spida.africa/kaya-api/chat/send-message.php', {
         method: 'POST',
         body: JSON.stringify(payload),
         headers: {
@@ -205,7 +205,7 @@ const handleMicClick = async () => {
       formData.append('package_id', String(packageId));
           
 
-      fetch('https://jbuit.org/api/chat/send-audio.php', {
+      fetch('https://spida.africa/kaya-api/chat/send-audio.php', {
         method: 'POST',
         body: formData,
       }).catch(console.error);
