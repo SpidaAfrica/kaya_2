@@ -23,7 +23,7 @@ export const HeaderCard = () => {
     }
 
     try {
-      const response = await fetch("https://kaya.ng/kaya-api/rider/update-location.php", {
+      const response = await fetch("https://api.kaya.ng/kaya-api/rider/update-location.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

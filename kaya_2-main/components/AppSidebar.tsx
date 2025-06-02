@@ -61,7 +61,7 @@ export function AppSidebar({
     }
 
     if (email) {
-      fetch("https://kaya.ng/kaya-api/get-user.php", {
+      fetch("https://api.kaya.ng/kaya-api/get-user.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

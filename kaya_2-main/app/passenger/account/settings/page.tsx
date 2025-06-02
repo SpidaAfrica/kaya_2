@@ -57,7 +57,7 @@ const ProfileSettings: React.FC = () => {
     }
 
     try {
-      const response = await fetch("https://kaya.ng/kaya-api/update-profile.php", {
+      const response = await fetch("https://api.kaya.ng/kaya-api/update-profile.php", {
         method: "POST",
         body: formData,
       });

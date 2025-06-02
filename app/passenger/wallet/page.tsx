@@ -167,7 +167,7 @@ export default function WalletPage() {
   useEffect(() => {
     if (!userId) return;
     
-    fetch(`https://kaya.ng/kaya-api/get-wallet.php?user_id=${userId}`)
+    fetch(`https://api.kaya.ng/kaya-api/get-wallet.php?user_id=${userId}`)
       .then(res => res.json())
       .then(data => {
         if (data && data.balance) {
@@ -205,7 +205,7 @@ export default function WalletPage() {
       amount: Number(amount) * 100,
       email: email,
       callback: function (response: any) {
-        fetch("https://kaya.ng/kaya-api/update-wallet.php", {
+        fetch("https://api.kaya.ng/kaya-api/update-wallet.php", {
           method: "POST",
           body: new URLSearchParams({
             user_id: userId || "",
@@ -252,7 +252,7 @@ export default function WalletPage() {
       });
 
       try {
-        const res = await fetch(`https://kaya.ng/kaya-api/get-transactions.php?${query.toString()}`);
+        const res = await fetch(`https://api.kaya.ng/kaya-api/get-transactions.php?${query.toString()}`);
         const data = await res.json();
         
         // Match the exact API structure as provided

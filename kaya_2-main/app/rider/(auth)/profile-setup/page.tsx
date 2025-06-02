@@ -25,7 +25,7 @@ export default function ProfileSetup() {
   const router = useRouter();
 
   try {
-    const response = await fetch("https://kaya.ng/kaya-api/signup.php", {
+    const response = await fetch("https://api.kaya.ng/kaya-api/signup.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

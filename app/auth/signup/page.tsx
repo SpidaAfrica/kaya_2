@@ -32,7 +32,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   setLoading(true);
 
   try {
-    const res = await fetch("https://kaya.ng/kaya-api/send-phone-otp.php", {
+    const res = await fetch("https://api.kaya.ng/kaya-api/send-phone-otp.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
