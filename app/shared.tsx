@@ -322,7 +322,7 @@ export function Notifications() {
     const userId = sessionStorage.getItem("userId"); // or get from sessionStorage, cookies, etc.
     const role = sessionStorage.getItem("role"); // e.g. 'user' or 'rider'
 
-    fetch(`https://spida.africa/kaya-api/notifications.php?user_id=${userId}&role=${role}`)
+    fetch(`https://kaya.ng/kaya-api/notifications.php?user_id=${userId}&role=${role}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {
@@ -494,7 +494,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
   const handleOfflinePayment = async () => {
      const order_id = delivery.delivery_id;
     try {
-      const response = await fetch('https://spida.africa/kaya-api/confirm-payment.php', {
+      const response = await fetch('https://kaya.ng/kaya-api/confirm-payment.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -534,7 +534,7 @@ export function OrderCard_1({ delivery, setShowDeliveryDetails, switchPage }: Pr
     }
 
     try {
-      const response = await fetch("https://spida.africa/kaya-api/transfer.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/transfer.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

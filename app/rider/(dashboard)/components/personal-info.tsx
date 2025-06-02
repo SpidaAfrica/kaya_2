@@ -142,7 +142,7 @@ export const PersonalInfo: React.FC<StepProps> = ({ setActiveStep }) => {
       formData.append("address", data.address);
       if (ninFile) formData.append("nin_certificate", ninFile);
 
-      const response = await fetch("https://spida.africa/kaya-api/rider/save-personal-info.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/rider/save-personal-info.php", {
         method: "POST",
         body: formData,
       });
@@ -215,7 +215,7 @@ export const VehicleInfo: React.FC<StepProps> = ({ setActiveStep }) => {
       formData.append("plateNumber", data.plateNumber);
       if (licenseFile) formData.append("license-upload", licenseFile); // licenseFile should be a File object
 
-      const response = await fetch("https://spida.africa/kaya-api/rider/save-vehicle-info.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/rider/save-vehicle-info.php", {
         method: "POST",
         body: formData,
       });
@@ -280,7 +280,7 @@ export const GuarantorInfo: React.FC<StepProps> = ({ setActiveStep }) => {
       formData.append("guarantorPhone", data.guarantorPhone);
       formData.append("guarantorAddress", data.guarantorAddress);
 
-      const response = await fetch("https://spida.africa/kaya-api/rider/guarantor-info.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/rider/guarantor-info.php", {
         method: "POST",
         body: formData,
       });

@@ -30,7 +30,7 @@ const handlePhoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   const formattedPhone = phoneNumber.replace(/^0/, "");
 
   try {
-    const response = await fetch("https://spida.africa/kaya-api/reset-password.php", {
+    const response = await fetch("https://kaya.ng/kaya-api/reset-password.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   const otpValue = otp.join(""); // Join the 4-digit OTP
 
   try {
-    const response = await fetch("https://spida.africa/kaya-api/verify-reset-otp.php", {
+    const response = await fetch("https://kaya.ng/kaya-api/verify-reset-otp.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 
   try {
-    const response = await fetch("https://spida.africa/kaya-api/set-new-password.php", {
+    const response = await fetch("https://kaya.ng/kaya-api/set-new-password.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +144,7 @@ const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 const handleResendOtp = async () => {
   try {
-    const response = await fetch("https://spida.africa/kaya-api/reset-password.php", {
+    const response = await fetch("https://kaya.ng/kaya-api/reset-password.php", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

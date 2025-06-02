@@ -81,7 +81,7 @@ export const OrdersPage = () => {
     setLoading(true);
   
     try {
-      const res = await fetch(`https://spida.africa/kaya-api/rider/get-nearby-orders.php`, {
+      const res = await fetch(`https://kaya.ng/kaya-api/rider/get-nearby-orders.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -208,7 +208,7 @@ export const SingleOrderCard = ({
   
   const handleAction = async (status: "ongoing" | "cancelled") => {
     try {
-      const res = await fetch(`https://spida.africa/kaya-api/rider/update-order-status.php`, {
+      const res = await fetch(`https://kaya.ng/kaya-api/rider/update-order-status.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -410,7 +410,7 @@ export const OrderDetailsModal = ({
   const handleConfirmPickup = async (order_id?: string) => {
     if (!order_id) return;
     try {
-      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
+      const response = await fetch('https://kaya.ng/kaya-api/rider/confirm-pickup.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -434,7 +434,7 @@ export const OrderDetailsModal = ({
   const handleConfirmDelivery = async (order_id?: string) => {
     if (!order_id) return;
     try {
-      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-delivery.php', {
+      const response = await fetch('https://kaya.ng/kaya-api/rider/confirm-delivery.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -475,7 +475,7 @@ export const OrderDetailsModal = ({
   /*
   const handleConfirmPickup = async (order_id?: string) => {
     try {
-      const response = await fetch('https://spida.africa/kaya-api/rider/confirm-pickup.php', {
+      const response = await fetch('https://kaya.ng/kaya-api/rider/confirm-pickup.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -502,7 +502,7 @@ export const OrderDetailsModal = ({
       if (!order_id) return;
     
       try {
-        const response = await fetch('https://spida.africa/kaya-api/rider/confirm-delivery.php', {
+        const response = await fetch('https://kaya.ng/kaya-api/rider/confirm-delivery.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

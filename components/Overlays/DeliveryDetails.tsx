@@ -176,7 +176,7 @@ export function DeliveryDetails({
     }
 
     try {
-      const response = await fetch("https://spida.africa/kaya-api/create-package.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/create-package.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({

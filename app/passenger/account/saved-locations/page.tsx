@@ -18,7 +18,7 @@ export default function SavedLocationsPage() {
       try {
         // Check if we're on the client before using sessionStorage
         const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") || "1" : "1";
-        const res = await fetch(`https://spida.africa/kaya-api/get-locations.php?user_id=${userId}`);
+        const res = await fetch(`https://kaya.ng/kaya-api/get-locations.php?user_id=${userId}`);
         const data = await res.json();
   
         if (data.success && Array.isArray(data.locations)) {
@@ -41,7 +41,7 @@ export default function SavedLocationsPage() {
       // Check if we're on the client before using sessionStorage
       const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") || "1" : "1";
       
-      const res = await fetch("https://spida.africa/kaya-api/save-locations.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/save-locations.php", {
         method: "POST",
         body: new URLSearchParams({
           user_id: userId,

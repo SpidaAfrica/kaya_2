@@ -67,7 +67,7 @@ export default function MessagingPage(): JSX.Element {
 
   const fetchMessages = async (id: string) => {
     try {
-      const res = await fetch(`https://spida.africa/kaya-api/chat/fetch-messages.php?chat_id=${id}`);
+      const res = await fetch(`https://kaya.ng/kaya-api/chat/fetch-messages.php?chat_id=${id}`);
       const data = await res.json();
       setMessages(data);
       setLoading(false);
@@ -86,7 +86,7 @@ useEffect(() => {
 
   const fetchAcceptedRider = async () => {
     try {
-      const res = await fetch("https://spida.africa/kaya-api/get-accepted-rider.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/get-accepted-rider.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({ user_id: parsedUser.id }),
@@ -134,7 +134,7 @@ useEffect(() => {
     };
 
     try {
-      const res = await fetch("https://spida.africa/kaya-api/chat/send-message.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/chat/send-message.php", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams(messageData),

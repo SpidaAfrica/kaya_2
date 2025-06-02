@@ -24,7 +24,7 @@ export const VerificationPage = () => {
 
     setIsVerifying(true);
 
-    fetch("https://spida.africa/kaya-api/rider/verify.php", {
+    fetch("https://kaya.ng/kaya-api/rider/verify.php", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

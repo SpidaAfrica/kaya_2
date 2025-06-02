@@ -46,7 +46,7 @@ const ProfileSettings: React.FC = () => {
     console.log(formData)
   
     try {
-      const res = await fetch("https://spida.africa/kaya-api/rider/update-profile-setting.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/rider/update-profile-setting.php", {
         method: "POST",
         body: formData,
       });

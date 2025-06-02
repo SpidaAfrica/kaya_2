@@ -357,7 +357,7 @@ function AvailableRides({
       formData.append("pickup_lng", pickupLng.toString());
       formData.append("user_id", userId);
 
-      const response = await fetch("https://spida.africa/kaya-api/get-nearby-riders.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/get-nearby-riders.php", {
         method: "POST",
         body: formData,
       });
@@ -379,7 +379,7 @@ function AvailableRides({
     formData.append("user_id", userId);
     formData.append("rider_id", riderId);
   
-    const response = await fetch("https://spida.africa/kaya-api/accept-ride-request.php", {
+    const response = await fetch("https://kaya.ng/kaya-api/accept-ride-request.php", {
       method: "POST",
       body: formData,
     });
@@ -513,7 +513,7 @@ function FareIncreaseInterface({
       formData.append("pickup_lng", pickupLng.toString());
       formData.append("user_id", userId);
 
-      const response = await fetch("https://spida.africa/kaya-api/get-nearby-riders.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/get-nearby-riders.php", {
         method: "POST",
         body: formData,
       });
@@ -540,7 +540,7 @@ function FareIncreaseInterface({
     formData.append("fare", String(fare));
 
     try {
-      const res = await fetch("https://spida.africa/kaya-api/passenger-update-fare.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/passenger-update-fare.php", {
         method: "POST",
         body: formData,
       });
@@ -699,7 +699,7 @@ function AcceptedRiderDetails({ setRideState }: AcceptedRiderDetailsProps) {
     const formData = new FormData();
     formData.append("user_id", userId);
 
-    fetch("https://spida.africa/kaya-api/get-accepted-rider.php", {
+    fetch("https://kaya.ng/kaya-api/get-accepted-rider.php", {
       method: "POST",
       body: formData,
     })

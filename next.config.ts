@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    domains: ['spida.africa'],
+    domains: ['kaya.ng'],
   },
 };
 

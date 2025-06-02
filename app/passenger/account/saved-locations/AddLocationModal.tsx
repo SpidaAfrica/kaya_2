@@ -100,7 +100,7 @@ export function AddLocationModal({
     });
 
     try {
-      const res = await fetch("https://spida.africa/kaya-api/save-locations.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/save-locations.php", {
         method: "POST",
         body: payload,
         headers: {
@@ -291,7 +291,7 @@ export function AddLocationModal({
     });
 
     try {
-      const res = await fetch("https://spida.africa/kaya-api/save-locations.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/save-locations.php", {
         method: "POST",
         body: payload,
         headers: {

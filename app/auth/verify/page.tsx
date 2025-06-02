@@ -41,7 +41,7 @@ export default function VerifyPage() {
 
     // Call your backend to verify OTP
     try {
-      const response = await fetch("https://spida.africa/kaya-api/verify-otp.php", {
+      const response = await fetch("https://kaya.ng/kaya-api/verify-otp.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@ export default function VerifyPage() {
     setMessage("");
 
     try {
-      const response = await fetch("http://spida.africa/kaya-api/resend-phone-otp.php", {
+      const response = await fetch("http://kaya.ng/kaya-api/resend-phone-otp.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -34,7 +34,7 @@ const [password, setPassword] = React.useState("");
     setError("");
 
     try {
-      const res = await fetch("https://spida.africa/kaya-api/login.php", {
+      const res = await fetch("https://kaya.ng/kaya-api/login.php", {
         method: "POST", // 👈 very important
         headers: {
           "Content-Type": "application/json"
