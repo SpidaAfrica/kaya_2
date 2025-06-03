@@ -150,6 +150,7 @@ export default function MessagingPage() {
     fetchMessages();
   }, [packageId]);
 */
+/*
 useEffect(() => {
   if (!packageId) return;
 
@@ -170,10 +171,27 @@ useEffect(() => {
 
   return () => clearInterval(interval);
 }, [packageId]);
+*/
+const fetchMessages = async () => {
+  try {
+    const res = await fetch(`https://api.kaya.ng/kaya-api/chat/fetch-messages.php?package_id=${packageId}`);
+    const response = await res.json();
+
+    if (response.success) {
+      setMessages(response.data || []);
+    } else {
+      console.error("Error fetching messages:", response.error);
+    }
+  } catch (error) {
+    console.error("Failed to fetch messages:", error);
+  }
+};
+
 
   
 
   // ✅ Sending messages
+  /*
   const sendMessage = async () => {
     if (!newMessage.trim() || senderId === null || receiverId === null) return;
 
@@ -202,6 +220,39 @@ useEffect(() => {
       console.error('Failed to send message:', error);
     }
   };
+  */
+const sendMessage = async () => {
+  if (!newMessage.trim() || senderId === null || receiverId === null) return;
+
+  const payload = {
+    sender_id: senderId,
+    receiver_id: receiverId,
+    package_id: packageId,
+    content: newMessage,
+  };
+
+  try {
+    // Send to API
+    await fetch('https://api.kaya.ng/kaya-api/chat/send-message.php', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Send to WebSocket
+    ws.current?.send(JSON.stringify(payload));
+
+    setNewMessage('');
+
+    // Refresh the messages right after sending
+    await fetchMessages(); // 👈 Trigger refresh after message is sent
+  } catch (error) {
+    console.error('Failed to send message:', error);
+  }
+};
+
 
 const [isRecording, setIsRecording] = useState(false);
 const mediaRecorderRef = useRef<MediaRecorder | null>(null);
