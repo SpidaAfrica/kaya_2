@@ -132,10 +132,12 @@ export default function MessagingPage() {
         if (currentUserId == result.sender_id) {
           setSenderId(result.sender_id);
           setReceiverId(result.receiver_id);
+          console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
           
         } else if (currentUserId == result.receiver_id) {
           setSenderId(result.sender_id);
           setReceiverId(result.receiver_id);
+          console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
         } else {
           console.warn("Current user doesn't match any chat participant.");
         }
@@ -146,7 +148,6 @@ export default function MessagingPage() {
     } catch (error) {
       console.error("Failed to fetch sender and receiver info:", error);
     }
-    console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
   }
 
   fetchSenderReceiver();
