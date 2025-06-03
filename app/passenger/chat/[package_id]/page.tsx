@@ -70,7 +70,7 @@ export default function MessagingPage() {
     content: string;
     created_at?: string;
     timestamp?: string;  // ✅ Added
-    status?: string; 
+    //status?: string; 
   };
 
   useEffect(() => {
@@ -357,7 +357,7 @@ const handleMicClick = async () => {
                       sender={message.sender_id === senderId ? "me" : "rider"}
                       content={message.content}
                       timestamp={message.timestamp} // ✅ Add this line
-                      status={message.status} // optional
+                      //status={message.status} // optional
                     />
                   ))}
                   <div ref={bottomRef} />
@@ -480,10 +480,10 @@ export type MessageType = {
   content: string;
   id: string;
   timestamp?: string;
-  status?: "sent" | "delivered" | "seen";
+  //status?: "sent" | "delivered" | "seen";
 };
 
-const Message = memo(({ sender, content, timestamp, status }: MessageType) => {
+const Message = memo(({ sender, content, timestamp}: MessageType) => {
   const isOwnMessage = sender === "me";
   const formattedTime = format(new Date(timestamp), "hh:mm a");
 
@@ -507,13 +507,14 @@ const Message = memo(({ sender, content, timestamp, status }: MessageType) => {
             <p className="text-md">{content}</p>
           </div>
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            {isOwnMessage && (
+            <Check className="w-4 h-4" />
+            {/*{isOwnMessage && (
               <>
                 {status === "sent" && <Check className="w-4 h-4" />}
                 {status === "delivered" && <CheckCheck className="w-4 h-4" />}
                 {status === "seen" && <CheckCheck className="w-4 h-4 text-blue-500" />}
               </>
-            )}
+            )}*/}
             <span>{formattedTime}</span>
           </div>
         </div>
