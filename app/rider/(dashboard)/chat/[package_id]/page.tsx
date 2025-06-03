@@ -471,8 +471,8 @@ const Message = memo(({ sender, content, timestamp}: MessageType) => {
             className={cn(
               "p-4 rounded-2xl animate-fade-in",
               isOwnMessage
-                ? "bg-background border rounded-br-none"
-                : "bg-primary rounded-bl-none text-white"
+                ? "bg-primary rounded-bl-none text-white"
+                : "bg-background border rounded-br-none"
             )}
           >
             <p className="text-md">{content}</p>
