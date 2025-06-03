@@ -139,6 +139,8 @@ export default function MessagingPage() {
 
         // Save for reference
         sessionStorage.setItem('receiver_id', String(receiver_id));
+        console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
+
       } else {
         console.error("Chat API error:", result.message);
       }
