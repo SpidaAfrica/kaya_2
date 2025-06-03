@@ -123,23 +123,22 @@ export default function MessagingPage() {
       const response = await fetch(`https://api.kaya.ng/kaya-api/chat/get-chat-id.php?package_id=${packageId}`);
       const result = await response.json();
 
-      if (result.status === 'success') {
-        const { sender_id, receiver_id } = result;
+        if (result.status === 'success') {
+
+          // Optionally save receiverId to sessionStorage
+          sessionStorage.setItem('receiver_id', result.receiver_id);
 
         // Match currentUserId to sender/receiver
-        if (currentUserId === sender_id) {
-          setSenderId(sender_id);
-          setReceiverId(receiver_id);
-        } else if (currentUserId === receiver_id) {
-          setSenderId(receiver_id); // currentUser is receiver, sender is the other
-          setReceiverId(sender_id);
+        if (currentUserId == result.sender_id) {
+          setSenderId(result.sender_id);
+          setReceiverId(result.receiver_id);
+          
+        } else if (currentUserId == result.receiver_id) {
+          setSenderId(result.sender_id);
+          setReceiverId(result.receiver_id);
         } else {
           console.warn("Current user doesn't match any chat participant.");
         }
-
-        // Save for reference
-        sessionStorage.setItem('receiver_id', String(receiver_id));
-        console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
 
       } else {
         console.error("Chat API error:", result.message);
@@ -147,6 +146,7 @@ export default function MessagingPage() {
     } catch (error) {
       console.error("Failed to fetch sender and receiver info:", error);
     }
+    console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
   }
 
   fetchSenderReceiver();
