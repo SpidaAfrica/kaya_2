@@ -117,7 +117,7 @@ export default function MessagingPage() {
   useEffect(() => {
   async function fetchSenderReceiver() {
     try {
-      const currentUserId = Number(sessionStorage.getItem("user_id"));
+      const currentUserId = Number(sessionStorage.getItem("userId"));
       if (!currentUserId || !packageId) return;
 
       const response = await fetch(`https://api.kaya.ng/kaya-api/chat/get-chat-id.php?package_id=${packageId}`);
@@ -171,11 +171,6 @@ export default function MessagingPage() {
     };
   }, [packageId]);
 
-useEffect(() => {
-  if (senderId && receiverId) {
-    fetchMessages();
-  }
-}, [senderId, receiverId]);
 
 
 const fetchMessages = async () => {
