@@ -7,6 +7,7 @@ import { RiderAvatar, StarRating } from "@/assets";
 import { cn } from "@/lib/utils";
 import {
   Check,
+  CheckCheck
   ChevronRight,
   Info,
   Loader,
@@ -36,6 +37,7 @@ import MessagesEmpty from "@/assets/messages-empty.svg";
 import { MainContent } from "@/app/layouts/app-layout";
 import { DeliveryDetails } from "@/components/Overlays/DeliveryDetails";
 import { useParams } from "next/navigation";
+import { format } from "date-fns";
 
 export default function MessagingPage() {
   const [hasMessages, setHasMessages] = useState(false);
@@ -473,36 +475,42 @@ export type MessageType = {
   sender: string;
   content: string;
   id: string;
-  timestamp?: number;
+  timestamp: string;
+  status?: "sent" | "delivered" | "seen";
 };
 
-const Message = memo(({ sender, content }: MessageType) => {
-  // const { user } = useUser();
-
-  // const isOwnMessage = sender === user?.id;
+const Message = memo(({ sender, content, timestamp, status }: MessageType) => {
   const isOwnMessage = sender === "me";
+  const formattedTime = format(new Date(timestamp), "hh:mm a");
+
   return (
-    <div className={cn("mt-8 flex", isOwnMessage ? "justify-start":"justify-end" )}>
-        <div className={cn(
-          "flex items-end gap-2",
-          isOwnMessage ? "flex-row":"flex-row-reverse"  
-        )}>
-        <div className="mb-2">
-          <Image src={RiderAvatar} alt="rider" />
-        </div>
+    <div className={cn("mt-8 flex", isOwnMessage ? "justify-end" : "justify-start")}>
+      <div className={cn("flex items-end gap-2", isOwnMessage ? "flex-row-reverse" : "flex-row")}>
+        {!isOwnMessage && (
+          <div className="mb-2">
+            <Image src={RiderAvatar} alt="rider" />
+          </div>
+        )}
         <div className="space-y-1">
           <div
             className={cn(
-              "p-4 rounded-2xl ",
+              "p-4 rounded-2xl animate-fade-in",
               isOwnMessage
-                ? `bg-background border rounded-bl-none`
-                : `bg-primary rounded-br-none  text-white`
-            )}>
+                ? "bg-background border rounded-br-none"
+                : "bg-primary rounded-bl-none text-white"
+            )}
+          >
             <p className="text-md">{content}</p>
           </div>
-          <div className="flex">
-            <Check />
-            <span>10:43 AM</span>
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            {isOwnMessage && (
+              <>
+                {status === "sent" && <Check className="w-4 h-4" />}
+                {status === "delivered" && <CheckCheck className="w-4 h-4" />}
+                {status === "seen" && <CheckCheck className="w-4 h-4 text-blue-500" />}
+              </>
+            )}
+            <span>{formattedTime}</span>
           </div>
         </div>
       </div>
