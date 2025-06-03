@@ -88,6 +88,7 @@ export default function MessagingPage() {
   }, []);
 
   // ✅ Fetch sender_id and receiver_id dynamically
+  /*
   useEffect(() => {
     async function fetchSenderReceiver() {
       try {
@@ -112,6 +113,43 @@ export default function MessagingPage() {
       fetchSenderReceiver();
     }
   }, [packageId]);
+  */
+  useEffect(() => {
+  async function fetchSenderReceiver() {
+    try {
+      const currentUserId = Number(sessionStorage.getItem("user_id"));
+      if (!currentUserId || !packageId) return;
+
+      const response = await fetch(`https://api.kaya.ng/kaya-api/chat/get-chat-id.php?package_id=${packageId}`);
+      const result = await response.json();
+
+      if (result.status === 'success') {
+        const { sender_id, receiver_id } = result;
+
+        // Match currentUserId to sender/receiver
+        if (currentUserId === sender_id) {
+          setSenderId(sender_id);
+          setReceiverId(receiver_id);
+        } else if (currentUserId === receiver_id) {
+          setSenderId(receiver_id); // currentUser is receiver, sender is the other
+          setReceiverId(sender_id);
+        } else {
+          console.warn("Current user doesn't match any chat participant.");
+        }
+
+        // Save for reference
+        sessionStorage.setItem('receiver_id', String(receiver_id));
+      } else {
+        console.error("Chat API error:", result.message);
+      }
+    } catch (error) {
+      console.error("Failed to fetch sender and receiver info:", error);
+    }
+  }
+
+  fetchSenderReceiver();
+}, [packageId]);
+
 
   // ✅ Connect WebSocket
   useEffect(() => {
@@ -132,50 +170,14 @@ export default function MessagingPage() {
       ws.current?.close();
     };
   }, [packageId]);
-/*
-  useEffect(() => {
-    if (!packageId) return;
-  
-    const fetchMessages = async () => {
-      try {
-        const res = await fetch(`https://api.kaya.ng/kaya-api/chat/fetch-messages.php?package_id=${packageId}`);
-        const response = await res.json();
-  
-        if (response.success) {
-          setMessages(response.data || []); // data is the array of {content: string}
-        } else {
-          console.error("Error fetching messages:", response.error);
-        }
-      } catch (error) {
-        console.error("Failed to fetch messages:", error);
-      }
-    };
-  
-    fetchMessages();
-  }, [packageId]);
-*/
-/*
+
 useEffect(() => {
-  if (!packageId) return;
+  if (senderId && receiverId) {
+    fetchMessages();
+  }
+}, [senderId, receiverId]);
 
-  const interval = setInterval(async () => {
-    try {
-      const res = await fetch(`https://api.kaya.ng/kaya-api/chat/fetch-messages.php?package_id=${packageId}`);
-      const response = await res.json();
 
-      if (response.success) {
-        setMessages(response.data || []);
-      } else {
-        console.error("Error refreshing messages:", response.error);
-      }
-    } catch (error) {
-      console.error("Failed to refresh messages:", error);
-    }
-  }, 1000); // Refresh every 1 second
-
-  return () => clearInterval(interval);
-}, [packageId]);
-*/
 const fetchMessages = async () => {
   try {
     const res = await fetch(`https://api.kaya.ng/kaya-api/chat/fetch-messages.php?package_id=${packageId}`);
@@ -195,36 +197,6 @@ const fetchMessages = async () => {
   
 
   // ✅ Sending messages
-  /*
-  const sendMessage = async () => {
-    if (!newMessage.trim() || senderId === null || receiverId === null) return;
-
-    const payload = {
-      sender_id: senderId,
-      receiver_id: receiverId,
-      package_id: packageId,
-      content: newMessage,
-    };
-
-    try {
-      // Send to API
-      await fetch('https://api.kaya.ng/kaya-api/chat/send-message.php', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      // Send to WebSocket
-      ws.current?.send(JSON.stringify(payload));
-
-      setNewMessage('');
-    } catch (error) {
-      console.error('Failed to send message:', error);
-    }
-  };
-  */
 const sendMessage = async () => {
   if (!newMessage.trim() || senderId === null || receiverId === null) return;
 
