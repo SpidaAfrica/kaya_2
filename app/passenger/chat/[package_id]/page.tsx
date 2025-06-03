@@ -7,7 +7,7 @@ import { RiderAvatar, StarRating } from "@/assets";
 import { cn } from "@/lib/utils";
 import {
   Check,
-  CheckCheck
+  CheckCheck,
   ChevronRight,
   Info,
   Loader,
