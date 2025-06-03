@@ -126,17 +126,17 @@ export default function MessagingPage() {
         if (result.status === 'success') {
 
           // Optionally save receiverId to sessionStorage
-          sessionStorage.setItem('receiver_id', result.receiver_id);
+          sessionStorage.setItem('sender_id', result.rider_id);
+          sessionStorage.setItem('receiver_id', result.user_id);
 
         // Match currentUserId to sender/receiver
-        if (currentUserId == result.sender_id) {
-          setSenderId(result.sender_id);
-          setReceiverId(result.receiver_id);
-          console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
+        if (currentUserId == result.rider_id) {
+          setSenderId(result.rider_id);
+          setReceiverId(result.user_id);
           
-        } else if (currentUserId == result.receiver_id) {
-          setSenderId(result.sender_id);
-          setReceiverId(result.receiver_id);
+        } else if (currentUserId == result.user_id) {
+          setSenderId(result.user_id);
+          setReceiverId(result.rider_id);
           console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
         } else {
           console.warn("Current user doesn't match any chat participant.");
