@@ -324,7 +324,7 @@ const handleMicClick = async () => {
                     <Message
                       key={message.id ?? Math.random()} // fallback in case no id
                       id={message.id?.toString() || ""}
-                      sender={message.sender_id === senderId ? "me" : "rider"}
+                      sender={message.sender_id == senderId ? "me" : "user"}
                       content={message.content}
                       timestamp={message.timestamp} // ✅ Add this line
                       //status={message.status} // optional
