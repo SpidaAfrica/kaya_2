@@ -38,6 +38,7 @@ export default function RideActionsPage() {
   const [senderPhone, setSenderPhone] = useState<string | undefined>();
   const [recipientPhone, setRecipientPhone] = useState<string | undefined>();
   const [packageDescription, setPackageDescription] = useState<string | undefined>();
+  const [packageId, setPackageId] = useState<string | undefined>();
   
     useEffect(() => {
     const getSessionValue = (key: string): string | undefined => {
@@ -52,6 +53,7 @@ export default function RideActionsPage() {
     setSenderPhone(getSessionValue('senderPhone'));
     setRecipientPhone(getSessionValue('recipientPhone'));
     setPackageDescription(getSessionValue('packageDescription'));
+    setPackageDescription(getSessionValue('packageId'));
   }, []);
   return (
     <div className="flex flex-col-reverse md:flex-row gap-10">
@@ -215,7 +217,7 @@ function SendDriverMessage({ riderPhone }: SendDriverMessageProps) {
   return (
     <div className="flex items-center bg-background p-3 gap-3 justify-between">
       {/* Chat link */}
-      <Link href="/passenger/chat" className="flex items-center gap-3 flex-1">
+      <Link href=`/passenger/chat/${packageId}` className="flex items-center gap-3 flex-1">
         <div className="bg-[#B47818]/10 p-3 rounded-full">
           <Image src={MessageIconSquare} alt="message" />
         </div>
