@@ -477,7 +477,7 @@ export type MessageType = {
   sender: string;
   content: string;
   id: string;
-  timestamp: string;
+  timestamp?: string;
   status?: "sent" | "delivered" | "seen";
 };
 
