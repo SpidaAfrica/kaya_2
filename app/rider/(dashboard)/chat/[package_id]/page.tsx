@@ -128,7 +128,7 @@ export default function MessagingPage() {
       ws.current?.close();
     };
   }, [packageId]);
-
+/*
   useEffect(() => {
     if (!packageId) return;
   
@@ -149,6 +149,28 @@ export default function MessagingPage() {
   
     fetchMessages();
   }, [packageId]);
+*/
+useEffect(() => {
+  if (!packageId) return;
+
+  const interval = setInterval(async () => {
+    try {
+      const res = await fetch(`https://api.kaya.ng/kaya-api/chat/fetch-messages.php?package_id=${packageId}`);
+      const response = await res.json();
+
+      if (response.success) {
+        setMessages(response.data || []);
+      } else {
+        console.error("Error refreshing messages:", response.error);
+      }
+    } catch (error) {
+      console.error("Failed to refresh messages:", error);
+    }
+  }, 1000); // Refresh every 1 second
+
+  return () => clearInterval(interval);
+}, [packageId]);
+
   
 
   // ✅ Sending messages
