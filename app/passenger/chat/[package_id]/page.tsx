@@ -191,7 +191,9 @@ const fetchMessages = async () => {
   }
 };
 
-
+useEffect(() => {
+  fetchMessages(); // runs once on initial load
+}, []);
   
 
   // ✅ Sending messages
