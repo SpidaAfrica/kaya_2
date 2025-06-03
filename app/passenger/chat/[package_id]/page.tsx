@@ -485,7 +485,8 @@ export type MessageType = {
 
 const Message = memo(({ sender, content, timestamp}: MessageType) => {
   const isOwnMessage = sender === "me";
-  const formattedTime = format(new Date(timestamp), "hh:mm a");
+  const formattedTime = format(new Date(timestamp ?? Date.now()), "hh:mm a");
+
 
   return (
     <div className={cn("mt-8 flex", isOwnMessage ? "justify-end" : "justify-start")}>
