@@ -69,6 +69,8 @@ export default function MessagingPage() {
     package_id: number;
     content: string;
     created_at?: string;
+    timestamp?: string;  // ✅ Added
+    status?: string; 
   };
 
   useEffect(() => {
