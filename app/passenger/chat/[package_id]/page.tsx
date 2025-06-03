@@ -69,7 +69,7 @@ export default function MessagingPage() {
     package_id: number;
     content: string;
     created_at?: string;
-    timestamp?: string;  // ✅ Added
+    timestamp?: string | number | Date;  // ✅ Added
     //status?: string; 
   };
 
@@ -479,7 +479,7 @@ export type MessageType = {
   sender: string;
   content: string;
   id: string;
-  timestamp?: string;
+  timestamp?: string | number | Date;
   //status?: "sent" | "delivered" | "seen";
 };
 
