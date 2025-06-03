@@ -354,6 +354,8 @@ const handleMicClick = async () => {
                       id={message.id?.toString() || ""}
                       sender={message.sender_id === senderId ? "me" : "rider"}
                       content={message.content}
+                      timestamp={message.timestamp} // ✅ Add this line
+                      status={message.status} // optional
                     />
                   ))}
                   <div ref={bottomRef} />
