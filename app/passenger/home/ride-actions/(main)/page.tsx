@@ -567,21 +567,29 @@ function FareIncreaseInterface({
     <div className="max-w-md mx-auto p-4 space-y-4">
       <header className="space-y-3 border-b py-3">
         <h3 className="font-medium text-xl">Available Rides</h3>
-        <div className="flex items-center text-sm text-foreground mb-4 gap-2">
-          <div className="flex items-center -space-x-5">
-            {availableRiders[0]?.image_url && (
-              <Image
-                src={availableRiders[0].image_url}
-                alt="rider"
-                width={48}
-                height={48}
-                className="w-12 aspect-square object-cover rounded-full bg-purple-300"
-              />
-            )}
+      
+        {availableRiders.length > 0 ? (
+          <div className="flex items-center text-sm text-foreground mb-4 gap-2">
+            <div className="flex items-center -space-x-5">
+              {availableRiders[0]?.image_url && (
+                <Image
+                  src={availableRiders[0].image_url}
+                  alt="rider"
+                  width={48}
+                  height={48}
+                  className="w-12 aspect-square object-cover rounded-full bg-purple-300"
+                />
+              )}
+            </div>
+            <span className="font-medium">are viewing request</span>
           </div>
-          <span className="font-medium">and others are viewing request</span>
-        </div>
+        ) : (
+          <div className="text-sm text-muted-foreground italic mb-4">
+            No available riders at the moment.
+          </div>
+        )}
       </header>
+
 
       <div className="bg-yellow-50 border-l-4 border-yellow-500 p-3 flex items-start space-x-3">
         <Info className="h-5 w-5 text-yellow-600 mt-1 flex-shrink-0" />
