@@ -218,7 +218,7 @@ function SendDriverMessage({ riderPhone }: SendDriverMessageProps) {
   <>
     <div className="flex items-center bg-background p-3 gap-3 justify-between">
       {/* Chat link */}
-      <Link href=`/passenger/chat/${packageId}` className="flex items-center gap-3 flex-1">
+      <Link href={`/passenger/chat/${packageId}`} className="flex items-center gap-3 flex-1">
         <div className="bg-[#B47818]/10 p-3 rounded-full">
           <Image src={MessageIconSquare} alt="message" />
         </div>
