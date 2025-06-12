@@ -412,7 +412,7 @@ function AvailableRides({
               />
             )}
           </div>
-          <span className="font-medium">and others are viewing request</span>
+          <span className="font-medium"> are viewing request</span>
         </div>
       </header>
 
