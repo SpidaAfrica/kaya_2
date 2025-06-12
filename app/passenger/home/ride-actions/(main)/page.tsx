@@ -215,6 +215,7 @@ function SendDriverMessage({ riderPhone }: SendDriverMessageProps) {
   };
 
   return (
+  <>
     <div className="flex items-center bg-background p-3 gap-3 justify-between">
       {/* Chat link */}
       <Link href=`/passenger/chat/${packageId}` className="flex items-center gap-3 flex-1">
@@ -245,6 +246,7 @@ function SendDriverMessage({ riderPhone }: SendDriverMessageProps) {
         </DialogContent>
       </Dialog>
     </div>
+  </>
   );
 }
 
