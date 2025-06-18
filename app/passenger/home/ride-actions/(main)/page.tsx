@@ -366,7 +366,7 @@ function RiderStatus({
 
 
 
-import { Star } from "lucide-react";
+/*import { Star } from "lucide-react";
 
 
 function AvailableRides({
@@ -497,6 +497,175 @@ function AvailableRides({
                   if (userId && ride.rider_id) {
                     acceptRide(userId, ride.rider_id);
                     setRideState("rider-details"); // Optional: move to rider details view after accepting
+                  } else {
+                    alert("User or Rider ID missing.");
+                  }
+                }}
+              >
+                Accept
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}*/
+
+import { Star } from "lucide-react";
+
+
+type Rider = {
+  rider_id: string;
+  fullName: string;
+  image_url: string;
+  rides: number;
+  rating: number;
+  price: number;
+  distance: number;
+};
+
+type RideState = "searching" | "rider-details" | string; // adjust as needed
+
+function AvailableRides({
+  setRideState,
+}: {
+  setRideState: (state: RideState) => void;
+}) {
+  const [availableRiders, setAvailableRiders] = useState<Rider[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const storedId = sessionStorage.getItem("userId");
+    const storedCords = sessionStorage.getItem("pickupCoords");
+
+    if (storedId && storedCords) {
+      setUserId(storedId);
+      const { lat, lng } = JSON.parse(storedCords);
+      fetchAvailableRiders(lat, lng, storedId);
+    }
+  }, []);
+
+  const fetchAvailableRiders = async (
+    pickupLat: number,
+    pickupLng: number,
+    userId: string
+  ) => {
+    try {
+      const formData = new FormData();
+      formData.append("pickup_lat", pickupLat.toString());
+      formData.append("pickup_lng", pickupLng.toString());
+      formData.append("user_id", userId);
+
+      const response = await fetch(
+        "https://api.kaya.ng/kaya-api/get-nearby-riders.php",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.status === "success") {
+        setAvailableRiders(data.riders);
+      } else {
+        console.error("Server error:", data.message);
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+  const acceptRide = async (userId: string, riderId: string) => {
+    const formData = new FormData();
+    formData.append("user_id", userId);
+    formData.append("rider_id", riderId);
+
+    const response = await fetch(
+      "https://api.kaya.ng/kaya-api/accept-ride-request.php",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+    if (data.status === "success") {
+      console.log("Ride accepted.");
+    } else {
+      console.error("Error:", data.message);
+    }
+  };
+
+  return (
+    <div className="mx-auto px-4 max-h-96 flex flex-col">
+      <header className="space-y-3 border-b py-3">
+        <h3 className="font-medium text-xl">Available Rides</h3>
+        {availableRiders.length > 0 && (
+          <div className="flex items-center text-sm text-foreground mb-4 gap-2">
+            <div className="flex items-center -space-x-5">
+              {availableRiders.slice(0, 3).map((rider, i) => (
+                <Image
+                  key={i}
+                  src={rider.image_url}
+                  alt="rider"
+                  width={48}
+                  height={48}
+                  className="w-12 aspect-square object-cover rounded-full border-2 border-white"
+                />
+              ))}
+            </div>
+            <span className="font-medium">are viewing request</span>
+          </div>
+        )}
+      </header>
+
+      <div className="space-y-4 pt-6 flex-1 overflow-y-auto">
+        {availableRiders.map((ride, index) => (
+          <div key={index} className="rounded-lg mb-4 overflow-hidden border">
+            <div className="flex items-center p-4">
+              <div className="flex-grow">
+                <div className="flex items-center mb-2">
+                  <span className="font-semibold mr-2">{ride.fullName}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="text-sm text-foreground/70">
+                    {ride.rides} (rides)
+                  </div>
+                  <div className="flex items-center text-yellow-500">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${
+                          i < Math.floor(ride.rating)
+                            ? "fill-current"
+                            : "stroke-current"
+                        }`}
+                      />
+                    ))}
+                    <span className="ml-2 text-foreground/60">
+                      {ride.rating}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-right">
+                  NGN {ride.price?.toLocaleString()}
+                </div>
+                <div className="text-sm text-gray-500 text-right">
+                  {ride.distance} km away
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 p-1 w-[75%] ml-auto">
+              <Button variant="outline">Decline</Button>
+              <Button
+                onClick={() => {
+                  if (userId && ride.rider_id) {
+                    acceptRide(userId, ride.rider_id);
+                    setRideState("rider-details");
                   } else {
                     alert("User or Rider ID missing.");
                   }
