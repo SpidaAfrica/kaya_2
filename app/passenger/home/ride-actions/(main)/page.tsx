@@ -525,8 +525,6 @@ type Rider = {
   distance: number;
 };
 
-type RideState = "searching" | "rider-details" | string; // adjust as needed
-
 function AvailableRides({
   setRideState,
 }: {
