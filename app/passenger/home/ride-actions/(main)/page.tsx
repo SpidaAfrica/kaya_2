@@ -54,7 +54,7 @@ export default function RideActionsPage() {
     }
   }, []);
 
-  const getLatestPackage = async (userId) => {
+  const getLatestPackage = async (userId: string) => {
     try {
       const formData = new FormData();
       formData.append('user_id', userId);
