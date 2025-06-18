@@ -38,23 +38,59 @@ export default function RideActionsPage() {
   const [senderPhone, setSenderPhone] = useState<string | undefined>();
   const [recipientPhone, setRecipientPhone] = useState<string | undefined>();
   const [packageDescription, setPackageDescription] = useState<string | undefined>();
-  const [packageId, setPackageId] = useState<string | undefined>();
-  
-    useEffect(() => {
-    const getSessionValue = (key: string): string | undefined => {
-      if (typeof window === 'undefined') return undefined;
-      return sessionStorage.getItem(key) ?? undefined;
-    };
+  //const [packageId, setPackageId] = useState<string | undefined>();
+  const [packageId, setPackageId] = useState(null);
 
-    setFromLocation(getSessionValue('fromLocation'));
-    setToLocation(getSessionValue('toLocation'));
-    setPrice(getSessionValue('price'));
-    setPaymentMethod(getSessionValue('paymentMethod'));
-    setSenderPhone(getSessionValue('senderPhone'));
-    setRecipientPhone(getSessionValue('recipientPhone'));
-    setPackageDescription(getSessionValue('packageDescription'));
-    setPackageDescription(getSessionValue('packageId'));
+  useEffect(() => {
+    // Make sure this runs only in the browser
+    if (typeof window !== 'undefined') {
+      const storedUserId = localStorage.getItem('userId');
+
+      if (storedUserId) {
+        getLatestPackage(storedUserId);
+      } else {
+        console.warn("User ID not found in localStorage");
+      }
+    }
   }, []);
+
+  const getLatestPackage = async (userId) => {
+    try {
+      const formData = new FormData();
+      formData.append('user_id', userId);
+
+      const response = await fetch('https://api.kaya.ng/kaya-api/get-package-id.php', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Latest package_id:", data.package_id);
+        setPackageId(data.package_id);
+      } else {
+        console.error("Error:", data.message);
+      }
+    } catch (error) {
+      console.error("Fetch error:", error);
+    }
+  };
+  
+  useEffect(() => {
+  const getSessionValue = (key: string): string | undefined => {
+    if (typeof window === 'undefined') return undefined;
+    return sessionStorage.getItem(key) ?? undefined;
+  };
+
+  setFromLocation(getSessionValue('fromLocation'));
+  setToLocation(getSessionValue('toLocation'));
+  setPrice(getSessionValue('price'));
+  setPaymentMethod(getSessionValue('paymentMethod'));
+  setSenderPhone(getSessionValue('senderPhone'));
+  setRecipientPhone(getSessionValue('recipientPhone'));
+  setPackageDescription(getSessionValue('packageDescription'));
+}, []);
   return (
     <div className="flex flex-col-reverse md:flex-row gap-10">
       <div className="flex-1">
