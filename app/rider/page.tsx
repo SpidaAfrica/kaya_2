@@ -8,7 +8,7 @@ import Splash from "@/components/Splash";
 export default function Home() {
   useEffect(() => {
     const timeout = setTimeout(() => {
-      redirect("/rider/signing");
+      redirect("/rider/signin");
     }, 1500);
 
     return () => clearTimeout(timeout);
