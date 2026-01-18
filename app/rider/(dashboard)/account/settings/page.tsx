@@ -11,6 +11,7 @@ import { Mail } from "lucide-react";
 import React, { SyntheticEvent, useCallback, useState, useEffect } from "react";
 import { apiUrl, riderProfileUrl } from "@/lib/api";
 
+
 const ProfileSettings: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
