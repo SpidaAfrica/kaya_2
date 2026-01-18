@@ -39,6 +39,8 @@ import { DeliveryDetails } from "@/components/Overlays/DeliveryDetails";
 import { useParams } from "next/navigation";
 import { format } from "date-fns";
 
+const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000";
+
 export default function MessagingPage() {
   const [hasMessages, setHasMessages] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -158,7 +160,7 @@ export default function MessagingPage() {
   useEffect(() => {
     if (!packageId) return;
 
-    ws.current = new WebSocket('ws://localhost:8080');
+    ws.current = new WebSocket(WS_URL);
 
     ws.current.onopen = () => console.log('Connected to WebSocket');
     
