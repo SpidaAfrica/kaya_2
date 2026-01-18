@@ -10,6 +10,7 @@ import { VerificationPage } from "../../components/verificationComp";
 import { AltInput } from "../../components/Alt";
 import { Lock } from "@/components/svgs";
 import SuccessModal from "@/components/Overlays/SuccessModal";
+import { apiUrl } from "@/lib/api";
 
 export default function BankDetails() {
   return (
@@ -92,7 +93,7 @@ const PersonalInfo = ({
     formData.append("bank_name", bankName);
     formData.append("account_number", accountNumber);
 
-    const res = await fetch("https://api.kaya.ng/kaya-api/rider/bank-details.php", {
+    const res = await fetch(apiUrl("rider/bank-details.php"), {
       method: "POST",
       body: formData,
     });

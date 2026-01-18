@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
 import { Mail } from "lucide-react";
 import React, { SyntheticEvent, useCallback, useState, useEffect } from "react";
+import { apiUrl } from "@/lib/api";
 
 const ProfileSettings: React.FC = () => {
   const [name, setName] = useState("");
@@ -46,7 +47,7 @@ const ProfileSettings: React.FC = () => {
     console.log(formData)
   
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/rider/update-profile-setting.php", {
+      const res = await fetch(apiUrl("rider/update-profile-setting.php"), {
         method: "POST",
         body: formData,
       });

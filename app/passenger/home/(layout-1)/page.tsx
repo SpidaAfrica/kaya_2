@@ -11,6 +11,7 @@ import { DeliveryDetails_1 } from "@/components/Overlays/DeliveryDetails_1";
 import {
   RefreshCcw
 } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 //import useAuth from "@/components/useAuth";
 
 
@@ -130,7 +131,9 @@ const switchPage = useCallback((page: string) => {
       }
 
       try {
-        const response = await fetch(`https://api.kaya.ng/kaya-api/get-deliveries.php?user_id=${userId}`);
+        const response = await fetch(
+          apiUrl(`get-deliveries.php?user_id=${userId}`)
+        );
         const data: ApiResponse = await response.json();
 
         if (data.status === "success") {

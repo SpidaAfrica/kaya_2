@@ -10,6 +10,7 @@ import AuthForm from "../AuthForm";
 import { Label } from "@/components/ui/label";
 import FormInput from "@/components/FormInput";
 import { LockIcon } from "@/lib/icons";
+import { apiUrl } from "@/lib/api";
 
 type ResetStep = "phone" | "otp" | "password" | "success";
 
@@ -30,7 +31,7 @@ const handlePhoneSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   const formattedPhone = phoneNumber.replace(/^0/, "");
 
   try {
-    const response = await fetch("https://api.kaya.ng/kaya-api/reset-password.php", {
+    const response = await fetch(apiUrl("reset-password.php"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +80,7 @@ const handleOtpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   const otpValue = otp.join(""); // Join the 4-digit OTP
 
   try {
-    const response = await fetch("https://api.kaya.ng/kaya-api/verify-reset-otp.php", {
+    const response = await fetch(apiUrl("verify-reset-otp.php"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +116,7 @@ const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   }
 
   try {
-    const response = await fetch("https://api.kaya.ng/kaya-api/set-new-password.php", {
+    const response = await fetch(apiUrl("set-new-password.php"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -144,7 +145,7 @@ const handlePasswordSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
 const handleResendOtp = async () => {
   try {
-    const response = await fetch("https://api.kaya.ng/kaya-api/reset-password.php", {
+    const response = await fetch(apiUrl("reset-password.php"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

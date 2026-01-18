@@ -20,6 +20,7 @@ import AnimateInOut from "./AnimateInOut";
 import NavLink from "./Navlink";
 import clsx from "clsx";
 import { User } from "@/lib/icons";
+import { apiUrl } from "@/lib/api";
 
 const SIDEBAR_ITEMS = [
   { url: "home", title: "Home" },
@@ -61,7 +62,7 @@ export function AppSidebar({
     }
 
     if (email) {
-      fetch("https://api.kaya.ng/kaya-api/get-user.php", {
+      fetch(apiUrl("get-user.php"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),

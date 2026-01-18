@@ -9,6 +9,7 @@ import { Lock } from "@/components/svgs";
 import AuthForm from "../AuthForm";
 import FormInput from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
+import { apiUrl } from "@/lib/api";
 
 export default function SignInPage() {
   const [password, setPassword] = React.useState("");
@@ -52,7 +53,7 @@ export default function SignInPage() {
     }
 
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/login.php", {
+      const res = await fetch(apiUrl("login.php"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -10,6 +10,7 @@ import { User } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
 import { Mail } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 const ProfileSettings: React.FC = () => {
   const [name, setName] = useState("");
@@ -57,7 +58,7 @@ const ProfileSettings: React.FC = () => {
     }
 
     try {
-      const response = await fetch("https://api.kaya.ng/kaya-api/update-profile.php", {
+      const response = await fetch(apiUrl("update-profile.php"), {
         method: "POST",
         body: formData,
       });

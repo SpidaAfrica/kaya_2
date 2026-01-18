@@ -23,6 +23,7 @@ import {
 import { Label } from "@/components/ui/label";
 import DayDate from "@/components/DayDate";
 import Script from "next/script";
+import { apiUrl } from "@/lib/api";
 
 // Define type for transaction
 type Transaction = {
@@ -149,7 +150,7 @@ export default function WalletPage() {
   useEffect(() => {
     if (!userId) return;
     
-    fetch(`https://api.kaya.ng/kaya-api/get-wallet.php?user_id=${userId}`)
+    fetch(apiUrl(`get-wallet.php?user_id=${userId}`))
       .then(res => res.json())
       .then(data => {
         if (data && data.balance) {
@@ -181,7 +182,9 @@ export default function WalletPage() {
       });
 
       try {
-        const res = await fetch(`https://api.kaya.ng/kaya-api/get-transactions.php?${query.toString()}`);
+        const res = await fetch(
+          apiUrl(`get-transactions.php?${query.toString()}`)
+        );
         const data = await res.json();
         
         if (data && Array.isArray(data.transactions)) {
