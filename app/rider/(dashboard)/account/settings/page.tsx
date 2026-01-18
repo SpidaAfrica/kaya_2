@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
 import { Mail } from "lucide-react";
 import React, { SyntheticEvent, useCallback, useState, useEffect } from "react";
-import { apiUrl } from "@/lib/api";
+import { apiUrl, riderProfileUrl } from "@/lib/api";
+
 
 const ProfileSettings: React.FC = () => {
   const [name, setName] = useState("");
@@ -70,7 +71,7 @@ const ProfileSettings: React.FC = () => {
   };
 
   useEffect(() => {  
-    fetch(`https://jbuit.org/api/rider/get-rider-profile.php?rider_id=${riderId}`)
+    fetch(riderProfileUrl(`rider/get-rider-profile.php?rider_id=${riderId}`))
       .then((res) => res.json())
       .then((data) => {
         if (data.status === "success") {

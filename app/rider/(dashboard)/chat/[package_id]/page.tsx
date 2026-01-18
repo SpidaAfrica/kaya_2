@@ -42,8 +42,6 @@ import { apiUrl } from "@/lib/api";
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000";
 
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000";
-
 export default function MessagingPage() {
   const [hasMessages, setHasMessages] = useState(false);
   const [loading, setLoading] = useState(false);
