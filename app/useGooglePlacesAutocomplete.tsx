@@ -11,11 +11,18 @@ export const useGooglePlacesAutocomplete = () => {
   const [autocompleteService, setAutocompleteService] = useState<any>(null);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
   useEffect(() => {
+    if (!apiKey) {
+      console.warn(
+        "Missing NEXT_PUBLIC_GOOGLE_MAPS_API_KEY. Google Places autocomplete is disabled."
+      );
+      return;
+    }
     if (!window.google) {
       const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyDeiTX6cfrRVrGA1wJnZh_ro957siC6A1c&libraries=places`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
       document.body.appendChild(script);
@@ -26,7 +33,7 @@ export const useGooglePlacesAutocomplete = () => {
     } else {
       setAutocompleteService(new window.google.maps.places.AutocompleteService());
     }
-  }, []);
+  }, [apiKey]);
 
   const searchPlaces = (input: string) => {
     if (!input || !autocompleteService) {
