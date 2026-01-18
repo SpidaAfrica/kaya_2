@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyDeiTX6cfrRVrGA1wJnZh_ro957siC6A1c"; // Replace with your Google Maps API key
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
 
 type MapWithRouteProps = {
   from?: string;
@@ -41,6 +41,13 @@ export default function MapWithRoute({ from, to }: MapWithRouteProps) {
         map.setCenter(leg.start_location);
       }
     };
+
+    if (!GOOGLE_MAPS_API_KEY) {
+      console.warn(
+        "Missing NEXT_PUBLIC_GOOGLE_MAPS_API_KEY. Route map rendering is disabled."
+      );
+      return;
+    }
 
     if (typeof window !== "undefined" && (window as any).google?.maps) {
       initializeMap();
