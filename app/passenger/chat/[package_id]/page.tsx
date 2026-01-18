@@ -38,7 +38,6 @@ import { MainContent } from "@/app/layouts/app-layout";
 import { DeliveryDetails } from "@/components/Overlays/DeliveryDetails";
 import { useParams } from "next/navigation";
 import { format } from "date-fns";
-import { apiUrl } from "@/lib/api";
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000";
 
