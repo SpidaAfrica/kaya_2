@@ -8,6 +8,7 @@ import SuccessModal from "@/components/Overlays/SuccessModal";
 import { Lock } from "@/components/svgs";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { apiUrl } from "@/lib/api";
 
 export default function PrivacyAndSecurity() {
   const [oldPassword, setOldPassword] = useState<string>("");
@@ -43,7 +44,7 @@ export default function PrivacyAndSecurity() {
       }
 
       try {
-        const res = await fetch("https://api.kaya.ng/kaya-api/change-password.php", {
+        const res = await fetch(apiUrl("change-password.php"), {
           method: "POST",
           body: new URLSearchParams({
             user_id: userId,

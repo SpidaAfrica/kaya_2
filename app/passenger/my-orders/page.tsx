@@ -24,6 +24,7 @@ import Image from "next/image";
 import Link from "next/link";
 import NoOrders from "@/assets/no-orders.svg";
 import { ChevronLeft } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 type Package = {
   id: number;
@@ -79,7 +80,7 @@ export default function MyOrdersPage() {
           user_id: userId,
         });
 
-        const res = await fetch(`https://api.kaya.ng/kaya-api/filter-packages.php?${params}`);
+        const res = await fetch(apiUrl(`filter-packages.php?${params}`));
         const data: ApiResponse = await res.json();
 
         setPackages(data?.data ?? []);

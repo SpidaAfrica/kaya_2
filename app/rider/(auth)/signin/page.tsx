@@ -6,6 +6,8 @@ import AuthForm from "../riderAuth";
 import { Nigeria, Lock, Eye } from "@/components/svgs";
 import { Apple, DropDown, Google, X } from "@/components/svgs";
 import { useRouter } from "next/navigation";
+import { generateToken } from "@/token";
+import { apiUrl } from "@/lib/api";
 
 export default function SignInPage() {
 const [password, setPassword] = React.useState("");
@@ -34,7 +36,7 @@ const [password, setPassword] = React.useState("");
     setError("");
 
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/login.php", {
+      const res = await fetch(apiUrl("login.php"), {
         method: "POST", // 👈 very important
         headers: {
           "Content-Type": "application/json"
@@ -55,7 +57,14 @@ const [password, setPassword] = React.useState("");
       // ✅ Store in sessionStorage only on client
       if (typeof window !== "undefined") {
         sessionStorage.setItem("user", JSON.stringify(data));
-        //localStorage.setItem("jwt_token", data.token); // Store JWT token
+        if (!data.token) {
+          throw new Error("Missing auth token from server.");
+        }
+        const secureFlag =
+          window.location.protocol === "https:" ? "; Secure" : "";
+        const kayaToken = data.token;
+        sessionStorage.setItem("kaya_token", kayaToken);
+        document.cookie = `kaya_token=${kayaToken}; path=/; SameSite=Lax${secureFlag}`;
         const user = data.user || {};
 
         sessionStorage.setItem("userId", user.id || "");

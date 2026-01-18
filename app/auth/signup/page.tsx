@@ -6,6 +6,7 @@ import Link from "next/link";
 import { DropDown, Nigeria } from "@/components/svgs";
 import AuthForm from "../AuthForm";
 import { useRouter } from "next/navigation";
+import { apiUrl } from "@/lib/api";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   setLoading(true);
 
   try {
-    const res = await fetch("https://api.kaya.ng/kaya-api/send-phone-otp.php", {
+    const res = await fetch(apiUrl("send-phone-otp.php"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

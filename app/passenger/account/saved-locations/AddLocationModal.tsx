@@ -19,6 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { apiUrl } from "@/lib/api";
 
 interface AddLocationModalProps {
   isOpen: boolean;
@@ -100,7 +101,7 @@ export function AddLocationModal({
     });
 
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/save-locations.php", {
+      const res = await fetch(apiUrl("save-locations.php"), {
         method: "POST",
         body: payload,
         headers: {
@@ -291,7 +292,7 @@ export function AddLocationModal({
     });
 
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/save-locations.php", {
+      const res = await fetch(apiUrl("save-locations.php"), {
         method: "POST",
         body: payload,
         headers: {

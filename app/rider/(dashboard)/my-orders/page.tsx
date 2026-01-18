@@ -14,6 +14,7 @@ import FormInput from "@/components/FormInput";
 import { RideOrderCard } from "@/app/shared";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { apiUrl } from "@/lib/api";
 
 export default function MyOrdersPage() {
   type Package = {
@@ -49,7 +50,7 @@ export default function MyOrdersPage() {
       }).toString();
 
       try {
-        const res = await fetch(`https://api.kaya.ng/kaya-api/rider/get-orders.php?${query}`);
+        const res = await fetch(apiUrl(`rider/get-orders.php?${query}`));
         const data = await res.json();
         if (data.status === "success") {
           setPackages(data.data);

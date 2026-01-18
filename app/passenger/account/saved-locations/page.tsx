@@ -7,6 +7,7 @@ import { SavedLocation } from "./types";
 import { Plus } from "lucide-react";
 import { AddLocationModal } from "./AddLocationModal";
 import { Button } from "@/components/ui/button";
+import { apiUrl } from "@/lib/api";
 
 export default function SavedLocationsPage() {
   const [locations, setLocations] = React.useState<SavedLocation[]>([]); 
@@ -18,7 +19,9 @@ export default function SavedLocationsPage() {
       try {
         // Check if we're on the client before using sessionStorage
         const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") || "1" : "1";
-        const res = await fetch(`https://api.kaya.ng/kaya-api/get-locations.php?user_id=${userId}`);
+        const res = await fetch(
+          apiUrl(`get-locations.php?user_id=${userId}`)
+        );
         const data = await res.json();
   
         if (data.success && Array.isArray(data.locations)) {
@@ -41,7 +44,7 @@ export default function SavedLocationsPage() {
       // Check if we're on the client before using sessionStorage
       const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") || "1" : "1";
       
-      const res = await fetch("https://api.kaya.ng/kaya-api/save-locations.php", {
+      const res = await fetch(apiUrl("save-locations.php"), {
         method: "POST",
         body: new URLSearchParams({
           user_id: userId,

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { LockIcon, User } from "lucide-react";
 import SuccessModal from "@/components/Overlays/SuccessModal";
 import FormInput from "@/components/FormInput";
+import { apiUrl } from "@/lib/api";
 
 export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
   const [riderId, setRiderId] = useState<string | null>(null);
@@ -26,20 +27,17 @@ export default function WithdrawFunds({ onClose }: { onClose: () => void }) {
     if (!riderId) return;
 
     try {
-      const response = await fetch(
-        "https://www.kaya.ng/kaya-api/rider/request-withdrawal.php",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            rider_id: riderId,
-            amount,
-            bank_code: bankCode,
-            account_number: accountNumber,
-            bank_name: accountName,
-          }),
-        }
-      );
+      const response = await fetch(apiUrl("rider/request-withdrawal.php"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rider_id: riderId,
+          amount,
+          bank_code: bankCode,
+          account_number: accountNumber,
+          bank_name: accountName,
+        }),
+      });
 
       const data = await response.json();
 

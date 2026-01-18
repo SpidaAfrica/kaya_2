@@ -9,6 +9,7 @@ import { Lock } from "@/components/svgs";
 import AuthForm from "../AuthForm";
 import FormInput from "@/components/FormInput";
 import { Button } from "@/components/ui/button";
+import { apiUrl } from "@/lib/api";
 
 export default function SignInPage() {
   const [password, setPassword] = React.useState("");
@@ -52,7 +53,7 @@ export default function SignInPage() {
     }
 
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/login.php", {
+      const res = await fetch(apiUrl("login.php"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -69,11 +70,15 @@ export default function SignInPage() {
 
       if (typeof window !== "undefined") {
         sessionStorage.setItem("user", JSON.stringify(data));
-        localStorage.setItem("jwt_token", data.token);
         const user = data.user || {};
-        const token = generateToken();
-        sessionStorage.setItem("kaya_token", token);
-        document.cookie = `kaya_token=${token}; path=/`;
+        if (!data.token) {
+          throw new Error("Missing auth token from server.");
+        }
+        const secureFlag =
+          window.location.protocol === "https:" ? "; Secure" : "";
+        const kayaToken = data.token;
+        sessionStorage.setItem("kaya_token", kayaToken);
+        document.cookie = `kaya_token=${kayaToken}; path=/; SameSite=Lax${secureFlag}`;
         sessionStorage.setItem("userId", user.id || "");
         sessionStorage.setItem("email", user.email || "");
         sessionStorage.setItem("imageUrl", user.image_url || "");
