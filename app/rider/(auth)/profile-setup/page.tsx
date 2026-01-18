@@ -6,6 +6,7 @@ import { User, Mail } from "lucide-react";
 import { useRouter } from "next/navigation";
 import FormInput from "@/components/FormInput";
 import { LockIcon } from "@/lib/icons";
+import { apiUrl } from "@/lib/api";
 
 export default function ProfileSetup() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export default function ProfileSetup() {
   const router = useRouter();
 
   try {
-    const response = await fetch("https://api.kaya.ng/kaya-api/signup.php", {
+    const response = await fetch(apiUrl("signup.php"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

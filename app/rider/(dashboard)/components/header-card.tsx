@@ -8,6 +8,7 @@ import { ChevronDown } from "lucide-react";
 import map from "../../../../assets/map.svg";
 import herderImage from "../../../../assets/bg-header.png";
 import { NewLocationDropDown } from "@/app/shared";
+import { apiUrl } from "@/lib/api";
 
 export const HeaderCard = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -23,7 +24,7 @@ export const HeaderCard = () => {
     }
 
     try {
-      const response = await fetch("https://api.kaya.ng/kaya-api/rider/update-location.php", {
+      const response = await fetch(apiUrl("rider/update-location.php"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

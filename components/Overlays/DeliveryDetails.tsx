@@ -15,6 +15,7 @@ import { OrderDetails } from "./OrderDetails";
 import MapWithRoute from "./MapWithRoute";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
+import { apiUrl } from "@/lib/api";
 
 export const dynamic = "force-dynamic";
 
@@ -176,7 +177,7 @@ export function DeliveryDetails({
     }
 
     try {
-      const response = await fetch("https://api.kaya.ng/kaya-api/create-package.php", {
+      const response = await fetch(apiUrl("create-package.php"), {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: new URLSearchParams({

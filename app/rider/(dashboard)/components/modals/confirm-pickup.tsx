@@ -4,6 +4,7 @@ import box from "../../../../../assets/box.png";
 import { Button } from "@/components/ui/button";
 import SuccessModal from "@/components/Overlays/SuccessModal";
 import { Dispatch, SetStateAction, useState } from "react";
+import { apiUrl } from "@/lib/api";
 
 type ActiveOrderType = {
   order_id?: string;
@@ -32,7 +33,7 @@ export const ConfirmPickupModal = ({
 
   const handleConfirmPickup = async () => {
     try {
-      const response = await fetch('https://api.kaya.ng/kaya-api/rider/confirm-pickup.php', {
+      const response = await fetch(apiUrl("rider/confirm-pickup.php"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -155,7 +156,7 @@ export const ConfirmPickupModal = ({
   console.log("we dey here");
   const handleConfirmPickup = async (order_id?: string) => {
     try {
-      const response = await fetch('https://api.kaya.ng/kaya-api/rider/confirm-pickup.php', {
+      const response = await fetch(apiUrl("rider/confirm-pickup.php"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

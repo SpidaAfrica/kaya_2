@@ -7,6 +7,7 @@ import { HeaderCard } from "./header-card";
 import { useEffect, useState } from "react";
 import loading from "@/assets/loading.svg";
 import Pagination from "@/components/Pagination";
+import { apiUrl } from "@/lib/api";
 
 export const VerificationPage = () => {
   const [page, setPage] = useState(1);
@@ -24,7 +25,7 @@ export const VerificationPage = () => {
 
     setIsVerifying(true);
 
-    fetch("https://api.kaya.ng/kaya-api/rider/verify.php", {
+    fetch(apiUrl("rider/verify.php"), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

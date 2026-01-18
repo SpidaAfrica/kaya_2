@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import AuthForm from "../AuthForm";
+import { apiUrl } from "@/lib/api";
 
 type VerifyStep = "otp" | "success" | "error";
 
@@ -41,7 +42,7 @@ export default function VerifyPage() {
 
     // Call your backend to verify OTP
     try {
-      const response = await fetch("https://api.kaya.ng/kaya-api/verify-otp.php", {
+      const response = await fetch(apiUrl("verify-otp.php"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -75,7 +76,7 @@ export default function VerifyPage() {
     setMessage("");
 
     try {
-      const response = await fetch("http://kaya.ng/kaya-api/resend-phone-otp.php", {
+      const response = await fetch(apiUrl("resend-phone-otp.php"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

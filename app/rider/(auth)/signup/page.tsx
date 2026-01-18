@@ -7,6 +7,7 @@ import AuthForm from "../riderAuth";
 import { DropDown, Nigeria } from "@/components/svgs";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { apiUrl } from "@/lib/api";
 export default function SignInPage() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = React.useState<string>("");
@@ -26,7 +27,7 @@ export default function SignInPage() {
     e.preventDefault();
 
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/send-phone-otp.php", {
+      const res = await fetch(apiUrl("send-phone-otp.php"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -28,6 +28,7 @@ import React, { useEffect, useState } from "react";
 import { Info } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
+import { apiUrl } from "@/lib/api";
 
 
 export default function RideActionsPage() {
@@ -232,7 +233,7 @@ const [packageId, setPackageId] = useState(null);
       const formData = new FormData();
       formData.append('user_id', userId);
 
-      const response = await fetch('https://api.kaya.ng/kaya-api/get-package-id.php', {
+      const response = await fetch(apiUrl("get-package-id.php"), {
         method: 'POST',
         body: formData,
       });
@@ -397,7 +398,7 @@ function AvailableRides({
       formData.append("pickup_lng", pickupLng.toString());
       formData.append("user_id", userId);
 
-      const response = await fetch("https://api.kaya.ng/kaya-api/get-nearby-riders.php", {
+      const response = await fetch(apiUrl("get-nearby-riders.php"), {
         method: "POST",
         body: formData,
       });
@@ -419,7 +420,7 @@ function AvailableRides({
     formData.append("user_id", userId);
     formData.append("rider_id", riderId);
   
-    const response = await fetch("https://api.kaya.ng/kaya-api/accept-ride-request.php", {
+    const response = await fetch(apiUrl("accept-ride-request.php"), {
       method: "POST",
       body: formData,
     });
@@ -556,7 +557,7 @@ function AvailableRides({
       formData.append("user_id", userId);
 
       const response = await fetch(
-        "https://api.kaya.ng/kaya-api/get-nearby-riders.php",
+        apiUrl("get-nearby-riders.php"),
         {
           method: "POST",
           body: formData,
@@ -581,7 +582,7 @@ function AvailableRides({
     formData.append("rider_id", riderId);
 
     const response = await fetch(
-      "https://api.kaya.ng/kaya-api/accept-ride-request.php",
+      apiUrl("accept-ride-request.php"),
       {
         method: "POST",
         body: formData,
@@ -720,7 +721,7 @@ function FareIncreaseInterface({
       formData.append("pickup_lng", pickupLng.toString());
       formData.append("user_id", userId);
 
-      const response = await fetch("https://api.kaya.ng/kaya-api/get-nearby-riders.php", {
+      const response = await fetch(apiUrl("get-nearby-riders.php"), {
         method: "POST",
         body: formData,
       });
@@ -747,7 +748,7 @@ function FareIncreaseInterface({
     formData.append("fare", String(fare));
 
     try {
-      const res = await fetch("https://api.kaya.ng/kaya-api/passenger-update-fare.php", {
+      const res = await fetch(apiUrl("passenger-update-fare.php"), {
         method: "POST",
         body: formData,
       });
@@ -914,7 +915,7 @@ function AcceptedRiderDetails({ setRideState }: AcceptedRiderDetailsProps) {
     const formData = new FormData();
     formData.append("user_id", userId);
 
-    fetch("https://api.kaya.ng/kaya-api/get-accepted-rider.php", {
+    fetch(apiUrl("get-accepted-rider.php"), {
       method: "POST",
       body: formData,
     })
