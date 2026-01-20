@@ -51,7 +51,7 @@ const Page = () => {
     },
     {
       title: "Guarantors details",
-      desc: "Add your bank details to receive earnings securely and on time after every delivery.",
+      desc: "Add your bank details to receive earnings securely and on time after every delivery....",
       icon: "💳",
       link: {
         text: "Add Bank Details",
