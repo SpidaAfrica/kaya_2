@@ -35,6 +35,7 @@ import { DoubleTick, PhoneIcon } from "@/lib/icons";
 import RiderRating from "@/components/Overlays/Rating";
 import Link from "next/link";
 import { apiUrl } from "@/lib/api";
+import { getStoredUserId } from "@/lib/session";
 
 interface MessageType {
   sender_id: string;
@@ -79,51 +80,53 @@ export default function MessagingPage(): JSX.Element {
     }
   };
 
-useEffect(() => {
-  if (typeof window === "undefined") return;
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-  const storedUser = sessionStorage.getItem("user");
-  const parsedUser = storedUser ? JSON.parse(storedUser) : null;
+    const resolvedUserId = getStoredUserId();
 
-  if (!parsedUser?.id) return;
+    if (!resolvedUserId) {
+      setLoading(false);
+      return;
+    }
 
-  const fetchAcceptedRider = async () => {
-    try {
-      const res = await fetch(apiUrl("get-accepted-rider.php"), {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ user_id: parsedUser.id }),
-      });
-
-      const result = await res.json();
-
-      if (result.success && result.rider) {
-        const rider = result.rider;
-        setSenderId(parsedUser.id);
-        setChatId(result.chat_id);
-        setRiderId(rider.id);
-        setRiderDetails({
-          name: rider.name,
-          phone: rider.phone,
-          rating: parseFloat(rider.rating) || 0,
-          avatar: rider.avatar || RiderAvatar,
+    const fetchAcceptedRider = async () => {
+      try {
+        const res = await fetch(apiUrl("get-accepted-rider.php"), {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ user_id: resolvedUserId }),
         });
 
-        if (result.chat_id) {
-          fetchMessages(result.chat_id);
+        const result = await res.json();
+
+        if (result.success && result.rider) {
+          const rider = result.rider;
+          setSenderId(resolvedUserId);
+          setChatId(result.chat_id);
+          setRiderId(rider.id);
+          setRiderDetails({
+            name: rider.name,
+            phone: rider.phone,
+            rating: parseFloat(rider.rating) || 0,
+            avatar: rider.avatar || RiderAvatar,
+          });
+
+          if (result.chat_id) {
+            fetchMessages(result.chat_id);
+          }
+        } else {
+          console.warn("No accepted rider found.");
+          setLoading(false);
         }
-      } else {
-        console.warn("No accepted rider found.");
+      } catch (err) {
+        console.error("Failed to fetch accepted rider", err);
         setLoading(false);
       }
-    } catch (err) {
-      console.error("Failed to fetch accepted rider", err);
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchAcceptedRider();
-}, []);
+    fetchAcceptedRider();
+  }, []);
 
 
   const handleSendMessage = async () => {

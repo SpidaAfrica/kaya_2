@@ -29,6 +29,7 @@ import { Info } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
 import { apiUrl } from "@/lib/api";
+import { getStoredUserId } from "@/lib/session";
 
 
 export default function RideActionsPage() {
@@ -208,22 +209,23 @@ interface SendDriverMessageProps {
 
 function SendDriverMessage({ riderPhone }: SendDriverMessageProps) {
   const [open, setOpen] = useState(false);
+  const [packageId, setPackageId] = useState<string | null>(null);
+  const hasChatLink = Boolean(packageId);
 
   const handleCall = () => {
     window.location.href = `tel:${riderPhone}`;
     setOpen(false);
   };
-const [packageId, setPackageId] = useState(null);
 
   useEffect(() => {
     // Make sure this runs only in the browser
-    if (typeof window !== 'undefined') {
-      const storedUserId = localStorage.getItem('userId');
+    if (typeof window !== "undefined") {
+      const storedUserId = getStoredUserId();
 
       if (storedUserId) {
         getLatestPackage(storedUserId);
       } else {
-        console.warn("User ID not found in localStorage");
+        console.warn("User ID not found in session storage");
       }
     }
   }, []);
@@ -255,17 +257,29 @@ const [packageId, setPackageId] = useState(null);
   <>
     <div className="flex items-center bg-background p-3 gap-3 justify-between">
       {/* Chat link */}
-      <Link href={`/passenger/chat/${packageId}`} className="flex items-center gap-3 flex-1">
-        <div className="bg-[#B47818]/10 p-3 rounded-full">
-          <Image src={MessageIconSquare} alt="message" />
+      {hasChatLink ? (
+        <Link
+          href={`/passenger/chat/${packageId}`}
+          className="flex items-center gap-3 flex-1"
+        >
+          <div className="bg-[#B47818]/10 p-3 rounded-full">
+            <Image src={MessageIconSquare} alt="message" />
+          </div>
+          <span>Send driver a message</span>
+        </Link>
+      ) : (
+        <div className="flex items-center gap-3 flex-1 text-muted-foreground">
+          <div className="bg-[#B47818]/10 p-3 rounded-full">
+            <Image src={MessageIconSquare} alt="message" />
+          </div>
+          <span>Preparing chat...</span>
         </div>
-        <span>Send driver a message</span>
-      </Link>
+      )}
 
       {/* Phone modal */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button>
+          <button disabled={!riderPhone} aria-disabled={!riderPhone}>
             <Phone className="fill-foreground/80 stroke-none" />
           </button>
         </DialogTrigger>
@@ -535,13 +549,17 @@ function AvailableRides({
   const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedId = sessionStorage.getItem("userId");
+    const storedId = getStoredUserId();
     const storedCords = sessionStorage.getItem("pickupCoords");
 
-    if (storedId && storedCords) {
-      setUserId(storedId);
+    if (!storedId || !storedCords) return;
+
+    try {
       const { lat, lng } = JSON.parse(storedCords);
+      setUserId(storedId);
       fetchAvailableRiders(lat, lng, storedId);
+    } catch (error) {
+      console.error("Failed to parse pickup coordinates", error);
     }
   }, []);
 
@@ -693,13 +711,17 @@ function FareIncreaseInterface({
   const [availableRiders, setAvailableRiders] = useState<any[]>([]);
   
   useEffect(() => {
-    const storedId = sessionStorage.getItem("userId");
+    const storedId = getStoredUserId();
     const storedCords = sessionStorage.getItem("pickupCoords");
   
-    if (storedId && storedCords) {
-      setUserId(storedId);
+    if (!storedId || !storedCords) return;
+
+    try {
       const { lat, lng } = JSON.parse(storedCords);
+      setUserId(storedId);
       fetchAvailableRiders(lat, lng, storedId); // pass storedId directly
+    } catch (error) {
+      console.error("Failed to parse pickup coordinates", error);
     }
   }, []);
 
@@ -909,7 +931,7 @@ function AcceptedRiderDetails({ setRideState }: AcceptedRiderDetailsProps) {
   const [showCompleted, setShowCompleted] = useState(false);
 
   useEffect(() => {
-    const userId = sessionStorage.getItem("userId");
+    const userId = getStoredUserId();
     if (!userId) return;
 
     const formData = new FormData();
