@@ -68,6 +68,7 @@ const [password, setPassword] = React.useState("");
         const user = data.user || {};
 
         sessionStorage.setItem("userId", user.id || "");
+        sessionStorage.setItem("rider_id", user.id || "");
         sessionStorage.setItem("email", user.email || "");
         sessionStorage.setItem("imageUrl", user.image_url || "");
         sessionStorage.setItem("fullName", user.fullName || "");
