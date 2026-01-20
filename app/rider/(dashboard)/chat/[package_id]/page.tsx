@@ -39,6 +39,7 @@ import { DeliveryDetails } from "@/components/Overlays/DeliveryDetails";
 import { useParams } from "next/navigation";
 import { format } from "date-fns";
 import { apiUrl } from "@/lib/api";
+import { getStoredRiderId } from "@/lib/session";
 
 const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000";
 
@@ -122,8 +123,9 @@ export default function MessagingPage() {
   useEffect(() => {
   async function fetchSenderReceiver() {
     try {
-      const currentUserId = Number(sessionStorage.getItem("rider_id"));
-      if (!currentUserId || !packageId) return;
+      const resolvedRiderId = getStoredRiderId();
+      const currentUserId = resolvedRiderId ? Number(resolvedRiderId) : NaN;
+      if (!resolvedRiderId || Number.isNaN(currentUserId) || !packageId) return;
 
       const response = await fetch(
         apiUrl(`chat/get-chat-id.php?package_id=${packageId}`)
@@ -137,13 +139,13 @@ export default function MessagingPage() {
           sessionStorage.setItem('receiver_id', result.user_id);
 
         // Match currentUserId to sender/receiver
-        if (currentUserId == result.rider_id) {
-          setSenderId(result.rider_id);
-          setReceiverId(result.user_id);
+        if (currentUserId == Number(result.rider_id)) {
+          setSenderId(Number(result.rider_id));
+          setReceiverId(Number(result.user_id));
           
-        } else if (currentUserId == result.user_id) {
-          setSenderId(result.user_id);
-          setReceiverId(result.rider_id);
+        } else if (currentUserId == Number(result.user_id)) {
+          setSenderId(Number(result.user_id));
+          setReceiverId(Number(result.rider_id));
           console.log("Current user:", currentUserId, "Sender:", senderId, "Receiver:", receiverId);
         } else {
           console.warn("Current user doesn't match any chat participant.");
