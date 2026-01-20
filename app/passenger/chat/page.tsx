@@ -50,7 +50,7 @@ interface RiderDetailsType {
   avatar: string;
 }
 
-export default function MessagingPage(): JSX.Element {
+export default function MessagingPage(): React.ReactElement {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [loading, setLoading] = useState(true);
   const [chatId, setChatId] = useState<string | null>(null);
@@ -341,13 +341,13 @@ type QuickButtonProps = {
   onClick: () => void;
 };
 
-const QuickButton = memo(({ text, onClick }: QuickButtonProps): JSX.Element => (
+const QuickButton = memo(({ text, onClick }: QuickButtonProps): React.ReactElement => (
   <Button variant="secondary" className="min-w-[10rem]" onClick={onClick}>
     {text}
   </Button>
 ));
 
-function Message({ sender, content, timestamp }: { sender: string; content: string; timestamp?: string }): JSX.Element {
+function Message({ sender, content, timestamp }: { sender: string; content: string; timestamp?: string }): React.ReactElement {
   return (
     <div className={cn("message", { "message-me": sender === "me", "message-rider": sender === "rider" })}>
       <p>{content}</p>
