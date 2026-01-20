@@ -72,7 +72,7 @@ const Page = () => {
         <>
           <div className="flex flex-col mb-[60px] gap-3">
             <p className="lg:text-[32px] text-[28px] font-[600] text-[#475467] lg:leading-[39px] leading-[33px] tracking-tight">
-              Hi {user?.user?.fullName}, Get Ready to Ride and Earn! 💼
+              Hi {user?.user?.fullName}, Get Ready to Ride and Earn cool money! 💼
             </p>
             <p className="lg:text-[18px] text-[16px] leading-[25px] tracking-tight">
               Complete your setup in three simple steps and start delivering today!
